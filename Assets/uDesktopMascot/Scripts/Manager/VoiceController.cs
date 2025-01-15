@@ -120,7 +120,8 @@ namespace uDesktopMascot
                     if (count == 0)
                     {
                         Log.Warning("スタート時のボイスがロードされませんでした。フォルダに有効なオーディオファイルがありません。");
-                    } else
+                    }
+                    else
                     {
                         Log.Debug("スタート時のボイスを {0} 件ロードしました。", count);
                     }
@@ -150,7 +151,8 @@ namespace uDesktopMascot
                     if (count == 0)
                     {
                         Log.Warning("エンド時のボイスがロードされませんでした。フォルダに有効なオーディオファイルがありません。");
-                    } else
+                    }
+                    else
                     {
                         Log.Debug("エンド時のボイスを {0} 件ロードしました。", count);
                     }
@@ -178,7 +180,8 @@ namespace uDesktopMascot
                     if (count == 0)
                     {
                         Log.Warning("クリックボイスがロードされませんでした。フォルダに有効なオーディオファイルがありません。");
-                    } else
+                    }
+                    else
                     {
                         Log.Debug("クリックボイスを {0} 件ロードしました。", count);
                     }
@@ -206,7 +209,8 @@ namespace uDesktopMascot
                     if (count == 0)
                     {
                         Log.Warning("ドラッグボイスがロードされませんでした。フォルダに有効なオーディオファイルがありません。");
-                    } else
+                    }
+                    else
                     {
                         Log.Debug("ドラッグボイスを {0} 件ロードしました。", count);
                     }
@@ -236,7 +240,16 @@ namespace uDesktopMascot
                 return;
             }
 
-            _audioSource.PlayOneShot(clickVoice[Random.Range(0, clickVoice.Count)]);
+            // 現在の音声を停止
+            if (_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+
+            // 新しい音声を再生
+            var clip = clickVoice[Random.Range(0, clickVoice.Count)];
+            _audioSource.clip = clip;
+            _audioSource.Play();
         }
 
         /// <summary>
@@ -255,7 +268,16 @@ namespace uDesktopMascot
                 return;
             }
 
-            _audioSource.PlayOneShot(dragVoice[Random.Range(0, dragVoice.Count)]);
+            // 現在の音声を停止
+            if (_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+
+            // 新しい音声を再生
+            var clip = dragVoice[Random.Range(0, dragVoice.Count)];
+            _audioSource.clip = clip;
+            _audioSource.Play();
         }
 
         /// <summary>
@@ -274,8 +296,15 @@ namespace uDesktopMascot
                 return;
             }
 
+            // 現在の音声を停止
+            if (_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+
             var clip = startVoice[Random.Range(0, startVoice.Count)];
-            _audioSource.PlayOneShot(clip);
+            _audioSource.clip = clip;
+            _audioSource.Play();
 
             // クリップの長さ分待機
             await UniTask.Delay(TimeSpan.FromSeconds(clip.length), cancellationToken: cancellationToken);
@@ -297,8 +326,15 @@ namespace uDesktopMascot
                 return;
             }
 
+            // 現在の音声を停止
+            if (_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+
             var clip = endVoice[Random.Range(0, endVoice.Count)];
-            _audioSource.PlayOneShot(clip);
+            _audioSource.clip = clip;
+            _audioSource.Play();
 
             // クリップの長さ分待機
             await UniTask.Delay(TimeSpan.FromSeconds(clip.length), cancellationToken: cancellationToken);

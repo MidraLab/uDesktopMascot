@@ -47,8 +47,6 @@ namespace uDesktopMascot
             // 品質レベルを設定
             QualitySettings.SetQualityLevel(qualityLevel, true);
 
-            Log.Debug("品質レベルを " + QualitySettings.names[qualityLevel] + " に設定しました。");
-
             // 必要に応じて品質レベルを返す
             return qualityLevel;
         }

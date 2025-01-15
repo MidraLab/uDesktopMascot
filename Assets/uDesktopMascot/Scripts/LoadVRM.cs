@@ -36,33 +36,40 @@ namespace uDesktopMascot
         {
             try
             {
-                // StreamingAssetsフォルダ内のVRMファイルを検索
-                string[] vrmFiles = Directory.GetFiles(Application.streamingAssetsPath, "*.vrm");
-                var userVrmFiles = vrmFiles;
-
-                if (userVrmFiles.Length > 0)
+                // StreamingAssetsフォルダが存在するか確認
+                if (Directory.Exists(Application.streamingAssetsPath))
                 {
-                    // ユーザー指定のVRMファイルを使用（最初のもの）
-                    var path = userVrmFiles[0];
-                    Debug.Log($"ユーザー指定のVRMファイルを使用します: {path}");
+                    // StreamingAssetsフォルダ内のVRMファイルを検索
+                    var vrmFiles = Directory.GetFiles(Application.streamingAssetsPath, "*.vrm");
+                    var userVrmFiles = vrmFiles;
 
-                    try
+                    if (userVrmFiles.Length > 0)
                     {
-                        // VRMファイルをロードしてモデルを表示
-                        return await LoadAndDisplayModel(path, cancellationToken);
-                    } catch (Exception e)
-                    {
-                        Debug.LogError($"VRMの読み込みまたは表示中にエラーが発生しました: {e.Message}");
-                        // エラーが発生した場合、デフォルトのモデルを表示
-                        Debug.LogWarning("デフォルトのモデルを読み込みます。");
-                        return LoadDefaultModel();
+                        // ユーザー指定のVRMファイルを使用（最初のもの）
+                        var path = userVrmFiles[0];
+                        Log.Info($"ユーザー指定のVRMファイルを使用します: {path}");
+
+                        try
+                        {
+                            // VRMファイルをロードしてモデルを表示
+                            return await LoadAndDisplayModel(path, cancellationToken);
+                        } catch (Exception e)
+                        {
+                            Log.Error($"VRMの読み込みまたは表示中にエラーが発生しました: {e.Message}");
+                            // エラーが発生した場合、デフォルトのモデルを表示
+                            Log.Info("デフォルトのモデルを読み込みます。");
+                            return LoadDefaultModel();
+                        }
                     }
-                } else
-                {
-                    // ユーザー指定のVRMファイルが見つからない場合、デフォルトのVRMファイルを使用
-                    Log.Warning("ユーザー指定のVRMファイルが見つかりません。デフォルトのモデルを読み込みます。");
+
+                    // ユーザー指定のVRMファイルが見つからない場合、デフォルトのモデルを使用
+                    Log.Info("ユーザー指定のVRMファイルが見つかりません。デフォルトのモデルを読み込みます。");
                     return LoadDefaultModel();
                 }
+
+                // StreamingAssetsフォルダが存在しない場合、デフォルトのモデルをロード
+                Log.Info("StreamingAssetsフォルダが見つかりません。デフォルトのモデルを読み込みます。");
+                return LoadDefaultModel();
             } catch (Exception e)
             {
                 Log.Error($"VRMの読み込みまたは表示中にエラーが発生しました: {e.Message}");

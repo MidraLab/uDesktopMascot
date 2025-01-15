@@ -40,8 +40,12 @@ namespace uDesktopMascot.Editor
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
 
-            // ビルドフォルダを最大圧縮で ZIP 圧縮
-            CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
+            // development buildの場合はスキップする
+            if (!EditorUserBuildSettings.development)
+            {
+                // ビルドフォルダを最大圧縮で ZIP 圧縮
+                CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
+            }
 
             Log.Debug("ビルド後処理が完了しました。");
         }
