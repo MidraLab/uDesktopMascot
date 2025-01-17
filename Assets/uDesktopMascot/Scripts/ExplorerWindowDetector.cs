@@ -1,4 +1,4 @@
-﻿#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -49,7 +49,8 @@ namespace uDesktopMascot
         public static float GetDPIScale()
         {
             IntPtr hdc = GetDC(IntPtr.Zero);
-            try{
+            try
+            {
                 int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
                 int dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
 
