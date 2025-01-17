@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Unity.Logging;
@@ -135,8 +135,8 @@ namespace uDesktopMascot
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
-            // モデルのスクリーン座標を取得
-            var modelScreenPos = ScreenUtility.GetModelScreenPosition(_mainCamera, _model.transform);
+            // デスクトップ上のマウスカーソル座標を取得
+            var cursorPos = MouseUtility.GetCursorPosition();
 
             // エクスプローラーウィンドウの位置を取得
             var explorerWindows = ExplorerWindowDetector.GetExplorerWindows();
@@ -157,10 +157,10 @@ namespace uDesktopMascot
                 rect.right = (int)(rect.right / dpiScale);
                 rect.bottom = (int)(rect.bottom / dpiScale);
 
-                // モデルがウィンドウの上部付近にいるか判定（例：ウィンドウの上端から50ピクセル以内）
-                if (modelScreenPos.x >= rect.left && modelScreenPos.x <= rect.right)
+                // マウスがウィンドウの上部付近にいるか判定（例：ウィンドウの上端から50ピクセル以内）
+                if (cursorPos.x >= rect.left && cursorPos.x <= rect.right)
                 {
-                    if (modelScreenPos.y >= rect.top - 50 && modelScreenPos.y <= rect.top + 50)
+                    if (cursorPos.y >= rect.top - 50 && cursorPos.y <= rect.top + 50)
                     {
                         isNearExplorerTop = true;
                         break;
