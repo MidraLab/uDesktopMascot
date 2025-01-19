@@ -37,7 +37,7 @@ jobs:
 
       # 条件付きでUnityテストを実行
       - name: Unityテストを実行
-        if: ${{ steps.script_changes.outputs.scripts == 'true' }}
+        if: ${{ steps.script_changes.outputs.scripts == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}

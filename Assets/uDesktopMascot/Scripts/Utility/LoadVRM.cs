@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -130,28 +129,6 @@ namespace uDesktopMascot
             Log.Debug("デフォルトモデルのロードと表示が完了しました: " + DefaultVrmFileName);
 
             return model;
-        }
-
-        /// <summary>
-        /// モデルのHipボーンを探す
-        /// </summary>
-        /// <param name="rootTransform"></param>
-        /// <returns></returns>
-        public static Transform FindHipBone(Transform rootTransform)
-        {
-            // VRMの場合、腰のボーンは "Joints/Hips" や "Root" などの名前であることが多い
-            // まずは "Hips" という名前のボーンを探します
-            Transform hipTransform = rootTransform.Find("Hips");
-            if (hipTransform != null)
-            {
-                return hipTransform;
-            }
-
-            // 見つからない場合、全ての子孫を探索します
-            hipTransform = rootTransform.GetComponentsInChildren<Transform>()
-                .FirstOrDefault(t => t.name == "Hips" || t.name == "Root" || t.name == "J_Bip_C_Hips");
-
-            return hipTransform;
         }
 
         /// <summary>
