@@ -11,11 +11,23 @@ jobs:
   test:
     name: Unity Edit Mode Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
-      - name: Cache Library
+      # スクリプトの変更をチェック
+      - name: スクリプトの変更をチェック
+        id: script_changes
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            scripts:
+              - 'Assets/uDesktopMascot/Scripts/**/*.cs'
+
+      # 条件付きでキャッシュを設定
+      - name: ライブラリのキャッシュ
+        if: ${{ steps.script_changes.outputs.scripts == 'true' }}
         uses: actions/cache@v4.2.0
         with:
           path: Library
@@ -23,7 +35,9 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      - name: Run Unity Tests
+      # 条件付きでUnityテストを実行
+      - name: Unityテストを実行
+        if: ${{ steps.script_changes.outputs.scripts == 'true' }}
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -31,13 +45,20 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: .
-          unityVersion: '6000.0.31f1'  # プロジェクトの Unity バージョンに合わせてください
+          unityVersion: '6000.0.31f1'  # プロジェクトのUnityバージョンに合わせてください
           testMode: editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           artifactsPath: './artifacts'
 
-      - name: Upload Test Results
+      # 条件付きでテスト結果をアップロード
+      - name: テスト結果をアップロード
+        if: ${{ steps.script_changes.outputs.scripts == 'true' }}
         uses: actions/upload-artifact@v4.6.0
         with:
           name: TestResults
           path: "**/TestResults/*.xml"
+
+      # スクリプトが変更されていない場合の処理
+      - name: テストをスキップ
+        if: ${{ steps.script_changes.outputs.scripts != 'true' }}
+        run: echo "対象のスクリプトに変更がないため、テストはパスしたものとみなします。"

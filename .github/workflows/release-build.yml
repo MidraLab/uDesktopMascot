@@ -129,6 +129,7 @@ jobs:
 
       - name: ビルド情報を設定
         id: build_info
+        shell: bash  # ここでシェルを 明示的にBash に指定します
         run: |
           TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
           VERSION="${{ needs.check-branch.outputs.current_version }}"
