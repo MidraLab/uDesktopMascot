@@ -187,7 +187,7 @@ namespace uDesktopMascot
                 // アイドルサブモーションランダム実行
                 if (Time.time >= _nextRandomActionTime)
                 {
-                    _modelAnimator.SetInteger("RandomAnimePattern", UnityEngine.Random.Range(0, 4));
+                    _modelAnimator.SetInteger(Const.RandomAnimePattern, UnityEngine.Random.Range(0, 4));
                     _nextRandomActionTime = Time.time + UnityEngine.Random.Range(60, 120); // 次のモーションまでの時間
                 }
             }
