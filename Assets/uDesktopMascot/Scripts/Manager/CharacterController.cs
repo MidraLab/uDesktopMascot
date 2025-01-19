@@ -62,6 +62,11 @@ namespace uDesktopMascot
         /// </summary>
         private Vector2 _startDragPosition;
 
+        /// <summary>
+        /// 次のアイドルサブモーションまでの時間
+        /// </summary>
+        private float _nextRandomActionTime;
+
         private void Awake()
         {
             _mainCamera = Camera.main;
@@ -179,6 +184,12 @@ namespace uDesktopMascot
                 _modelAnimator.SetBool(Const.IsDragging, false);
                 // 座りモーションまたは立ちモーションに切り替え
                 _modelAnimator.SetBool(Const.IsSitting, false);
+                // アイドルサブモーションランダム実行
+                if (Time.time >= _nextRandomActionTime)
+                {
+                    _modelAnimator.SetInteger("RandomAnimePattern", UnityEngine.Random.Range(0, 4));
+                    _nextRandomActionTime = Time.time + UnityEngine.Random.Range(60, 120); // 次のモーションまでの時間
+                }
             }
         }
 
