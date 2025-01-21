@@ -7,11 +7,12 @@
 #define MyAppExeName "uDesktopMascot.exe"
 
 [Setup]
+#include "setup.txt"
+#define AppVersion GetFileVersion("Input\" + AppExec)
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{8C3A0DD1-5FD3-4F40-A7AA-5A08F5121022}
 AppName={#MyAppName}
-AppVersion=1.0.0
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
