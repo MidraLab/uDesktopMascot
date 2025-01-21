@@ -116,8 +116,8 @@ jobs:
             $ -replace '."(.+?)".', '$1'
           }
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          echo "現在のバージョン: ${{ needs.check_branch.outputs.current_version }}"
-          echo "古いバージョン: ${{ needs.check_branch.outputs.old_version }}"
+          echo "現在のバージョン: ${{ needs.check-branch.outputs.current_version }}"
+          echo "古いバージョン: ${{ needs.check-branch.outputs.old_version }}"
 
       - uses: actions/cache@v4.2.0
         with:
