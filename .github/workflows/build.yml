@@ -61,25 +61,9 @@ jobs:
             echo "プルリクエストイベントではありません。チェックをスキップします。"
           fi
 
-  build:
+  build-windows:
     needs: [check-branch]
-    runs-on: ${{ matrix.runsOn }}
-    name: Run builds for Windows, Mac
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows64
-          - StandaloneOSX
-        unityVersion: ['6000.0.31f1']
-        include:
-          - targetPlatform: StandaloneWindows64
-            runsOn: windows-latest
-            modules: windows-il2cpp
-          - targetPlatform: StandaloneOSX
-            runsOn: macos-latest
-            modules: mac-il2cpp
-
+    runs-on: windows-latest
     steps:
       - name: Check out my unity project.
         uses: actions/checkout@v4.2.2
@@ -111,38 +95,66 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Run the build for ${{ matrix.targetPlatform }}
+      - name: Run the build for StandaloneWindows64
         uses: game-ci/unity-builder@v4.3.0
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: StandaloneWindows64
+          unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
 
       - name: Change build folder name
         run: |
           cd build
-          mv "${{ matrix.targetPlatform }}" "uDesktopMascot"
+          mv "StandaloneWindows64" "uDesktopMascot"
           cd ..
 
-      - name: Upload the Build for ${{ matrix.targetPlatform }}
+      - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-${{ matrix.targetPlatform }}-${{ steps.vars.outputs.sha_short }}
+          name: Build-StandaloneWindows64-${{ steps.vars.outputs.sha_short }}
           path: build
 
       - name: Set up Inno Setup
-        if: matrix.targetPlatform == 'StandaloneWindows64'
         uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
         with:
           path: 'setup.iss'
 
       - name: Upload Installer
-        if: matrix.targetPlatform == 'StandaloneWindows64'
         uses: actions/upload-artifact@v4.6.0
         with:
           name: uDesktopMascot_win64_installer
           path: "build/uDesktopMascot_win64_installer.exe"
+
+  build-mac:
+    needs: [check-branch]
+    runs-on: macos-latest
+    steps:
+      - name: Check out my unity project.
+        uses: actions/checkout@v4.2.2
+
+      - name: Run the build for StandaloneOSX
+        uses: game-ci/unity-builder@v4.3.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneOSX
+          unityVersion: '6000.0.31f1'
+          buildName: 'uDesktopMascot'
+
+      - name: Change build folder name
+        run: |
+          cd build
+          mv "StandaloneOSX" "uDesktopMascot"
+          cd ..
+
+      - name: Upload the Build for StandaloneOSX
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: Build-StandaloneOSX-${{ steps.vars.outputs.sha_short }}
+          path: build
