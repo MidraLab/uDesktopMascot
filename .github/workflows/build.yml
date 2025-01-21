@@ -25,7 +25,7 @@ jobs:
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "現在のプロジェクトバージョン: $current_version"
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          echo "#define MyAppVersion \"${{ current_version }}\"" > setup.txt
+          echo "#define MyAppVersion \"$current_version\"" > setup.txt
           echo "setup.txt の内容: $(cat setup.txt)"
           cd ..
           git config --global user.name "github-actions"
