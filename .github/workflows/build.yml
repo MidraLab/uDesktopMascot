@@ -23,15 +23,20 @@ jobs:
           echo "イベント名: ${{ github.event_name }}"
           # ProjectSettings.assetから現在のバージョンを取得
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
-          echo "現在のプロジェクトバージョン: $current_version"
-          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          echo "#define MyAppVersion \"$current_version\"" > setup.txt
-          echo "setup.txt の内容: $(cat setup.txt)"
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add setup.txt
-          git commit -m "Update version file"
-          git push origin HEAD:${{ github.ref }}
+          old_version=$(grep '#define MyAppVersion' setup.txt | cut -d '"' -f2)
+          if [ "$old_version" != "$current_version" ]; then
+            echo "現在のプロジェクトバージョン: $current_version"
+            echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+            echo "#define MyAppVersion \"$current_version\"" > setup.txt
+            echo "setup.txt の内容: $(cat setup.txt)"
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git add setup.txt
+            git commit -m "Update version file"
+            git push origin HEAD:${{ github.ref }}
+          else
+            echo "バージョンは変更されていません。"
+          fi
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
