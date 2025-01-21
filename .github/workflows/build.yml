@@ -28,6 +28,7 @@ jobs:
               # ProjectSettings.assetから現在のバージョンを取得
               current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
               echo "現在のプロジェクトバージョン: $current_version"
+              echo "current_version=${current_version}" >> $GITHUB_OUTPUT
 
               # gitからバージョンタグのリストを取得
               git fetch --tags
@@ -105,6 +106,8 @@ jobs:
           targetPlatform: StandaloneWindows64
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ steps.vars.outputs.current_version }}
 
       - name: Change build folder name
         run: |
@@ -146,6 +149,8 @@ jobs:
           targetPlatform: StandaloneOSX
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ steps.vars.outputs.current_version }}
 
       - name: Change build folder name
         run: |
