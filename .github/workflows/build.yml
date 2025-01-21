@@ -112,10 +112,6 @@ jobs:
 
       - name: Get current version
         run: |
-          $current_version = Select-String -Path setup.txt -Pattern '#define MyAppVersion' | ForEach-Object {
-            $ -replace '."(.+?)".', '$1'
-          }
-          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           echo "現在のバージョン: ${{ needs.check-branch.outputs.current_version }}"
           echo "古いバージョン: ${{ needs.check-branch.outputs.old_version }}"
 
@@ -137,7 +133,7 @@ jobs:
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
-          version: ${{ steps.vars.outputs.current_version }}
+          version: ${{ needs.check-branch.outputs.current_version }}
 
       - name: Change build folder name
         run: |
@@ -180,7 +176,7 @@ jobs:
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
-          version: ${{ needs.check_branch.outputs.current_version }}
+          version: ${{ needs.check-branch.outputs.current_version }}
 
       - name: Change build folder name
         run: |
