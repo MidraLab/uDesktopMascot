@@ -132,7 +132,7 @@ jobs:
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-StandaloneWindows64-${{ needs.check-branch.outputs.current_version }}
+          name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
           path: build
 
       - name: Change directory to Installer
@@ -181,7 +181,7 @@ jobs:
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-StandaloneOSX-${{ needs.check-branch.outputs.current_version }}
+          name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
           path: build
 
       - name: Set up Installer
