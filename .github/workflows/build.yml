@@ -35,7 +35,7 @@ jobs:
             git commit -m "Update version file"
             git push origin HEAD:${{ github.ref }}
           else
-            echo "バージョンは変更されていません。${{ needs.check-branch.outputs.current_version }}"
+            echo "バージョンは変更されていません。${{ steps.check_branch.outputs.current_version }}"
           fi
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
