@@ -27,7 +27,6 @@ jobs:
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           echo "#define MyAppVersion \"$current_version\"" > setup.txt
           echo "setup.txt の内容: $(cat setup.txt)"
-          cd ..
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add setup.txt
