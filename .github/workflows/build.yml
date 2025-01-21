@@ -25,6 +25,14 @@ jobs:
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "現在のプロジェクトバージョン: $current_version"
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+          echo "#define MyAppVersion \"${{ current_version }}\"" > setup.txt
+          echo "setup.txt の内容: $(cat setup.txt)"
+          cd ..
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add setup.txt
+          git commit -m "Update version file"
+          git push origin HEAD:${{ github.ref }}
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
@@ -121,19 +129,6 @@ jobs:
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
           cd ..
-
-      - name: Push version file
-        run: |
-          cd build
-          echo "env.current_version: ${{ needs.check_branch.outputs.current_version }}"
-          echo "#define MyAppVersion \"${{ needs.check_branch.outputs.current_version }}\"" > setup.txt
-          echo "setup.txt の内容: $(cat setup.txt)"
-          cd ..
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add setup.txt
-          git commit -m "Update version file"
-          git push origin HEAD:${{ github.ref }}
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
