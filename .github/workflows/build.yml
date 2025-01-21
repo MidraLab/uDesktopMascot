@@ -18,6 +18,10 @@ jobs:
       - name: Check event type and branch
         run: |
           echo "イベント名: ${{ github.event_name }}"
+          # ProjectSettings.assetから現在のバージョンを取得
+          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          echo "現在のプロジェクトバージョン: $current_version"
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
@@ -95,13 +99,6 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
-
-      - name: Get current version
-        run: |
-          # ProjectSettings.assetから現在のバージョンを取得
-          $current_version = Select-String -Path "ProjectSettings/ProjectSettings.asset" -Pattern "bundleVersion:" | ForEach-Object { $_.Line.Split(':')[1].Trim() }
-          echo "現在のプロジェクトバージョン: $current_version"
-          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
 
       - name: Run the build for StandaloneWindows64
         uses: game-ci/unity-builder@v4.3.0
