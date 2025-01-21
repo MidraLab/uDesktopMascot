@@ -31,7 +31,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir=build
+OutputDir=./
 OutputBaseFilename=uDesktopMascot_win64_installer_v{#MyAppVersion}
 SolidCompression=yes
 WizardStyle=modern
