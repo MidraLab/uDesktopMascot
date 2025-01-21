@@ -35,7 +35,7 @@ jobs:
             git commit -m "Update version file"
             git push origin HEAD:${{ github.ref }}
           else
-            echo "バージョンは変更されていません。${{ steps.check_branch.outputs.current_version }}"
+            echo "バージョンは変更されていません。$current_version"
           fi
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
@@ -141,7 +141,7 @@ jobs:
       - name: Set up Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
         with:
-          path: 'setup.iss'
+          path: 'Installer/setup.iss'
 
       - name: Change directory to Root
         run: cd ..
