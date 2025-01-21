@@ -122,6 +122,7 @@ jobs:
       - name: Push version file
         run: |
           cd build
+          echo "env.current_version: ${{ env.current_version }}"
           echo "#define MyAppVersion \"${{ env.current_version }}\"" > setup.txt
           echo "setup.txt の内容: $(cat setup.txt)"
           cd ..
