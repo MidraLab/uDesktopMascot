@@ -21,7 +21,7 @@ jobs:
           # ProjectSettings.assetから現在のバージョンを取得
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "現在のプロジェクトバージョン: $current_version"
-          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+          echo "current_version=${current_version}" >> $GITHUB_ENV  # 追加した行
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
@@ -111,7 +111,7 @@ jobs:
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
-          version: ${{ needs.check-branch.outputs.current_version }}
+          version: ${{ env.current_version }}
 
       - name: Change build folder name
         run: |
@@ -122,7 +122,7 @@ jobs:
       - name: Push version file
         run: |
           cd build
-          echo "#define MyAppVersion \"${{ needs.check-branch.outputs.current_version }}\"" > setup.txt
+          echo "#define MyAppVersion \"${{ env.current_version }}\"" > setup.txt
           echo "setup.txt の内容: $(cat setup.txt)"
           cd ..
           git config --global user.name "github-actions"
