@@ -120,6 +120,8 @@ jobs:
           cd build
           echo "#define MyAppVersion \"${{ steps.vars.outputs.current_version }}\"" > setup.txt
           cd ..
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git add setup.txt
           git commit -m "Update version file"
           git push origin HEAD
