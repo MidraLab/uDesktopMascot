@@ -119,12 +119,13 @@ jobs:
         run: |
           cd build
           echo "#define MyAppVersion \"${{ steps.vars.outputs.current_version }}\"" > setup.txt
+          echo "setup.txt の内容: $(cat setup.txt)"
           cd ..
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add setup.txt
           git commit -m "Update version file"
-          git push origin HEAD
+          git push origin HEAD:${{ github.ref }}
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
