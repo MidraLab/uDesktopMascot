@@ -120,6 +120,9 @@ jobs:
           cd build
           echo "#define MyAppVersion \"${{ steps.vars.outputs.current_version }}\"" > setup.txt
           cd ..
+          git add setup.txt
+          git commit -m "Update version file"
+          git push origin HEAD
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
