@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       current_version: ${{ steps.check_branch.outputs.current_version }}
+      old_version: ${{ steps.check_branch.outputs.old_version }}
     steps:
       - uses: actions/checkout@v4.2.2
         with:
@@ -24,9 +25,10 @@ jobs:
           # ProjectSettings.assetから現在のバージョンを取得
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           old_version=$(grep '#define MyAppVersion' setup.txt | cut -d '"' -f2)
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+          echo "old_version=${old_version}" >> $GITHUB_OUTPUT
           if [ "$old_version" != "$current_version" ]; then
             echo "現在のプロジェクトバージョン: $current_version"
-            echo "current_version=${current_version}" >> $GITHUB_OUTPUT
             echo "#define MyAppVersion \"$current_version\"" > setup.txt
             echo "setup.txt の内容: $(cat setup.txt)"
             git config --global user.name "github-actions"
@@ -114,7 +116,8 @@ jobs:
             $ -replace '."(.+?)".', '$1'
           }
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          echo "現在のバージョン: $current_version"
+          echo "現在のバージョン: ${{ needs.check_branch.outputs.current_version }}"
+          echo "古いバージョン: ${{ needs.check_branch.outputs.old_version }}"
 
       - uses: actions/cache@v4.2.0
         with:
