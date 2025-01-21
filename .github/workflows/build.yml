@@ -177,3 +177,14 @@ jobs:
         with:
           name: Build-StandaloneOSX-${{ needs.check-branch.outputs.current_version }}
           path: build
+
+      - name: Set up Installer
+        run: |
+          cd build
+          productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
