@@ -155,8 +155,8 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: uDesktopMascot_win64_installer
-          path: "build/uDesktopMascot_win64_installer.exe"
+          name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: "build/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
     needs: [check-branch]
