@@ -108,6 +108,14 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
+      - name: Get current version
+        run: |
+          $current_version = Select-String -Path setup.txt -Pattern '#define MyAppVersion' | ForEach-Object {
+            $ -replace '."(.+?)".', '$1'
+          }
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+          echo "現在のバージョン: $current_version"
+
       - uses: actions/cache@v4.2.0
         with:
           path: Library
@@ -126,7 +134,7 @@ jobs:
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
-          version: ${{ needs.check_branch.outputs.current_version }}
+          version: ${{ steps.vars.outputs.current_version }}
 
       - name: Change build folder name
         run: |
