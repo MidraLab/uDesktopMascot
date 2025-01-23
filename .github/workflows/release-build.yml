@@ -175,6 +175,16 @@ jobs:
           cd ..
           Move-Item "build\${{ steps.build_info.outputs.artifact_name }}.zip" "${{ steps.build_info.outputs.artifact_name }}.zip"
           
+          
+      - name: List build directory contents
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          echo "Contents of build directory:"
+          ls -l build/
+          echo "Contents of build/${{ matrix.targetPlatform }} directory:"
+          ls -l build/${{ matrix.targetPlatform }}
+          
       # フォルダ名の変更とZIP解凍
       - name: フォルダ名を変更し、macOSビルド成果物を解凍
         if: runner.os != 'Windows'
