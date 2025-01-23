@@ -3,23 +3,27 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Unity.Logging;
+using UnityEngine;
 using UnityEditor;
-using UnityEditor.Callbacks;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
 {
-    public class PostBuildProcessor
+    public sealed class PostBuildProcessor : IPostprocessBuildWithReport
     {
-        /// <summary>
-        ///     ビルド後の処理を行う
-        /// </summary>
-        /// <param name="target">ビルドターゲット</param>
-        /// <param name="pathToBuiltProject">ビルドされたプロジェクトのパス</param>
-        [PostProcessBuild(1)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        // コールバックの順序を指定
+        public int callbackOrder => 0;
+
+        public void OnPostprocessBuild(BuildReport report)
         {
+            var summary = report.summary;
+            var target = summary.platform;
+            var outputPath = summary.outputPath;
+
             // ビルドされたプロジェクトのディレクトリを取得
-            var buildDirectory = Path.GetDirectoryName(pathToBuiltProject);
+            var buildDirectory = Path.GetDirectoryName(outputPath);
             if (string.IsNullOrEmpty(buildDirectory))
             {
                 Log.Error("ビルドされたプロジェクトのディレクトリが取得できませんでした。");
@@ -32,29 +36,36 @@ namespace uDesktopMascot.Editor
             // ビルド時に選択したフォルダが uDesktopMascotBuild でない場合、警告を出す
             if (buildDirectoryName != "uDesktopMascotBuild")
             {
-                Log.Warning($"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
+                Log.Debug($"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
             }
 
             // アプリケーション名を取得
-            var appName = Path.GetFileNameWithoutExtension(pathToBuiltProject);
+            var appName = Path.GetFileNameWithoutExtension(outputPath);
 
             // プラットフォームに応じた StreamingAssets のパスを取得
             var streamingAssetsPath = GetStreamingAssetsPath(target, buildDirectory, appName);
             if (string.IsNullOrEmpty(streamingAssetsPath))
             {
-                Log.Warning("このプラットフォームはサポートされていません: " + target);
+                Log.Debug("このプラットフォームはサポートされていません: " + target);
                 return;
             }
 
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
 
-            // development buildの場合はスキップする
-            if (!EditorUserBuildSettings.development)
+            // Development Buildの場合はスキップする（必要に応じて）
+            if (summary.options.HasFlag(BuildOptions.Development))
+            {
+                Log.Debug("Development Build のため、ZIP圧縮をスキップします。");
+            }
+            else
             {
                 // ビルドフォルダを最大圧縮で ZIP 圧縮
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
             }
+
+            // 不要なフォルダを削除
+            DeleteUnnecessaryFolders(target, outputPath);
 
             Log.Debug("ビルド後処理が完了しました。");
         }
@@ -62,10 +73,6 @@ namespace uDesktopMascot.Editor
         /// <summary>
         ///     プラットフォームに応じた StreamingAssets のパスを取得する
         /// </summary>
-        /// <param name="target">ビルドターゲット</param>
-        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
-        /// <param name="appName">アプリケーション名</param>
-        /// <returns>StreamingAssets のフルパス</returns>
         private static string GetStreamingAssetsPath(BuildTarget target, string buildDirectory, string appName)
         {
             return target switch
@@ -83,7 +90,6 @@ namespace uDesktopMascot.Editor
         /// <summary>
         ///     必要なフォルダを作成する
         /// </summary>
-        /// <param name="streamingAssetsPath">StreamingAssets のフルパス</param>
         private static void CreateNecessaryDirectories(string streamingAssetsPath)
         {
             // StreamingAssets フォルダが存在しない場合は作成
@@ -106,7 +112,7 @@ namespace uDesktopMascot.Editor
             if (!Directory.Exists(dragVoicePath))
             {
                 Directory.CreateDirectory(dragVoicePath);
-                Log.Debug($"Voice/Drag フォルダを作成しました: {dragVoicePath}");
+                Log.Debug("Voice/Drag フォルダを作成しました: {0}", dragVoicePath);
             }
 
             // BGM フォルダを作成
@@ -114,15 +120,13 @@ namespace uDesktopMascot.Editor
             if (!Directory.Exists(bgmPath))
             {
                 Directory.CreateDirectory(bgmPath);
-                Log.Debug($"BGM フォルダを作成しました: {bgmPath}");
+                Log.Debug("BGM フォルダを作成しました: {0}", bgmPath);
             }
         }
 
         /// <summary>
         ///     ビルドフォルダを最大圧縮で ZIP 圧縮する
         /// </summary>
-        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
-        /// <param name="appName">アプリケーション名</param>
         private static void CreateMaxCompressedZipOfBuildFolder(string buildDirectory, string appName)
         {
             try
@@ -156,26 +160,23 @@ namespace uDesktopMascot.Editor
                 if (File.Exists(zipFilePath))
                 {
                     File.Delete(zipFilePath);
-                    Log.Debug($"既存の ZIP ファイルを削除しました: {zipFilePath}");
+                    Log.Debug("既存の ZIP ファイルを削除しました: {0}", zipFilePath);
                 }
 
                 // ビルドディレクトリを最大圧縮で ZIP 圧縮
                 CompressDirectory(buildDirectory, zipFilePath, CompressionLevel.Optimal);
-
-                Log.Debug($"ビルドフォルダを最大圧縮で ZIP 圧縮しました: {zipFilePath}");
+                
+                Log.Debug("ビルドフォルダを最大圧縮で ZIP 圧縮しました: {0}", zipFilePath);
             }
             catch (Exception ex)
             {
-                Log.Error($"ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {ex.Message}");
+                Log.Error($"ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {0}", ex.Message);
             }
         }
 
         /// <summary>
         ///     ディレクトリを最大圧縮で ZIP 圧縮する
         /// </summary>
-        /// <param name="sourceDir">圧縮するフォルダのパス</param>
-        /// <param name="zipFilePath">出力先の ZIP ファイルのパス</param>
-        /// <param name="compressionLevel">圧縮レベル</param>
         private static void CompressDirectory(string sourceDir, string zipFilePath, CompressionLevel compressionLevel)
         {
             // ZIP 圧縮を開始
@@ -203,6 +204,46 @@ namespace uDesktopMascot.Editor
             return Uri.UnescapeDataString(baseUri.MakeRelativeUri(targetUri)
                 .ToString()
                 .Replace('/', Path.DirectorySeparatorChar));
+        }
+
+        /// <summary>
+        ///     不要なフォルダを削除する
+        /// </summary>
+        private static void DeleteUnnecessaryFolders(BuildTarget target, string outputPath)
+        {
+            // 削除したいフォルダのパスを構築
+            string folderToDelete = string.Empty;
+            var outputDirectory = Path.GetDirectoryName(outputPath);
+            var productName = PlayerSettings.productName;
+            
+            if(outputDirectory == null)
+            {
+                Log.Error("ビルド出力ディレクトリが取得できませんでした。");
+                return;
+            }
+
+            if (target == BuildTarget.StandaloneWindows || target == BuildTarget.StandaloneWindows64)
+            {
+                // Windowsの場合
+                folderToDelete = Path.Combine(outputDirectory, $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame");
+            }
+            else if (target == BuildTarget.StandaloneOSX)
+            {
+                // Macの場合：アプリケーションパッケージ内のパスを指定
+                folderToDelete = Path.Combine(outputPath, "Contents", "Resources", "uDesktopMascot_BackUpThisFolder_ButDontShipItWithYourGame");
+            }
+            // 必要に応じて他のプラットフォームを追加
+
+            // フォルダが存在する場合、削除
+            if (!string.IsNullOrEmpty(folderToDelete) && Directory.Exists(folderToDelete))
+            {
+                Directory.Delete(folderToDelete, true);
+                Log.Debug("不要なフォルダを削除しました: {0}", folderToDelete);
+            }
+            else
+            {
+                Log.Debug("削除するフォルダが存在しませんでした。");
+            }
         }
     }
 }
