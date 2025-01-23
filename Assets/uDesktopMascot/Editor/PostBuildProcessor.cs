@@ -3,10 +3,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Unity.Logging;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using System.Collections.Generic;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
@@ -36,7 +36,8 @@ namespace uDesktopMascot.Editor
             // ビルド時に選択したフォルダが uDesktopMascotBuild でない場合、警告を出す
             if (buildDirectoryName != "uDesktopMascotBuild")
             {
-                Log.Debug($"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
+                Log.Debug(
+                    $"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
             }
 
             // アプリケーション名を取得
@@ -57,8 +58,7 @@ namespace uDesktopMascot.Editor
             if (summary.options.HasFlag(BuildOptions.Development))
             {
                 Log.Debug("Development Build のため、ZIP圧縮をスキップします。");
-            }
-            else
+            } else
             {
                 // ビルドフォルダを最大圧縮で ZIP 圧縮
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
@@ -165,12 +165,11 @@ namespace uDesktopMascot.Editor
 
                 // ビルドディレクトリを最大圧縮で ZIP 圧縮
                 CompressDirectory(buildDirectory, zipFilePath, CompressionLevel.Optimal);
-                
+
                 Log.Debug("ビルドフォルダを最大圧縮で ZIP 圧縮しました: {0}", zipFilePath);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
-                Log.Error($"ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {0}", ex.Message);
+                Log.Error("ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {0}", ex.Message);
             }
         }
 
@@ -211,36 +210,53 @@ namespace uDesktopMascot.Editor
         /// </summary>
         private static void DeleteUnnecessaryFolders(BuildTarget target, string outputPath)
         {
-            // 削除したいフォルダのパスを構築
-            string folderToDelete = string.Empty;
             var outputDirectory = Path.GetDirectoryName(outputPath);
             var productName = PlayerSettings.productName;
-            
-            if(outputDirectory == null)
+
+            if (outputDirectory == null)
             {
                 Log.Error("ビルド出力ディレクトリが取得できませんでした。");
                 return;
             }
 
+            // 削除対象のフォルダをリスト化
+            var foldersToDelete = new List<string>();
+
             if (target == BuildTarget.StandaloneWindows || target == BuildTarget.StandaloneWindows64)
             {
                 // Windowsの場合
-                folderToDelete = Path.Combine(outputDirectory, $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame");
-            }
-            else if (target == BuildTarget.StandaloneOSX)
+                foldersToDelete.Add(Path.Combine(outputDirectory,
+                    $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame"));
+                foldersToDelete.Add(Path.Combine(outputDirectory, $"{productName}_BurstDebugInformation_DoNotShip"));
+            } else if (target == BuildTarget.StandaloneOSX)
             {
                 // Macの場合：アプリケーションパッケージ内のパスを指定
-                folderToDelete = Path.Combine(outputPath, "Contents", "Resources", "uDesktopMascot_BackUpThisFolder_ButDontShipItWithYourGame");
+                foldersToDelete.Add(Path.Combine(outputPath, "Contents", "Resources",
+                    $"{productName}BackUpThisFolder_ButDontShipItWithYourGame"));
+                foldersToDelete.Add(
+                    Path.Combine(outputPath, "Contents", "Resources", $"{productName}_BurstDebugInformation_DoNotShip"));
             }
             // 必要に応じて他のプラットフォームを追加
 
-            // フォルダが存在する場合、削除
-            if (!string.IsNullOrEmpty(folderToDelete) && Directory.Exists(folderToDelete))
+            bool folderDeleted = false;
+
+            foreach (var folder in foldersToDelete)
             {
-                Directory.Delete(folderToDelete, true);
-                Log.Debug("不要なフォルダを削除しました: {0}", folderToDelete);
+                if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                {
+                    try
+                    {
+                        Directory.Delete(folder, true);
+                        Log.Debug("不要なフォルダを削除しました: {0}", folder);
+                        folderDeleted = true;
+                    } catch (Exception ex)
+                    {
+                        Log.Error("フォルダの削除中にエラーが発生しました: {0}", ex.Message);
+                    }
+                }
             }
-            else
+
+            if (!folderDeleted)
             {
                 Log.Debug("削除するフォルダが存在しませんでした。");
             }
