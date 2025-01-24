@@ -129,14 +129,7 @@ jobs:
           TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
           VERSION="${{ needs.check-branch.outputs.current_version }}"
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          if [ "${{ matrix.targetPlatform }}" == "StandaloneWindows64" ]; then
-            PLATFORM="win"
-          elif [ "${{ matrix.targetPlatform }}" == "StandaloneOSX" ]; then
-            PLATFORM="mac"
-          else
-            PLATFORM="unknown"
-          fi
-          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_${PLATFORM}"
+          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_win"
           echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4.2.0
@@ -159,17 +152,19 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
-      - name: Change build folder name
+      - name: ビルド成果物を圧縮して名前を変更
         run: |
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
+          zip -r "${{ steps.build_info.outputs.artifact_name }}.zip" *
           cd ..
+          mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
-          path: build
+          name: ${{ steps.build_info.outputs.artifact_name }}
+          path: "${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Change directory to Installer
         run: cd Installer
@@ -248,17 +243,19 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
-      - name: Change build folder name
+      - name: ビルド成果物を圧縮して名前を変更
         run: |
           cd build
           mv "StandaloneOSX" "uDesktopMascot"
+          zip -r "${{ steps.build_info.outputs.artifact_name }}.zip" *
           cd ..
+          mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
-          path: build
+          name: ${{ steps.build_info.outputs.artifact_name }}
+          path: "${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Set up Installer
         run: |
@@ -270,134 +267,6 @@ jobs:
         with:
           name: uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
-
-  build:
-    needs: [check-branch]
-    runs-on: ${{ matrix.runsOn }}
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows64
-          - StandaloneOSX
-        unityVersion: ['6000.0.31f1']
-        include:
-          - targetPlatform: StandaloneWindows64
-            runsOn: windows-latest
-            modules: windows-il2cpp
-          - targetPlatform: StandaloneOSX
-            runsOn: macos-latest
-            modules: mac-il2cpp
-
-    steps:
-      - name: Unityプロジェクトをチェックアウト
-        uses: actions/checkout@v4.2.2
-
-      - name: LFSファイルリストを作成
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: LFSキャッシュを復元
-        uses: actions/cache@v4.2.0
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-
-      - name: ビルド情報を設定
-        id: build_info
-        shell: bash  # ここでシェルを 明示的にBash に指定します
-        run: |
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
-          VERSION="${{ needs.check-branch.outputs.current_version }}"
-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          if [ "${{ matrix.targetPlatform }}" == "StandaloneWindows64" ]; then
-            PLATFORM="win"
-          elif [ "${{ matrix.targetPlatform }}" == "StandaloneOSX" ]; then
-            PLATFORM="mac"
-          else
-            PLATFORM="unknown"
-          fi
-          ARTIFACT_NAME="${REPO_NAME}_${PLATFORM}_v${VERSION}"
-          echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "os_name=${OS_NAME}" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v4.2.0
-        with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
-
-      - name: ${{ matrix.targetPlatform }} 用のビルドを実行
-        uses: game-ci/unity-builder@v4.3.0
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          unityVersion: ${{ matrix.unityVersion }}
-          buildName: 'uDesktopMascot'
-
-      # Windowsランナー用のステップ
-      - name: ビルド成果物を圧縮して名前を変更 (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          cd build
-          Rename-Item "${{ matrix.targetPlatform }}" "uDesktopMascot"
-          Compress-Archive -Path "uDesktopMascot\*" -DestinationPath "${{ steps.build_info.outputs.artifact_name }}.zip"
-          cd ..
-          Move-Item "build\${{ steps.build_info.outputs.artifact_name }}.zip" "${{ steps.build_info.outputs.artifact_name }}.zip"
-          
-      # フォルダ名の変更とZIP解凍
-      - name: フォルダ名を変更し、macOSビルド成果物を解凍
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          cd build
-          mv "${{ matrix.targetPlatform }}" "uDesktopMascot"
-          cd uDesktopMascot
-          unzip StandaloneOSX.zip
-          rm StandaloneOSX.zip
-          cd ../..
-
-      # macOS/Linuxランナー用のステップ
-      - name: ビルド成果物を圧縮して名前を変更 (macOS/Linux)
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          cd build
-          mv "${{ matrix.targetPlatform }}" "uDesktopMascot"
-          zip -r "${{ steps.build_info.outputs.artifact_name }}.zip" *
-          cd ..
-          mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
-
-      - name: ${{ matrix.targetPlatform }} 用のビルドをアップロード
-        uses: actions/upload-artifact@v4.6.0
-        with:
-          name: ${{ steps.build_info.outputs.artifact_name }}
-          path: "${{ steps.build_info.outputs.artifact_name }}.zip"
-
-      - name: Inno Setup のセットアップ
-        if: matrix.targetPlatform == 'StandaloneWindows64'
-        uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
-        with:
-          path: 'setup.iss'
-
-      - name: インストーラーをアップロード
-        if: matrix.targetPlatform == 'StandaloneWindows64'
-        uses: actions/upload-artifact@v4.6.0
-        with:
-          name: uDesktopMascot_win64_installer
-          path: "build/uDesktopMascot_win64_installer.exe"
 
   release:
     needs: [build]
