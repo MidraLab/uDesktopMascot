@@ -156,7 +156,7 @@ jobs:
         run: |
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
-          zip -r "${{ steps.build_info.outputs.artifact_name }}.zip" *
+          Compress-Archive -Path "uDesktopMascot\*" -DestinationPath "${{ steps.build_info.outputs.artifact_name }}.zip"
           cd ..
           mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
