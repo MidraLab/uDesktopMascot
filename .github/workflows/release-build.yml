@@ -199,17 +199,20 @@ jobs:
           path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
       - name: Redo version file
+        shell: pwsh
         run: |
-          if [ "$current_version" == "99.99.99" ]; then
-            echo "${{ needs.check-branch.outputs.old_version }}"
-            echo "#define MyAppVersion \"${{ needs.check-branch.outputs.old_version }}\"" > Installer/setup.txt
-            echo "setup.txt の内容: $(cat Installer/setup.txt)"
+          echo "${{ needs.check-branch.outputs.current_version }}"
+          if ("${{ needs.check-branch.outputs.current_version }}" -ceq "99.99.99") {
+            $old_version = "${{ needs.check-branch.outputs.old_version }}"
+            Write-Output $old_version
+            "#define MyAppVersion `"$old_version`"" | Out-File -FilePath Installer/setup.txt -Encoding utf8
+            Write-Output "setup.txt の内容: $(Get-Content Installer/setup.txt)"
             git config --global user.name "github-actions"
             git config --global user.email "github-actions@github.com"
             git add Installer/setup.txt
             git commit -m "Update version file"
             git push origin HEAD:${{ github.ref }}
-          fi
+          }
   
   build-mac:
     needs: [check-branch]
