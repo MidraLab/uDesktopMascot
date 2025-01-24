@@ -48,10 +48,20 @@ jobs:
   check-branch:
     needs: [create_tag]
     runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.get_version.outputs.current_version }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: バージョンを取得
+        id: get_version
+        run: |
+          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          echo "タグ名: $TAG_NAME"
+          current_version="${TAG_NAME#v}"
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
 
       - name: タグ名の確認
         run: |
@@ -88,6 +98,178 @@ jobs:
           else
             echo "現在のバージョン ($current_version) は最高の既存バージョン ($highest_version) よりも高いです。"
           fi
+
+  build-windows:
+    needs: [check-branch]
+    runs-on: windows-latest
+    steps:
+      - name: Check out my unity project.
+        uses: actions/checkout@v4.2.2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v4.2.0
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - name: ビルド情報を設定
+        id: build_info
+        shell: bash  # ここでシェルを 明示的にBash に指定します
+        run: |
+          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          VERSION="${{ needs.check-branch.outputs.current_version }}"
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          if [ "${{ matrix.targetPlatform }}" == "StandaloneWindows64" ]; then
+            PLATFORM="win"
+          elif [ "${{ matrix.targetPlatform }}" == "StandaloneOSX" ]; then
+            PLATFORM="mac"
+          else
+            PLATFORM="unknown"
+          fi
+          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_${PLATFORM}"
+          echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4.2.0
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Run the build for StandaloneWindows64
+        uses: game-ci/unity-builder@v4.3.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows64
+          unityVersion: '6000.0.31f1'
+          buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ needs.check-branch.outputs.current_version }}
+
+      - name: Change build folder name
+        run: |
+          cd build
+          mv "StandaloneWindows64" "uDesktopMascot"
+          cd ..
+
+      - name: Upload the Build for StandaloneWindows64
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
+          path: build
+
+      - name: Change directory to Installer
+        run: cd Installer
+
+      - name: Set up Inno Setup
+        uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
+        with:
+          path: 'Installer/setup.iss'
+
+      - name: Change directory to Root
+        run: cd ..
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
+  
+  build-mac:
+    needs: [check-branch]
+    runs-on: macos-latest
+    steps:
+      - name: Check out my unity project.
+        uses: actions/checkout@v4.2.2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v4.2.0
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - name: ビルド情報を設定
+        id: build_info
+        shell: bash  # ここでシェルを 明示的にBash に指定します
+        run: |
+          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          VERSION="${{ needs.check-branch.outputs.current_version }}"
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          if [ "${{ matrix.targetPlatform }}" == "StandaloneWindows64" ]; then
+            PLATFORM="win"
+          elif [ "${{ matrix.targetPlatform }}" == "StandaloneOSX" ]; then
+            PLATFORM="mac"
+          else
+            PLATFORM="unknown"
+          fi
+          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_${PLATFORM}"
+          echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4.2.0
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Run the build for StandaloneOSX
+        uses: game-ci/unity-builder@v4.3.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneOSX
+          unityVersion: '6000.0.31f1'
+          buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ needs.check-branch.outputs.current_version }}
+
+      - name: Change build folder name
+        run: |
+          cd build
+          mv "StandaloneOSX" "uDesktopMascot"
+          cd ..
+
+      - name: Upload the Build for StandaloneOSX
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
+          path: build
+
+      - name: Set up Installer
+        run: |
+          cd build
+          productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
 
   build:
     needs: [check-branch]

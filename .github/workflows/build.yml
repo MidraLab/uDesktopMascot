@@ -99,10 +99,6 @@ jobs:
           git add .
           git reset --hard
 
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
       - uses: actions/cache@v4.2.0
         with:
           path: Library
@@ -158,6 +154,29 @@ jobs:
     steps:
       - name: Check out my unity project.
         uses: actions/checkout@v4.2.2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v4.2.0
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - uses: actions/cache@v4.2.0
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
 
       - name: Run the build for StandaloneOSX
         uses: game-ci/unity-builder@v4.3.0
