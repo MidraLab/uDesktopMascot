@@ -11,6 +11,9 @@ using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
 {
+    /// <summary>
+    /// ビルド後処理を行うクラス
+    /// </summary>
     public sealed class PostBuildProcessor : IPostprocessBuildWithReport
     {
         // コールバックの順序を指定
@@ -254,23 +257,13 @@ namespace uDesktopMascot.Editor
             }
 
             // 削除対象のフォルダをリスト化
-            var foldersToDelete = new List<string>();
+            var foldersToDelete = new List<string>
+            {
+                Path.Combine(outputDirectory,
+                    $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame"),
+                Path.Combine(outputDirectory, $"{productName}_BurstDebugInformation_DoNotShip")
+            };
 
-            if (target == BuildTarget.StandaloneWindows || target == BuildTarget.StandaloneWindows64)
-            {
-                // Windowsの場合
-                foldersToDelete.Add(Path.Combine(outputDirectory,
-                    $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame"));
-                foldersToDelete.Add(Path.Combine(outputDirectory, $"{productName}_BurstDebugInformation_DoNotShip"));
-            } else if (target == BuildTarget.StandaloneOSX)
-            {
-                // Macの場合：アプリケーションパッケージ内のパスを指定
-                foldersToDelete.Add(Path.Combine(outputPath, "Contents", "Resources",
-                    $"{productName}BackUpThisFolder_ButDontShipItWithYourGame"));
-                foldersToDelete.Add(
-                    Path.Combine(outputPath, "Contents", "Resources", $"{productName}_BurstDebugInformation_DoNotShip"));
-            }
-            // 必要に応じて他のプラットフォームを追加
 
             bool folderDeleted = false;
 
