@@ -38,6 +38,8 @@ namespace uDesktopMascot.Editor
             // アプリケーション名を取得
             var appName = Path.GetFileNameWithoutExtension(pathToBuiltProject);
 
+            SetExecPermissionForMacOS(buildDirectory, appName);
+
             // プラットフォームに応じた StreamingAssets のパスを取得
             var streamingAssetsPath = GetStreamingAssetsPath(target, buildDirectory, appName);
             if (string.IsNullOrEmpty(streamingAssetsPath))
@@ -204,5 +206,26 @@ namespace uDesktopMascot.Editor
                 .ToString()
                 .Replace('/', Path.DirectorySeparatorChar));
         }
+
+        /// <summary>
+        ///     実行パーミッションを設定する
+        /// </summary>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
+        /// <param name="appName">アプリケーション名</param>
+        private static void SetExecPermissionForMacOS(string buildDirectory, string appName)
+        {
+#if UNITY_OSX_EDITOR
+            var execPath = Path.Combine(buildDirectory, $"{appName}.app", "Contents", "MacOS", "uDesktopMascot");
+            if (File.Exists(execPath))
+            {
+                sys_chmod(execPath, 0x775);
+            }
+#endif
+        }
+
+#if UNITY_OSX_EDITOR
+        [DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+        private static extern int sys_chmod(string path, uint mode);
+#endif
     }
 }
