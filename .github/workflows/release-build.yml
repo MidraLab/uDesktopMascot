@@ -40,10 +40,12 @@ jobs:
         env:
           TAG_NAME: ${{ steps.get_tag.outputs.tag_name }}
         run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag "$TAG_NAME"
-          git push origin "$TAG_NAME"
+          if [ "$TAG_NAME" != "v99.99.99" ]; then
+            git config --global user.name "${{ github.actor }}"
+            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+            git tag "$TAG_NAME"
+            git push origin "$TAG_NAME"
+          fi
 
   check-branch:
     needs: [create_tag]
