@@ -52,14 +52,11 @@ namespace uDesktopMascot
         /// <summary>
         /// モデルをロードする
         /// </summary>
-        public static async UniTask<GameObject> LoadModel(CancellationToken cancellationToken)
+        public static async UniTask<GameObject> LoadModelAsync(string modelPath,CancellationToken cancellationToken)
         {
             try
             {
                 GameObject model = null;
-
-                // 設定ファイルからモデルパスを取得
-                var modelPath = ApplicationSettings.Instance.Character.ModelPath;
 
                 if (!string.IsNullOrEmpty(modelPath))
                 {
@@ -82,49 +79,6 @@ namespace uDesktopMascot
                 } else
                 {
                     Log.Info("モデルパスが指定されていません。");
-                    // この後、他のモデルファイルを探します
-                }
-
-                // モデルがまだロードされていない場合、他の VRM/GLB/glTF ファイルを検索
-                if (model == null)
-                {
-                    // StreamingAssets フォルダが存在するか確認
-                    if (Directory.Exists(Application.streamingAssetsPath))
-                    {
-                        // 他の VRM/GLB/glTF ファイルを検索
-                        var modelFiles = Directory
-                            .GetFiles(Application.streamingAssetsPath, "*.*", SearchOption.AllDirectories)
-                            .Where(s => s.EndsWith(".vrm", StringComparison.OrdinalIgnoreCase) ||
-                                        s.EndsWith(".glb", StringComparison.OrdinalIgnoreCase) ||
-                                        s.EndsWith(".gltf", StringComparison.OrdinalIgnoreCase))
-                            .ToArray();
-
-                        if (modelFiles.Length > 0)
-                        {
-                            // 最初のモデルファイルを使用
-                            var otherModelPath = modelFiles[0];
-                            Log.Info($"他のモデルファイルを見つけましたのでロードします: {Path.GetFileName(otherModelPath)}");
-                            model = await LoadAndDisplayModel(otherModelPath, cancellationToken);
-                        } else
-                        {
-                            Log.Warning("他の VRM/GLB/glTF ファイルが見つかりません。デフォルトのモデルを読み込みます。");
-                            // デフォルトのモデルをロード
-                            model = LoadDefaultModel();
-                        }
-                    } else
-                    {
-                        Log.Warning("StreamingAssets フォルダが見つかりません。デフォルトのモデルを読み込みます。");
-                        // デフォルトのモデルをロード
-                        model = LoadDefaultModel();
-                    }
-                }
-
-                if (model != null)
-                {
-                    Log.Info("モデルのロードと表示が完了しました。");
-                } else
-                {
-                    Log.Error("モデルのロードに失敗しました。");
                 }
 
                 return model;
@@ -138,7 +92,7 @@ namespace uDesktopMascot
         /// <summary>
         ///     デフォルトのVRMモデルをロードして表示する
         /// </summary>
-        private static GameObject LoadDefaultModel()
+        public static GameObject LoadDefaultModel()
         {
             // ResourcesフォルダからPrefabをロード
             var prefab = Resources.Load<GameObject>(DefaultVrmFileName);
@@ -203,14 +157,6 @@ namespace uDesktopMascot
                 return null;
             }
 
-            // シェーダーをlilToonに置き換える
-            bool shaderReplaceSuccess = ReplaceShadersWithLilToon(model);
-
-            if (!shaderReplaceSuccess)
-            {
-                Log.Warning("シェーダーの置き換えに失敗したため、デフォルトのシェーダーを使用します。");
-            }
-
             Log.Info("モデルのロードと表示が完了しました: " + path);
 
             return model;
@@ -245,62 +191,14 @@ namespace uDesktopMascot
                 var model = gltfInstance.Root;
 
                 return model;
-            }
-            catch (OperationCanceledException)
+            } catch (OperationCanceledException)
             {
                 Log.Warning("モデルのロードがキャンセルされました。");
                 return null;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Log.Error($"モデルのロード中にエラーが発生しました: {e.Message}");
                 return null;
-            }
-        }
-
-        /// <summary>
-        /// モデルのシェーダーをlilToonに置き換える
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        private static bool ReplaceShadersWithLilToon(GameObject model)
-        {
-            try
-            {
-                // lilToonの半透明シェーダーを取得
-                var lilToonTransparentShader = Shader.Find("Hidden/lilToonTransparent");
-
-                if (lilToonTransparentShader == null)
-                {
-                    Log.Warning("lilToonのTransparentシェーダーが見つかりません。シェーダー名を確認してください。");
-                    return false;
-                }
-
-                // すべてのRendererを取得
-                var renderers = model.GetComponentsInChildren<Renderer>(true);
-
-                foreach (var renderer in renderers)
-                {
-                    // 各Rendererのマテリアルを取得
-                    var materials = renderer.materials;
-
-                    foreach (var material in materials)
-                    {
-                        // シェーダーをlilToonの半透明シェーダーに置き換える
-                        material.shader = lilToonTransparentShader;
-
-                        // 必要に応じてプロパティを設定
-                        material.SetFloat("_TransparentMode", 2); // 0: Opaque, 1: Cutout, 2: Transparent, etc.
-                        material.SetFloat("_OutlineEnable", 1); // アウトラインを有効化
-                    }
-                }
-
-                Log.Info("シェーダーの置き換えが完了しました。");
-                return true;
-            } catch (Exception e)
-            {
-                Log.Error($"シェーダーの置き換え中にエラーが発生しました: {e.Message}");
-                return false;
             }
         }
     }

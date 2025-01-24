@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using uDesktopMascot.Utility;
 using Unity.Logging;
@@ -17,7 +18,7 @@ namespace uDesktopMascot
         /// <summary>
         ///    設定ファイルのパス
         /// </summary>
-        private static string SettingsFilePath;
+        private static string _settingsFilePath;
 
         /// <summary>
         ///   キャラクター設定
@@ -51,7 +52,7 @@ namespace uDesktopMascot
         {
             try
             {
-                SettingsFilePath = Path.Combine(Application.streamingAssetsPath, "application_settings.txt");
+                _settingsFilePath = Path.Combine(Application.streamingAssetsPath, "application_settings.txt");
 
                 // デフォルト値で初期化
                 Character = new CharacterSettings();
@@ -62,7 +63,7 @@ namespace uDesktopMascot
                 LoadSettings();
                 
                 // 設定ファイルが存在するか判定
-                IsLoaded = File.Exists(SettingsFilePath);
+                IsLoaded = File.Exists(_settingsFilePath);
             }
             catch (Exception ex)
             {
@@ -75,12 +76,12 @@ namespace uDesktopMascot
         /// </summary>
         private void LoadSettings()
         {
-            if (File.Exists(SettingsFilePath))
+            if (File.Exists(_settingsFilePath))
             {
                 // 設定ファイルが存在する場合、読み込む
-                var settingsData = IniFileParser.Parse(SettingsFilePath);
+                var settingsData = IniFileParser.Parse(_settingsFilePath);
                 AssignValues(settingsData);
-                Log.Info("設定ファイルを読み込みました: " + SettingsFilePath);
+                Log.Info("設定ファイルを読み込みました: " + _settingsFilePath);
 
                 // 設定値の検証と修正
                 ValidateSettings();
@@ -88,7 +89,7 @@ namespace uDesktopMascot
             else
             {
                 // 設定ファイルが存在しない場合、デフォルト設定を使用し、ファイルを生成
-                Log.Warning("設定ファイルが見つかりませんでした。デフォルト設定でファイルを生成します: " + SettingsFilePath);
+                Log.Warning("設定ファイルが見つかりませんでした。デフォルト設定でファイルを生成します: " + _settingsFilePath);
 
                 // 必要であれば、動的に設定値を調整
                 ValidateSettings();
@@ -154,7 +155,19 @@ namespace uDesktopMascot
                 {
                     try
                     {
-                        var value = ConvertValue(property.PropertyType, kvp.Value, property.GetValue(settingsInstance));
+                        object value;
+                        if (property.PropertyType == typeof(List<string>))
+                        {
+                            var list = kvp.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(item => item.Trim())
+                                .ToList();
+                            value = list;
+                        }
+                        else
+                        {
+                            // 通常の値の変換
+                            value = ConvertValue(property.PropertyType, kvp.Value, property.GetValue(settingsInstance));
+                        }
                         property.SetValue(settingsInstance, value);
                     }
                     catch (Exception ex)
@@ -240,7 +253,7 @@ namespace uDesktopMascot
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(SettingsFilePath))
+                using (StreamWriter writer = new StreamWriter(_settingsFilePath))
                 {
                     WriteSection(writer, "Character", Character);
                     WriteSection(writer, "Sound", Sound);
@@ -248,7 +261,7 @@ namespace uDesktopMascot
                     WriteSection(writer, "Performance", Performance);
                 }
 
-                Log.Info("設定ファイルを生成しました: " + SettingsFilePath);
+                Log.Info("設定ファイルを生成しました: " + _settingsFilePath);
             }
             catch (Exception ex)
             {

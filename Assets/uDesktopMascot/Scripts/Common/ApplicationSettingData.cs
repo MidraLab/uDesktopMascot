@@ -7,9 +7,16 @@ namespace uDesktopMascot
     /// </summary>
     public class CharacterSettings
     {
+        /// <summary>
+        /// モデルのパス
+        /// </summary>
         public string ModelPath { get; set; } = "default.vrm";
 
+        /// <summary>
+        /// モデルのスケール（0.1 ～ 10.0）
+        /// </summary>
         private float _scale = 3.0f;
+
         /// <summary>
         /// キャラクターのスケール（0.1 ～ 10.0）
         /// </summary>
@@ -20,6 +27,7 @@ namespace uDesktopMascot
         }
 
         private float _positionX = 0.0f;
+
         /// <summary>
         /// キャラクターのX座標位置（-100.0 ～ 100.0）
         /// </summary>
@@ -30,6 +38,7 @@ namespace uDesktopMascot
         }
 
         private float _positionY = 0.0f;
+
         /// <summary>
         /// キャラクターのY座標位置（-100.0 ～ 100.0）
         /// </summary>
@@ -40,6 +49,7 @@ namespace uDesktopMascot
         }
 
         private float _positionZ = 0.0f;
+
         /// <summary>
         /// キャラクターのZ座標位置（-100.0 ～ 100.0）
         /// </summary>
@@ -48,12 +58,12 @@ namespace uDesktopMascot
             get => _positionZ;
             set => _positionZ = Mathf.Clamp(value, -100.0f, 100.0f);
         }
-        
+
         /// <summary>
         /// キャラクターのX軸回転（0.0 ～ 360.0）
         /// </summary>
         private float _rotationX = 0.0f;
-        
+
         /// <summary>
         /// キャラクターのX軸回転（0.0 ～ 360.0）
         /// </summary>
@@ -71,7 +81,7 @@ namespace uDesktopMascot
         /// キャラクターのX軸回転（0.0 ～ 360.0）
         /// </summary>
         private float _rotationY = 0.0f;
-        
+
         /// <summary>
         /// キャラクターのY軸回転（0.0 ～ 360.0）
         /// </summary>
@@ -84,12 +94,12 @@ namespace uDesktopMascot
                 if (_rotationY < 0) _rotationY += 360.0f;
             }
         }
-        
+
         /// <summary>
         /// キャラクターのZ軸回転（0.0 ～ 360.0）
         /// </summary>
         private float _rotationZ = 0.0f;
-        
+
         /// <summary>
         /// キャラクターのZ軸回転（0.0 ～ 360.0）
         /// </summary>
@@ -110,6 +120,7 @@ namespace uDesktopMascot
     public class SoundSettings
     {
         private float _voiceVolume = 1.0f;
+
         /// <summary>
         /// ボイスの音量（0.0～1.0）
         /// </summary>
@@ -120,6 +131,7 @@ namespace uDesktopMascot
         }
 
         private float _bgmVolume = 0.5f;
+
         /// <summary>
         /// BGMの音量（0.0～1.0）
         /// </summary>
@@ -130,6 +142,7 @@ namespace uDesktopMascot
         }
 
         private float _seVolume = 1.0f;
+
         /// <summary>
         /// 効果音の音量（0.0～1.0）
         /// </summary>
@@ -139,12 +152,14 @@ namespace uDesktopMascot
             set => _seVolume = Mathf.Clamp01(value);
         }
     }
+
     /// <summary>
     ///   表示設定
     /// </summary>
     public class DisplaySettings
     {
         private float _opacity = 1.0f;
+
         /// <summary>
         /// キャラクターの透明度（0.0 ～ 1.0）
         /// </summary>
@@ -166,6 +181,7 @@ namespace uDesktopMascot
     public class PerformanceSettings
     {
         private int _targetFrameRate = 60;
+
         /// <summary>
         /// ターゲットフレームレート（15 ～ 240）
         /// </summary>
@@ -176,6 +192,7 @@ namespace uDesktopMascot
         }
 
         private int _qualityLevel = 2;
+
         /// <summary>
         /// クオリティレベル（0 ～ 5）
         /// </summary>

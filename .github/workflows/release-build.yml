@@ -323,8 +323,10 @@ jobs:
           else
             PLATFORM="unknown"
           fi
-          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_${PLATFORM}"
+          ARTIFACT_NAME="${REPO_NAME}_${PLATFORM}_v${VERSION}"
           echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "os_name=${OS_NAME}" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4.2.0
         with:
@@ -344,7 +346,33 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           buildName: 'uDesktopMascot'
 
-      - name: ビルド成果物を圧縮して名前を変更
+      # Windowsランナー用のステップ
+      - name: ビルド成果物を圧縮して名前を変更 (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cd build
+          Rename-Item "${{ matrix.targetPlatform }}" "uDesktopMascot"
+          Compress-Archive -Path "uDesktopMascot\*" -DestinationPath "${{ steps.build_info.outputs.artifact_name }}.zip"
+          cd ..
+          Move-Item "build\${{ steps.build_info.outputs.artifact_name }}.zip" "${{ steps.build_info.outputs.artifact_name }}.zip"
+          
+      # フォルダ名の変更とZIP解凍
+      - name: フォルダ名を変更し、macOSビルド成果物を解凍
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cd build
+          mv "${{ matrix.targetPlatform }}" "uDesktopMascot"
+          cd uDesktopMascot
+          unzip StandaloneOSX.zip
+          rm StandaloneOSX.zip
+          cd ../..
+
+      # macOS/Linuxランナー用のステップ
+      - name: ビルド成果物を圧縮して名前を変更 (macOS/Linux)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           cd build
           mv "${{ matrix.targetPlatform }}" "uDesktopMascot"

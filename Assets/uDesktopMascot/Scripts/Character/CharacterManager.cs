@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Unity.Logging;
@@ -10,12 +12,17 @@ namespace uDesktopMascot
     /// <summary>
     /// モデルのモーションを制御するクラス
     /// </summary>
-    public class CharacterController : MonoBehaviour
+    public class CharacterManager : MonoBehaviour
     {
         /// <summary>
         /// モデルのアニメーター
         /// </summary>
         private Animator _modelAnimator;
+
+        /// <summary>
+        /// モデルのデフォルトアニメーションクリップ
+        /// </summary>
+        [SerializeField] private List<AnimationClip> _defaultAnimationClip;
 
         /// <summary>
         /// モデルのゲームオブジェクト
@@ -41,6 +48,11 @@ namespace uDesktopMascot
         /// Input Systemのアクション
         /// </summary>
         private UDMInputActions _inputActions;
+        
+        /// <summary>
+        /// キャラクターのアニメーションコントローラ
+        /// </summary>
+        private CharacterAnimationController _characterAnimationController;
 
         /// <summary>
         /// マウスがドラッグ中かどうか
@@ -102,7 +114,23 @@ namespace uDesktopMascot
         private void Start()
         {
             InitModel().Forget();
+            // InitAnimation();
             VoiceController.Instance.PlayStartVoiceAsync(_cancellationTokenSource.Token).Forget();
+        }
+
+        /// <summary>
+        /// アニメーションの初期化
+        /// </summary>
+        private void InitAnimation()
+        {
+            _characterAnimationController = new CharacterAnimationController(_modelAnimator);
+            var initAnimation = _defaultAnimationClip.FirstOrDefault(x => x.name == "idle");
+            if(initAnimation == null)
+            {
+                Log.Error("デフォルトのアニメーションクリップが見つかりませんでした。");
+                return;
+            }
+            _characterAnimationController.SetInitialAnimation(initAnimation);
         }
 
         /// <summary>
@@ -112,7 +140,7 @@ namespace uDesktopMascot
         {
             try
             {
-                _model = await LoadVRM.LoadModel(_cancellationTokenSource.Token);
+                _model = await LoadCharacterModel.LoadModel(_cancellationTokenSource.Token);
                 
                 await UniTask.SwitchToMainThread();
                 
@@ -168,6 +196,8 @@ namespace uDesktopMascot
             }
 #endif
 
+            // _characterAnimationController.Update();
+            
             // モーションを切り替える
             if (_isDragging && _isDraggingModel)
             {
@@ -222,33 +252,26 @@ namespace uDesktopMascot
 
             // アニメータの取得と設定
             _modelAnimator = _model.GetComponentInChildren<Animator>();
-
-            if (_modelAnimator != null)
+            
+            if(_modelAnimator == null)
             {
-                LoadVRM.UpdateAnimationController(_modelAnimator);
+                Log.Debug("Animatorが見つからなかったため、新しく追加します。");
+                _modelAnimator = model.AddComponent<Animator>();
             }
-            else
+
+            // モデルからAvatarを取得して設定
+            var avatar = CreateAvatarFromModel(model);
+            if (avatar != null)
             {
-                Log.Warning("モデル内にAnimatorコンポーネントが見つかりませんでした。Animatorを追加します。");
-
-                // Animatorコンポーネントを追加
-                _modelAnimator = _model.AddComponent<Animator>();
-
-                // モデルからAvatarを取得して設定
-                var avatar = CreateAvatarFromModel(model);
-                if (avatar != null)
-                {
-                    _modelAnimator.avatar = avatar;
-                    Log.Info("モデルからAvatarを生成し、Animatorに設定しました。");
-                }
-                else
-                {
-                    Log.Warning("モデルからAvatarを生成できませんでした。アニメーションが正しく再生されない可能性があります。");
-                }
-
-                // アニメーションコントローラーを設定
-                LoadVRM.UpdateAnimationController(_modelAnimator);
+                _modelAnimator.avatar = avatar;
+                Log.Info("モデルからAvatarを生成し、Animatorに設定しました。");
+            } else
+            {
+                Log.Warning("モデルからAvatarを生成できませんでした。アニメーションが正しく再生されない可能性があります。");
             }
+            
+            // アニメーションコントローラーを設定
+            LoadVRM.UpdateAnimationController(_modelAnimator);
 
             _isInitialized = true;
         }
@@ -273,15 +296,19 @@ namespace uDesktopMascot
             if (smr != null && smr.sharedMesh != null)
             {
                 // Humanoid アバターを自動生成
-                var humanDescription = new HumanDescription();
-                // お使いのモデルに合わせて設定が必要な場合があります
 
                 var avatar = AvatarBuilder.BuildGenericAvatar(model, "");
                 if (avatar != null)
                 {
                     avatar.name = model.name + "_Avatar";
                     return avatar;
+                } else
+                {
+                    Log.Warning("Humanoid アバターの生成に失敗しました。");
                 }
+            } else
+            {
+                Log.Warning("SkinnedMeshRenderer が見つからなかったため、Avatar を生成できませんでした。");
             }
 
             return null;
@@ -376,8 +403,12 @@ namespace uDesktopMascot
         }
 
 
+        /// <summary>
+        ///    オブジェクトが破棄されるときの処理
+        /// </summary>
         private void OnDestroy()
         {
+            _characterAnimationController?.Dispose();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
         }

@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: N00_007_03_Tops_01_CLOTH_03 (Instance)
-  m_Shader: {fileID: 4800000, guid: 165365ab7100a044ca85fc8c33548a62, type: 3}
+  m_Shader: {fileID: 4800000, guid: 85d6126cae43b6847aff4b13f4adb8ec, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _ALPHATEST_ON
+  m_InvalidKeywords:
   - _MTOON_EMISSIVEMAP
   - _MTOON_OUTLINE_WORLD
   - _MTOON_RIMMAP
@@ -284,7 +284,7 @@ Material:
     - _AlphaMaskScale: 1
     - _AlphaMaskValue: 0
     - _AlphaMode: 1
-    - _AlphaToMask: 0
+    - _AlphaToMask: 1
     - _Anisotropy2MatCap: 0
     - _Anisotropy2MatCap2nd: 0
     - _Anisotropy2Reflection: 0
@@ -366,13 +366,13 @@ Material:
     - _BumpScale: 1
     - _ColorMask: 15
     - _Cull: 2
-    - _Cutoff: 0.001
+    - _Cutoff: 0.5
     - _DissolveNoiseStrength: 0.1
     - _DistanceFadeMode: 0
     - _DistanceFadeRimFresnelPower: 5
     - _DitherMaxValue: 255
-    - _DoubleSided: 1
-    - _DstBlend: 10
+    - _DoubleSided: 0
+    - _DstBlend: 0
     - _DstBlendAlpha: 10
     - _DstBlendAlphaFA: 1
     - _DstBlendFA: 1
@@ -443,10 +443,10 @@ Material:
     - _LightMaxLimit: 1
     - _LightMinLimit: 0.05
     - _M_AlphaToMask: 1
-    - _M_CullMode: 0
+    - _M_CullMode: 2
     - _M_DebugMode: 0
     - _M_DstBlend: 0
-    - _M_EditMode: 1
+    - _M_EditMode: 0
     - _M_SrcBlend: 1
     - _M_ZWrite: 1
     - _Main2ndDissolveNoiseStrength: 0.1

@@ -6,6 +6,8 @@ on:
     branches:
       - main
     types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 0 * * *'  # 毎日UTCで午前0時に実行
 
 jobs:
   check-branch:
@@ -197,7 +199,13 @@ jobs:
           mv "StandaloneOSX" "uDesktopMascot"
           cd ..
 
-      - name: Upload the Build for StandaloneOSX
+      - name: Unzip macOS build output
+        if: matrix.targetPlatform == 'StandaloneOSX'
+        run: |
+          unzip "build/uDesktopMascot/StandaloneOSX.zip" -d "build/uDesktopMascot"
+          rm "build/uDesktopMascot/StandaloneOSX.zip"
+
+      - name: Upload the Build for ${{ matrix.targetPlatform }}
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
