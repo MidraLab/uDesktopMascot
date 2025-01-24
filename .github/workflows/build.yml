@@ -200,7 +200,6 @@ jobs:
           cd ..
 
       - name: Unzip macOS build output
-        if: matrix.targetPlatform == 'StandaloneOSX'
         run: |
           unzip "build/uDesktopMascot/StandaloneOSX.zip" -d "build/uDesktopMascot"
           rm "build/uDesktopMascot/StandaloneOSX.zip"
