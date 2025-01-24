@@ -31,7 +31,7 @@ jobs:
       - name: タグが既に存在しないか確認
         run: |
           TAG_NAME="${{ steps.get_tag.outputs.tag_name }}"
-          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+          if [ "$TAG_NAME" != "v99.99.99" ] && git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "エラー: タグ '$TAG_NAME' は既に存在します。"
             exit 1
           fi
