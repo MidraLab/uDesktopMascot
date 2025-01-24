@@ -3,14 +3,16 @@
 on:
   workflow_dispatch:
     inputs:
-      platform:
-        description: 'Select the platform to build'
+      build_windows:
+        description: 'Build for Windows'
         required: true
-        default: 'all'
-        options:
-          - all
-          - windows
-          - mac
+        default: false
+        type: boolean
+      build_mac:
+        description: 'Build for macOS'
+        required: true
+        default: false
+        type: boolean
   pull_request:
     branches:
       - main
@@ -88,7 +90,7 @@ jobs:
           fi
 
   build-windows:
-    if: ${{ github.event_name == 'pull_request' || inputs.platform == 'all' || inputs.platform == 'windows' }}
+    if: ${{ github.event_name == 'pull_request' || inputs.build_windows }}
     needs: [check-branch]
     runs-on: windows-latest
     steps:
@@ -161,7 +163,7 @@ jobs:
           path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
-    if: ${{ github.event_name == 'pull_request' || inputs.platform == 'all' || inputs.platform == 'mac' }}
+    if: ${{ github.event_name == 'pull_request' || inputs.build_mac }}
     needs: [check-branch]
     runs-on: macos-latest
     steps:
