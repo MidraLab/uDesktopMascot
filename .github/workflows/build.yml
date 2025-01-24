@@ -143,7 +143,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
-          path: build/uDesktopMascot_v${{ needs.check-branch.outputs.current_version }}.zip
+          path: build/uDesktopMascot
 
       - name: Change directory to Installer
         run: cd Installer
@@ -216,7 +216,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
-          path: build/uDesktopMascot_v${{ needs.check-branch.outputs.current_version }}.zip
+          path: build/uDesktopMascot
 
       - name: Set up Installer
         run: |
