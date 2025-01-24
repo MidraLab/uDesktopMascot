@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "イベント名: ${{ github.event_name }}"
           # ProjectSettings.assetから現在のバージョンを取得
-          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}' | tr '.' '_')
           old_version=$(grep '#define MyAppVersion' Installer/setup.txt | cut -d '"' -f2)
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           if [ "$old_version" != "$current_version" ]; then
@@ -143,7 +143,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
-          path: build
+          path: build/uDesktopMascot_v${{ needs.check-branch.outputs.current_version }}.zip
 
       - name: Change directory to Installer
         run: cd Installer
@@ -212,15 +212,11 @@ jobs:
           mv "StandaloneOSX" "uDesktopMascot"
           cd ..
 
-      - name: Unzip macOS build output
-        run: |
-          ls -la build
-
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
-          path: build/uDesktopMascot
+          path: build/uDesktopMascot_v${{ needs.check-branch.outputs.current_version }}.zip
 
       - name: Set up Installer
         run: |
