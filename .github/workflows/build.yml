@@ -201,10 +201,10 @@ jobs:
 
       - name: Unzip macOS build output
         run: |
-          unzip "build/uDesktopMascot/StandaloneOSX.zip" -d "build/uDesktopMascot"
-          rm "build/uDesktopMascot/StandaloneOSX.zip"
+          unzip "build/uDesktopMascot/uDesktopMascot.zip" -d "build/uDesktopMascot"
+          rm "build/uDesktopMascot/uDesktopMascot.zip"
 
-      - name: Upload the Build for ${{ matrix.targetPlatform }}
+      - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
