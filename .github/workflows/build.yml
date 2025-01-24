@@ -214,15 +214,13 @@ jobs:
 
       - name: Unzip macOS build output
         run: |
-          ls -la build/uDesktopMascot
-          unzip "build/uDesktopMascot/uDesktopMascot.zip" -d "build/uDesktopMascot"
-          rm "build/uDesktopMascot/uDesktopMascot.zip"
+          ls -la build
 
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
           name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
-          path: build
+          path: build/uDesktopMascot
 
       - name: Set up Installer
         run: |
