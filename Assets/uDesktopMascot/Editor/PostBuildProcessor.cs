@@ -4,22 +4,29 @@ using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Unity.Logging;
 using UnityEditor;
-using UnityEditor.Callbacks;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+using System.Collections.Generic;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
 {
-    public class PostBuildProcessor
+    /// <summary>
+    /// ビルド後処理を行うクラス
+    /// </summary>
+    public sealed class PostBuildProcessor : IPostprocessBuildWithReport
     {
-        /// <summary>
-        ///     ビルド後の処理を行う
-        /// </summary>
-        /// <param name="target">ビルドターゲット</param>
-        /// <param name="pathToBuiltProject">ビルドされたプロジェクトのパス</param>
-        [PostProcessBuild(1)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        // コールバックの順序を指定
+        public int callbackOrder => 0;
+
+        public void OnPostprocessBuild(BuildReport report)
         {
+            var summary = report.summary;
+            var target = summary.platform;
+            var outputPath = summary.outputPath;
+
             // ビルドされたプロジェクトのディレクトリを取得
-            var buildDirectory = Path.GetDirectoryName(pathToBuiltProject);
+            var buildDirectory = Path.GetDirectoryName(outputPath);
             if (string.IsNullOrEmpty(buildDirectory))
             {
                 Log.Error("ビルドされたプロジェクトのディレクトリが取得できませんでした。");
@@ -32,29 +39,38 @@ namespace uDesktopMascot.Editor
             // ビルド時に選択したフォルダが uDesktopMascotBuild でない場合、警告を出す
             if (buildDirectoryName != "uDesktopMascotBuild")
             {
-                Log.Warning($"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
+                Log.Debug(
+                    $"ビルド出力フォルダ名が 'uDesktopMascotBuild' ではありません（現在のフォルダ名: '{buildDirectoryName}'）。いくつかの後処理が実行されない可能性があります。");
             }
 
             // アプリケーション名を取得
-            var appName = Path.GetFileNameWithoutExtension(pathToBuiltProject);
+            var appName = Path.GetFileNameWithoutExtension(outputPath);
+
+            SetExecPermissionForMacOS(buildDirectory, appName);
 
             // プラットフォームに応じた StreamingAssets のパスを取得
             var streamingAssetsPath = GetStreamingAssetsPath(target, buildDirectory, appName);
             if (string.IsNullOrEmpty(streamingAssetsPath))
             {
-                Log.Warning("このプラットフォームはサポートされていません: " + target);
+                Log.Debug("このプラットフォームはサポートされていません: " + target);
                 return;
             }
 
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
 
-            // development buildの場合はスキップする
-            if (!EditorUserBuildSettings.development)
+            // Development Buildの場合はスキップする（必要に応じて）
+            if (summary.options.HasFlag(BuildOptions.Development))
+            {
+                Log.Debug("Development Build のため、ZIP圧縮をスキップします。");
+            } else
             {
                 // ビルドフォルダを最大圧縮で ZIP 圧縮
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
             }
+
+            // 不要なフォルダを削除
+            DeleteUnnecessaryFolders(target, outputPath);
 
             Log.Debug("ビルド後処理が完了しました。");
         }
@@ -200,6 +216,74 @@ namespace uDesktopMascot.Editor
             return Uri.UnescapeDataString(baseUri.MakeRelativeUri(targetUri)
                 .ToString()
                 .Replace('/', Path.DirectorySeparatorChar));
+        }
+
+        /// <summary>
+        ///     実行パーミッションを設定する
+        /// </summary>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
+        /// <param name="appName">アプリケーション名</param>
+        private static void SetExecPermissionForMacOS(string buildDirectory, string appName)
+        {
+#if UNITY_OSX_EDITOR
+            var execPath = Path.Combine(buildDirectory, $"{appName}.app", "Contents", "MacOS", "uDesktopMascot");
+            if (File.Exists(execPath))
+            {
+                sys_chmod(execPath, 0x775);
+            }
+#endif
+        }
+
+#if UNITY_OSX_EDITOR
+        [DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+        private static extern int sys_chmod(string path, uint mode);
+#endif
+
+        /// <summary>
+        ///     不要なフォルダを削除する
+        /// </summary>
+        private static void DeleteUnnecessaryFolders(BuildTarget target, string outputPath)
+        {
+            var outputDirectory = Path.GetDirectoryName(outputPath);
+            var productName = PlayerSettings.productName;
+
+            if (outputDirectory == null)
+            {
+                Log.Error("ビルド出力ディレクトリが取得できませんでした。");
+                return;
+            }
+
+            // 削除対象のフォルダをリスト化
+            var foldersToDelete = new List<string>
+            {
+                Path.Combine(outputDirectory,
+                    $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame"),
+                Path.Combine(outputDirectory, $"{productName}_BurstDebugInformation_DoNotShip")
+            };
+
+
+            bool folderDeleted = false;
+
+            foreach (var folder in foldersToDelete)
+            {
+                if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                {
+                    try
+                    {
+                        Directory.Delete(folder, true);
+                        Log.Debug("不要なフォルダを削除しました: {0}", folder);
+                        folderDeleted = true;
+                    } catch (Exception ex)
+                    {
+                        Log.Error("フォルダの削除中にエラーが発生しました: {0}", ex.Message);
+                    }
+                }
+            }
+
+            if (!folderDeleted)
+            {
+                Log.Debug("削除するフォルダが存在しませんでした。");
+            }
         }
     }
 }
