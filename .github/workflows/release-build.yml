@@ -131,7 +131,7 @@ jobs:
           TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
           VERSION="${{ needs.check-branch.outputs.current_version }}"
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          ARTIFACT_NAME="${REPO_NAME}_v${VERSION}_win"
+          ARTIFACT_NAME="${REPO_NAME}_win_v${VERSION}"
           echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4.2.0
