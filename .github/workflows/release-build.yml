@@ -269,7 +269,7 @@ jobs:
           path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
 
   release:
-    needs: [build]
+    needs: [build-windows, build-mac]
     runs-on: ubuntu-latest
     steps:
       - name: コードをチェックアウト
