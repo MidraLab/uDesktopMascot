@@ -43,6 +43,8 @@ namespace uDesktopMascot.Editor
             // アプリケーション名を取得
             var appName = Path.GetFileNameWithoutExtension(outputPath);
 
+            SetExecPermissionForMacOS(buildDirectory, appName);
+
             // プラットフォームに応じた StreamingAssets のパスを取得
             var streamingAssetsPath = GetStreamingAssetsPath(target, buildDirectory, appName);
             if (string.IsNullOrEmpty(streamingAssetsPath))
@@ -73,6 +75,10 @@ namespace uDesktopMascot.Editor
         /// <summary>
         ///     プラットフォームに応じた StreamingAssets のパスを取得する
         /// </summary>
+        /// <param name="target">ビルドターゲット</param>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
+        /// <param name="appName">アプリケーション名</param>
+        /// <returns>StreamingAssets のフルパス</returns>
         private static string GetStreamingAssetsPath(BuildTarget target, string buildDirectory, string appName)
         {
             return target switch
@@ -90,6 +96,7 @@ namespace uDesktopMascot.Editor
         /// <summary>
         ///     必要なフォルダを作成する
         /// </summary>
+        /// <param name="streamingAssetsPath">StreamingAssets のフルパス</param>
         private static void CreateNecessaryDirectories(string streamingAssetsPath)
         {
             // StreamingAssets フォルダが存在しない場合は作成
@@ -112,7 +119,7 @@ namespace uDesktopMascot.Editor
             if (!Directory.Exists(dragVoicePath))
             {
                 Directory.CreateDirectory(dragVoicePath);
-                Log.Debug("Voice/Drag フォルダを作成しました: {0}", dragVoicePath);
+                Log.Debug($"Voice/Drag フォルダを作成しました: {dragVoicePath}");
             }
 
             // BGM フォルダを作成
@@ -120,13 +127,15 @@ namespace uDesktopMascot.Editor
             if (!Directory.Exists(bgmPath))
             {
                 Directory.CreateDirectory(bgmPath);
-                Log.Debug("BGM フォルダを作成しました: {0}", bgmPath);
+                Log.Debug($"BGM フォルダを作成しました: {bgmPath}");
             }
         }
 
         /// <summary>
         ///     ビルドフォルダを最大圧縮で ZIP 圧縮する
         /// </summary>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
+        /// <param name="appName">アプリケーション名</param>
         private static void CreateMaxCompressedZipOfBuildFolder(string buildDirectory, string appName)
         {
             try
@@ -160,22 +169,26 @@ namespace uDesktopMascot.Editor
                 if (File.Exists(zipFilePath))
                 {
                     File.Delete(zipFilePath);
-                    Log.Debug("既存の ZIP ファイルを削除しました: {0}", zipFilePath);
+                    Log.Debug($"既存の ZIP ファイルを削除しました: {zipFilePath}");
                 }
 
                 // ビルドディレクトリを最大圧縮で ZIP 圧縮
                 CompressDirectory(buildDirectory, zipFilePath, CompressionLevel.Optimal);
 
-                Log.Debug("ビルドフォルダを最大圧縮で ZIP 圧縮しました: {0}", zipFilePath);
-            } catch (Exception ex)
+                Log.Debug($"ビルドフォルダを最大圧縮で ZIP 圧縮しました: {zipFilePath}");
+            }
+            catch (Exception ex)
             {
-                Log.Error("ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {0}", ex.Message);
+                Log.Error($"ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {ex.Message}");
             }
         }
 
         /// <summary>
         ///     ディレクトリを最大圧縮で ZIP 圧縮する
         /// </summary>
+        /// <param name="sourceDir">圧縮するフォルダのパス</param>
+        /// <param name="zipFilePath">出力先の ZIP ファイルのパス</param>
+        /// <param name="compressionLevel">圧縮レベル</param>
         private static void CompressDirectory(string sourceDir, string zipFilePath, CompressionLevel compressionLevel)
         {
             // ZIP 圧縮を開始
@@ -204,6 +217,27 @@ namespace uDesktopMascot.Editor
                 .ToString()
                 .Replace('/', Path.DirectorySeparatorChar));
         }
+
+        /// <summary>
+        ///     実行パーミッションを設定する
+        /// </summary>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
+        /// <param name="appName">アプリケーション名</param>
+        private static void SetExecPermissionForMacOS(string buildDirectory, string appName)
+        {
+#if UNITY_OSX_EDITOR
+            var execPath = Path.Combine(buildDirectory, $"{appName}.app", "Contents", "MacOS", "uDesktopMascot");
+            if (File.Exists(execPath))
+            {
+                sys_chmod(execPath, 0x775);
+            }
+#endif
+        }
+
+#if UNITY_OSX_EDITOR
+        [DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+        private static extern int sys_chmod(string path, uint mode);
+#endif
 
         /// <summary>
         ///     不要なフォルダを削除する
