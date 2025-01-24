@@ -93,6 +93,15 @@ QualityLevel=2
 
 </details>
 
+## macOSでの実行について
+
+macOSでアプリを実行する際、GateKeeperによってアプリがブロックされる場合があります。
+その場合、ターミナルから以下のコマンドを実行してください。
+
+```sh
+xattr -r -c uDesktopMascot.app
+```
+
 ## requirements
 * Unity 6000.0.31f1(IL2CPP)
 
