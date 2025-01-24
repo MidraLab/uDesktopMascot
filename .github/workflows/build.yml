@@ -1,7 +1,16 @@
 ﻿name: Run build
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Select the platform to build'
+        required: true
+        default: 'all'
+        options:
+          - all
+          - windows
+          - mac
   pull_request:
     branches:
       - main
@@ -79,6 +88,7 @@ jobs:
           fi
 
   build-windows:
+    if: ${{ github.event_name == 'pull_request' || inputs.platform == 'all' || inputs.platform == 'windows' }}
     needs: [check-branch]
     runs-on: windows-latest
     steps:
@@ -151,6 +161,7 @@ jobs:
           path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
+    if: ${{ github.event_name == 'pull_request' || inputs.platform == 'all' || inputs.platform == 'mac' }}
     needs: [check-branch]
     runs-on: macos-latest
     steps:
@@ -201,6 +212,7 @@ jobs:
 
       - name: Unzip macOS build output
         run: |
+          ls -la build/uDesktopMascot
           unzip "build/uDesktopMascot/uDesktopMascot.zip" -d "build/uDesktopMascot"
           rm "build/uDesktopMascot/uDesktopMascot.zip"
 
