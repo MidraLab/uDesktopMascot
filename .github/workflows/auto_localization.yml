@@ -17,6 +17,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: コミットフラグを初期化
+        run: echo "COMMIT_MADE=false" >> $GITHUB_ENV
+
       - name: Pythonをセットアップ
         uses: actions/setup-python@v5.3.0
         with:
@@ -40,6 +43,8 @@ jobs:
           git add Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv
           if git commit -m "自動翻訳を追加（GitHub Actionsによる）"; then
             echo "Changes committed successfully."
+            # コミットが成功した場合、フラグを設定
+            echo "COMMIT_MADE=true" >> $GITHUB_ENV
 
             # リモートの最新の変更を取り込み、リベース
             if git pull --rebase origin ${{ github.head_ref }}; then
@@ -56,7 +61,7 @@ jobs:
           fi
 
       - name: PRにコメントを追加
-        if: success() || failure()
+        if: success() && env.COMMIT_MADE == 'true'
         uses: actions/github-script@v6
         with:
           script: |
