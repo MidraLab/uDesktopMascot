@@ -52,6 +52,7 @@ jobs:
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
       old_version: ${{ steps.get_version.outputs.old_version }}
+      project_version: ${{ steps.get_version.outputs.project_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,8 +65,10 @@ jobs:
           echo "タグ名: $TAG_NAME"
           current_version="${TAG_NAME#v}"
           old_version=$(grep '#define MyAppVersion' Installer/setup.txt | cut -d '"' -f2)
+          project_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           echo "old_version=${old_version}" >> $GITHUB_OUTPUT
+          echo "project_version=${project_version}" >> $GITHUB_OUTPUT
           if [ "$old_version" != "$current_version" ]; then
             echo "現在のプロジェクトバージョン: $current_version"
             echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
@@ -198,7 +201,7 @@ jobs:
       - name: バージョンをロールバック
         if: ${{ needs.create-tag.outputs.tag_name == 'v99.99.99' }}
         run: |
-          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          current_version=${{ needs.check-branch.outputs.project_version }}
           echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
           echo "setup.txt の内容: $(cat Installer/setup.txt)"
           git config --global user.name "github-actions"
