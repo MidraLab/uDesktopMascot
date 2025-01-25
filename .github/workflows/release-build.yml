@@ -202,6 +202,7 @@ jobs:
 
       - name: バージョンをロールバック
         if: ${{ needs.create-tag.outputs.tag_name == 'v99.99.99' }}
+        shell: bash
         run: |
           current_version=${{ needs.check-branch.outputs.project_version }}
           echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
