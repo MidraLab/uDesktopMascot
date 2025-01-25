@@ -137,10 +137,14 @@ namespace uDesktopMascot.Editor
             }
         }
 
+        /// <summary>
+        ///     インストーラーのバージョンファイルを作成する
+        /// </summary>
+        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
         private static void CreateInstallerSetupTextFile(string buildDirectory)
         {
             var projectVersion = PlayerSettings.bundleVersion;
-            var setupFilePath = Path.Combine(buildDirectory, "..", "..", "setup.txt");
+            var setupFilePath = Path.Combine(buildDirectory, "..", "..", "installer-setup.txt");
             File.WriteAllText(setupFilePath, $"#define MyAppVersion \"{projectVersion}\"");
         }
 
