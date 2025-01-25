@@ -8,7 +8,7 @@ on:
       - 'Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv'
 
 jobs:
-  translate:
+  translate_localization:
     runs-on: ubuntu-latest
 
     steps:
