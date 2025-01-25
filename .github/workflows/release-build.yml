@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  create_tag:
+  create-tag:
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.get_tag.outputs.tag_name }}
@@ -22,6 +22,7 @@ jobs:
             exit 1
           fi
           echo "::set-output name=tag_name::$TAG_NAME"
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4.2.2
@@ -47,7 +48,7 @@ jobs:
           git push origin "$TAG_NAME"
 
   check-branch:
-    needs: [create_tag]
+    needs: [create-tag]
     runs-on: ubuntu-latest
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
@@ -60,7 +61,7 @@ jobs:
       - name: バージョンを取得
         id: get_version
         run: |
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           echo "タグ名: $TAG_NAME"
           current_version="${TAG_NAME#v}"
           old_version=$(grep '#define MyAppVersion' Installer/setup.txt | cut -d '"' -f2)
@@ -80,7 +81,7 @@ jobs:
       - name: タグ名の確認
         run: |
           echo "イベント名: ${{ github.event_name }}"
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           echo "タグ名: $TAG_NAME"
 
           # タグ名からバージョン番号を取得
@@ -140,7 +141,7 @@ jobs:
         id: build_info
         shell: bash  # ここでシェルを 明示的にBash に指定します
         run: |
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           VERSION="${{ needs.check-branch.outputs.current_version }}"
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           ARTIFACT_NAME="${REPO_NAME}_win_v${VERSION}"
@@ -222,7 +223,7 @@ jobs:
         id: build_info
         shell: bash  # ここでシェルを 明示的にBash に指定します
         run: |
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           VERSION="${{ needs.check-branch.outputs.current_version }}"
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           ARTIFACT_NAME="${REPO_NAME}_mac_v${VERSION}"
@@ -286,7 +287,7 @@ jobs:
       - name: タグ名を取得
         id: vars
         run: |
-          TAG_NAME="${{ needs.create_tag.outputs.tag_name }}"
+          TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           echo "リリースタグ名は '${TAG_NAME}' です"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
