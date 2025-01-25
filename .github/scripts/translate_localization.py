@@ -53,7 +53,7 @@ for idx, row in df.iterrows():
             if pd.isnull(current_translation) or current_translation.strip() == '':
                 translation = translate_text(japanese_text, target_language)
                 if translation:
-                    df.at[idx, column] = f'"{translation}"'
+                    df.at[idx, column] = translation
                     print(f"{target_language}への翻訳結果：{translation}")
                 else:
                     print(f"キー '{key}' の {target_language} への翻訳に失敗しました。")
@@ -67,7 +67,7 @@ def write_custom_csv(df, csv_path):
     columns = df.columns.tolist()
     with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
         # CSVライターを作成（デフォルト設定を使用）
-        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csvfile, delimiter=',')
         
         # ヘッダーを書き込む
         writer.writerow(columns)
