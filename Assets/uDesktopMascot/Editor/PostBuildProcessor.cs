@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using System.Collections.Generic;
+using UnityEngine;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
@@ -55,6 +56,9 @@ namespace uDesktopMascot.Editor
                 Log.Debug("このプラットフォームはサポートされていません: " + target);
                 return;
             }
+            
+            // READMEファイルをビルドフォルダにコピー
+            CopyReadmeToBuildFolder(buildDirectory);
 
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
@@ -70,7 +74,7 @@ namespace uDesktopMascot.Editor
             }
 
             // 不要なフォルダを削除
-            DeleteUnnecessaryFolders(target, outputPath);
+            DeleteUnnecessaryFolders(outputPath);
 
             Log.Debug("ビルド後処理が完了しました。");
         }
@@ -206,6 +210,28 @@ namespace uDesktopMascot.Editor
                 zipArchive.CreateEntryFromFile(file, relativePath, compressionLevel);
             }
         }
+        
+        /// <summary>
+        ///    README ファイルをビルドフォルダにコピーする
+        /// </summary>
+        /// <param name="buildDirectory"></param>
+        private void CopyReadmeToBuildFolder(string buildDirectory)
+        {
+            // Unityプロジェクト内のREADMEファイルのパス
+            var sourceReadmePath = Path.Combine(Application.dataPath, "uDesktopMascot", "Document", "README.txt");
+
+            // READMEファイルが存在するか確認
+            if (!File.Exists(sourceReadmePath))
+            {
+                Debug.LogWarning($"READMEファイルが見つかりません: {sourceReadmePath}");
+                return;
+            }
+            
+            // ビルドフォルダにコピー
+            var destReadmePath = Path.Combine(buildDirectory, "README.txt");
+            File.Copy(sourceReadmePath, destReadmePath, true);
+            Log.Debug($"READMEファイルをビルドフォルダにコピーしました: {destReadmePath}");
+        }
 
         /// <summary>
         ///     ファイルパスの相対パスを取得するヘルパーメソッド
@@ -245,7 +271,7 @@ namespace uDesktopMascot.Editor
         /// <summary>
         ///     不要なフォルダを削除する
         /// </summary>
-        private static void DeleteUnnecessaryFolders(BuildTarget target, string outputPath)
+        private static void DeleteUnnecessaryFolders(string outputPath)
         {
             var outputDirectory = Path.GetDirectoryName(outputPath);
             var productName = PlayerSettings.productName;
