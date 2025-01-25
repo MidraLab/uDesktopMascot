@@ -3,11 +3,7 @@ import sys
 import pandas as pd
 import openai
 
-# OpenAI APIキーの設定
-openai.api_key = os.getenv('OPENAI_API_KEY')
-if not openai.api_key:
-    print("Error: OpenAI API key is not set.")
-    sys.exit(1)
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # CSVファイルのパス
 csv_path = 'Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv'
@@ -26,13 +22,12 @@ target_languages = {
 # 翻訳用の関数を定義
 def translate_text(text, target_language):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Translate the following text to {target_language}:\n\n{text}"}
-            ],
-            temperature=0.3,
+            ]
         )
         # 翻訳結果を取得
         translation = response.choices[0].message.content.strip()
