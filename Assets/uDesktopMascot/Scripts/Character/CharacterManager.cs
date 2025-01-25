@@ -23,6 +23,11 @@ namespace uDesktopMascot
         /// モデルのデフォルトアニメーションクリップ
         /// </summary>
         [SerializeField] private List<AnimationClip> _defaultAnimationClip;
+        
+        /// <summary>
+        /// メニューのビュー
+        /// </summary>
+        [SerializeField] private MenuPresenter _menuPresenter;
 
         /// <summary>
         /// モデルのゲームオブジェクト
