@@ -21,7 +21,6 @@ jobs:
             echo "エラー: タグ名が有効な形式ではありません。v数字.数字.数字 の形式で入力してください。"
             exit 1
           fi
-          echo "::set-output name=tag_name::$TAG_NAME"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
       - name: リポジトリをチェックアウト
@@ -301,7 +300,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  roll-back-version-for-dev:
+  rollback-version-for-dev:
     needs: [release]
     runs-on: ubuntu-latest
     steps:
