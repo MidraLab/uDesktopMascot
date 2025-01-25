@@ -62,5 +62,5 @@ for idx, row in df.iterrows():
         print(f"キー '{key}' に日本語テキストが存在しないため、翻訳をスキップします。")
 
 # 更新されたCSVを保存
-df.to_csv(csv_path, index=False, encoding='utf-8', quoting=csv.QUOTE_ALL)
+df.to_csv(csv_path, index=False, encoding='utf-8')
 print("翻訳が完了し、CSVファイルが更新されました。")
