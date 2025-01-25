@@ -1,29 +1,28 @@
-Here is the translation of the provided text into French:
-
 # uDesktopMascot
 
-[![Version Unity](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
-[![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
+[![Version de Unity](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
+[![Sorties](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
-**Remarque** : Les langues ci-dessus (English, 中文, Español, Français) ont été générées par traduction automatique via GPT-4o-mini. Pour la précision et les nuances de la traduction, veuillez vous référer au texte original (日本語).
+**Remarque**: Les langues ci-dessus (English, 中文, Español, Français) ont été générées par une traduction automatique via GPT-4o-mini. Pour la précision et les nuances de la traduction, veuillez vous référer au texte original (日本語).
 
 <!-- TOC -->
 * [uDesktopMascot](#udesktopmascot)
-  * [Résumé](#résumé)
+  * [Aperçu](#aperçu)
   * [Liste des fonctionnalités](#liste-des-fonctionnalités)
-  * [Pré-requis](#pré-requis)
-  * [Licence](#licence)
+  * [Exécution sur macOS](#exécution-sur-macos)
+  * [exigences](#exigences)
+  * [licence](#licence)
   * [À propos des matériaux](#à-propos-des-matériaux)
   * [Crédits des créateurs](#crédits-des-créateurs)
-  * [Mentions légales des tiers](#mentions-légales-des-tiers)
-  * [Sponsoring](#sponsoring)
+  * [Informations sur les tiers](#informations-sur-les-tiers)
+  * [sponsor](#sponsor)
 <!-- TOC -->
 
-## Résumé
+## Aperçu
 
-「uDesktopMascot」 est un projet open source qui permet d'afficher des personnages sur le bureau et de reproduire des réactions et des sons en fonction des interactions de l'utilisateur. Ce projet a été développé en utilisant Unity et supporte les personnages au format VRM, vous permettant de profiter facilement de vos personnages préférés sur votre bureau.
+"uDesktopMascot" est un projet open source qui affiche un personnage sur le bureau et joue des réactions et des voix en fonction des interactions de l'utilisateur. Ce projet est développé avec Unity et prend en charge des personnages au format VRM, vous permettant de profiter facilement de votre personnage préféré sur le bureau.
 
 **Plateformes prises en charge**
 * Windows 10/11
@@ -31,17 +30,17 @@ Here is the translation of the provided text into French:
 
 ## Liste des fonctionnalités
 
-L'application comprend les fonctionnalités suivantes. Pour plus de détails, veuillez consulter la liste ci-dessous.
+L'application propose les fonctionnalités suivantes. Veuillez consulter la liste ci-dessous pour plus de détails.
 
-L'ajout d'assets externes peut être réalisé en les plaçant dans le dossier StreamingAssets.
+L'ajout de ressources externes peut être réalisé en plaçant des fichiers dans le dossier StreamingAssets.
 
 <details>
 
 <summary>Modèles et animations</summary>
-* Charge et affiche des fichiers modèles placés dans le dossier StreamingAssets.
-  * Supporte les modèles au format VRM (1.x, 0.x).
-  * Supporte les modèles au format GLB/GLTF. (Les animations ne sont pas supportées)
-  * Supporte les modèles au format FBX. (Certaines textures peuvent ne pas se charger, et les animations ne sont pas supportées)
+* Charge et affiche des fichiers de modèle placés dans StreamingAssets.
+  * Prend en charge des modèles au format VRM (1.x, 0.x).
+  * Prend en charge des modèles au format GLB/GLTF. (Les animations ne sont pas prises en charge)
+  * Prend en charge des modèles au format FBX. (Cependant, certains modèles peuvent ne pas charger les textures. De plus, les animations ne sont pas prises en charge.)
     * Les textures peuvent être chargées en les plaçant dans StreamingAssets/textures/.
 
 </details>
@@ -49,19 +48,19 @@ L'ajout d'assets externes peut être réalisé en les plaçant dans le dossier S
 <details>
 
 <summary>Voix et BGM</summary>
-* Charge et reproduit les fichiers audio placés dans SteamingAssets/Voice/. Si plusieurs fichiers sont présents, l'un d'eux sera joué au hasard.
+* Charge et joue des fichiers audio placés dans SteamingAssets/Voice/. S'il y en a plusieurs, ils seront joués aléatoirement.
   * Les sons joués lors d'un clic sont chargés à partir des fichiers audio placés dans StreamingAssets/Voice/Click/.
-* Charge et reproduit les fichiers musicaux placés dans SteamingAssets/BGM/. Si plusieurs fichiers sont présents, l'un d'eux sera joué au hasard.
-* Ajout d'une voix par défaut pour le personnage
-  * La voix par défaut utilise le son de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan).
-  * Elle est jouée au démarrage de l'application, à la fermeture de l'application et lors d'un clic.
+* Charge et joue des fichiers musicaux placés dans SteamingAssets/BGM/. S'il y en a plusieurs, ils seront joués aléatoirement.
+* Ajout de la voix par défaut du personnage
+  * La voix par défaut utilise l'audio de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan).
+  * Elle est jouée au démarrage de l'application, à la fermeture de l'application et lors des clics.
 
 </details>
 
 <details>
 
-<summary>Configuration de l'application via fichier texte</summary>
-Le fichier application_settings.txt permet de modifier les paramètres de l'application.
+<summary>Configuration de l'application par fichier texte</summary>
+Vous pouvez modifier les paramètres de l'application à l'aide du fichier application_settings.txt.
 
 La structure du fichier de configuration est la suivante :
 
@@ -93,30 +92,39 @@ QualityLevel=2
 
 </details>
 
-## Pré-requis
-* Unity 6000.0.31f1(IL2CPP)
+## Exécution sur macOS
 
-## Licence
+Lors de l'exécution de l'application sur macOS, il se peut que l'application soit bloquée par GateKeeper.
+Dans ce cas, exécutez la commande suivante depuis le terminal :
+
+```sh
+xattr -r -c uDesktopMascot.app
+```
+
+## exigences
+* Unity 6000.0.31f1 (IL2CPP)
+
+## licence
 * Le code est sous [Apache License 2.0](LICENSE).
-* Les assets suivants sont sous [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) :
+* Les ressources suivantes sont sous [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) :
   * BGM
   * Modèles
 
 ## À propos des matériaux
-* Les animations de personnages par défaut sont créées à partir de [“VRM Oningyou Asobi” Animation Data Set](https://fumi2kick.booth.pm/items/1655686). Il a été confirmé qu'elles peuvent être distribuées avec le dépôt.
-* La police utilisée est [Noto Sans Japanese](https://fonts.google.com/noto/specimen/Noto+Sans+JP?lang=ja_Jpan). La redistribution de la police Noto Sans JP est basée sur la [SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/noto/specimen/Noto+Sans+JP/license?lang=ja_Jpan). Les droits d'auteur de la police appartiennent à l'auteur original (Google).
-* La voix par défaut provient de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan). Il a été préalablement confirmé avec COEIROINK sur l'utilisation.
-* Les icônes de boutons sont réalisées avec [MingCute](https://github.com/MidraLab/MingCute).
+* Les animations par défaut des personnages sont créées à l'aide de [l'ensemble de données d'animation pour "VRM Omoidashi"](https://fumi2kick.booth.pm/items/1655686). Nous avons vérifié la distribution de celles-ci dans le dépôt.
+* La police utilisée est [Noto Sans Japanese](https://fonts.google.com/noto/specimen/Noto+Sans+JP?lang=ja_Jpan). Elle est redistribuée sous la [SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/noto/specimen/Noto+Sans+JP/license?lang=ja_Jpan). Les droits d'auteur de la police appartiennent à l'auteur d'origine (Google).
+* La voix par défaut utilisée provient de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan). L'utilisation a été préalablement vérifiée auprès de COEIROINK.
+* Les icônes de bouton sont issues de [MingCute](https://github.com/MidraLab/MingCute).
 
 ## Crédits des créateurs
-* Modèle : « Aozora »
+* Modèle : "Aozora" 
 * BGM : MidraLab (eisuke)
 * Icône du logiciel : Yamucha
 
-## Mentions légales des tiers
+## Informations sur les tiers
 
 Voir [NOTICE](./NOTICE.md).
 
-## Sponsoring
+## sponsor
 - Luna
 - uezo
