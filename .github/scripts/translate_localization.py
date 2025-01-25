@@ -24,11 +24,11 @@ def translate_text(text, target_language):
     try:
         response = client.chat.completions.create(
                     model="gpt-4o-mini",
-                    messages=[
+            messages=[
                         {"role": "system", "content": "You are a helpful assistant."},
                         {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
                     ]
-                )
+        )
         # 翻訳結果を取得
         translation = response.choices[0].message.content.strip()
         return translation
@@ -70,17 +70,12 @@ def write_custom_csv(df, csv_path):
     quote_columns = {col: (col != 'Key') for col in columns}  # 'Key' 列はクォートしない
 
     with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-        
-        # ヘッダーを書き込む（'Key' 列のみクォートしない）
-        header = []
-        for col in columns:
-            if quote_columns[col]:
-                header.append(f'"{col}"')
-            else:
-                header.append(col)
-        writer.writerow(header)
-        
+        # quoting=csv.QUOTE_NONE を設定して自動クォートを無効化
+        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE, escapechar='\\')
+
+        # ヘッダーを書き込む
+        writer.writerow(columns)
+
         # データ行を書き込む
         for idx, row in df.iterrows():
             data_row = []
@@ -88,12 +83,17 @@ def write_custom_csv(df, csv_path):
                 value = row[col]
                 if pd.isnull(value):
                     value = ''
-                if quote_columns[col]:
-                    # データ内にダブルクォーテーションが含まれる場合はエスケープ
-                    value = str(value).replace('"', '""')
-                    data_row.append(f'"{value}"')
                 else:
-                    data_row.append(value)
+                    value = str(value)
+                if quote_columns[col]:
+                    # ダブルクォーテーションをエスケープ
+                    value = value.replace('"', '""')
+                    # ダブルクォーテーションで囲む
+                    value = f'"{value}"'
+                else:
+                    # クォートしない
+                    pass  # 何もしない
+                data_row.append(value)
             writer.writerow(data_row)
 
 # カスタム関数でCSVを保存
