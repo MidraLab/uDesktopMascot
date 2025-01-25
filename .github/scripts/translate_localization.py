@@ -54,7 +54,7 @@ for idx, row in df.iterrows():
             if pd.isnull(current_translation) or current_translation.strip() == '':
                 translation = translate_text(japanese_text, target_language)
                 if translation:
-                    df.at[idx, column] = translation
+                    df.at[idx, column] = f'"{translation}"'
                     print(f"{target_language}への翻訳結果：{translation}")
                 else:
                     print(f"キー '{key}' の {target_language} への翻訳に失敗しました。")
