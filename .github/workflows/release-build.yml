@@ -201,7 +201,7 @@ jobs:
         run: |
           echo "${{ needs.check-branch.outputs.current_version }}"
           echo "${{ needs.check-branch.outputs.old_version }}"
-          if ("${{ needs.check-branch.outputs.current_version }}" -cne "99.99.99") {
+          if ("${{ needs.check-branch.outputs.current_version }}" -ceq "99.99.99") {
             $old_version = "${{ needs.check-branch.outputs.old_version }}"
             Write-Output $old_version
             "#define MyAppVersion `"$old_version`"" | Out-File -FilePath Installer/setup.txt -Encoding utf8
