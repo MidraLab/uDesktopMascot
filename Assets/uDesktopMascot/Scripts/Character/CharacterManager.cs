@@ -98,6 +98,8 @@ namespace uDesktopMascot
             _inputActions.UI.Click.canceled += OnClickCanceled;
 
             _inputActions.UI.Hold.performed += OnHoldPerformed;
+            
+            _inputActions.UI.RightClick.started += OnRightClick;
 
             Application.wantsToQuit += OnWantsToQuit;
         }
@@ -112,6 +114,8 @@ namespace uDesktopMascot
             _inputActions.UI.Click.canceled -= OnClickCanceled;
 
             _inputActions.UI.Hold.performed -= OnHoldPerformed;
+            
+            _inputActions.UI.RightClick.started -= OnRightClick;
 
             Application.wantsToQuit -= OnWantsToQuit;
         }
@@ -369,6 +373,21 @@ namespace uDesktopMascot
             // アニメーターのパラメータをリセット
             _modelAnimator.SetBool(Const.IsDragging, false);
             Log.Debug("Click終了");
+        }
+
+        /// <summary>
+        ///    右クリックが押されたときの処理
+        /// </summary>
+        /// <param name="context"></param>
+        private void OnRightClick(InputAction.CallbackContext context)
+        {
+            if(_menuPresenter.IsOpened)
+            {
+                _menuPresenter.Hide();
+            } else
+            {
+                _menuPresenter.Show();
+            }
         }
 
         /// <summary>

@@ -780,7 +780,7 @@ MonoBehaviour:
   - {fileID: 7400000, guid: d26c88ebd4caf79498c960cefc23c6ac, type: 2}
   - {fileID: 7400000, guid: cddbdf7f82c1aaa4eb0e68aa1460e765, type: 2}
   - {fileID: 7400000, guid: 72975c431b762894e97f8ad5f0122769, type: 2}
-  _menuPresenter: {fileID: 0}
+  _menuPresenter: {fileID: 1731515872}
 --- !u!1 &1567647184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,6 +1012,17 @@ MonoBehaviour:
   bgmClips:
   - {fileID: 8300000, guid: c814943fd14ae6e48aac12f57867fe67, type: 3}
   - {fileID: 8300000, guid: 0af67abd436982f48bec6555bdf02c87, type: 3}
+--- !u!114 &1731515872 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4436812554441096891, guid: 083e9fbddd605804c93ccbb43ebd7789, type: 3}
+  m_PrefabInstance: {fileID: 786475974508369067}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d8b21900104092ae5ebafd61ab07ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1795136567
 GameObject:
   m_ObjectHideFlags: 0

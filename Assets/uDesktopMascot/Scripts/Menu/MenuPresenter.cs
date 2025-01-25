@@ -12,9 +12,16 @@ namespace uDesktopMascot
         ///    メニューのビュー
         /// </summary>
         [SerializeField] private MenuView menuView;
+        
+        /// <summary>
+        ///   メニューが開かれているかどうか
+        /// </summary>
+        public bool IsOpened { get;private set; }
 
         private void Awake()
         {
+            IsOpened = false;
+            
             menuView.OnHelpAction = OpenHelp;
             menuView.OnModelSettingAction = () => { Debug.Log("ModelSetting"); };
             menuView.OnAppSettingAction = () => { Debug.Log("AppSetting"); };
@@ -26,6 +33,7 @@ namespace uDesktopMascot
         /// </summary>
         public void Show()
         {
+            IsOpened = true;
             menuView.Show();
         }
         
@@ -34,6 +42,7 @@ namespace uDesktopMascot
         /// </summary>
         public void Hide()
         {
+            IsOpened = false;
             menuView.Hide();
         }
         
