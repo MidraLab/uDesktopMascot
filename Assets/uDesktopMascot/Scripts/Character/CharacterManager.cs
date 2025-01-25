@@ -346,7 +346,6 @@ namespace uDesktopMascot
         private void OnClickStarted(InputAction.CallbackContext context)
         {
             VoiceController.Instance.PlayClickVoice();
-            Log.Debug("Click開始");
         }
 
         /// <summary>
@@ -359,7 +358,6 @@ namespace uDesktopMascot
 
             // アニメーターのパラメータをリセット
             _modelAnimator.SetBool(Const.IsDragging, false);
-            Log.Debug("Click終了");
         }
 
         /// <summary>

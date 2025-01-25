@@ -13,11 +13,6 @@ namespace uDesktopMascot
         ///    メニューキャンバス
         /// </summary>
         private Canvas _menuCanvas;
-        
-        private void Awake()
-        {
-            _menuCanvas = GetComponent<Canvas>();
-        }
 
         /// <summary>
         ///     モデル設定ボタン
@@ -37,7 +32,7 @@ namespace uDesktopMascot
         /// <summary>
         ///     アプリ終了ボタン
         /// </summary>
-        [SerializeField] private Button closeButton;
+        [SerializeField] private Button quitButton;
         
         /// <summary>
         ///    ヘルプボタン
@@ -58,6 +53,24 @@ namespace uDesktopMascot
         /// アプリ終了ボタンのクリックイベント
         /// </summary>
         public Action OnCloseAction { get; set; }
+        
+                
+        private void Awake()
+        {
+            _menuCanvas = GetComponent<Canvas>();
+            SetButtonEvent();
+        }
+        
+        /// <summary>
+        /// ボタンのイベントの登録
+        /// </summary>
+        private void SetButtonEvent()
+        {
+            helpButton.onClick.AddListener(() => OnHelpAction?.Invoke());
+            modelSettingButton.onClick.AddListener(() => OnModelSettingAction?.Invoke());
+            appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
+            quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
+        }
 
         /// <summary>
         ///    モデル設定ボタンのクリックイベント
