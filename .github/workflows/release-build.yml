@@ -98,7 +98,9 @@ jobs:
           # タグからバージョン番号を抽出
           versions=()
           for tag in $version_tags; do
-            versions+=("${tag#v}")
+            if [[ "$tag" != "v99.99.99" ]]; then
+              versions+=("${tag#v}")
+            fi
           done
 
           if [ ${#versions[@]} -eq 0 ]; then
