@@ -27,7 +27,7 @@ target_languages = {
 def translate_text(text, target_language):
     try:
         response = openai.ChatCompletion.create(
-            model=model="gpt-4o-mini",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Translate the following text to {target_language}:\n\n{text}"}
