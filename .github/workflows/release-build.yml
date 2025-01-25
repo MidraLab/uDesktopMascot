@@ -272,7 +272,7 @@ jobs:
           path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
 
   release:
-    needs: [build-windows, build-mac]
+    needs: [create-tag, check-branch, build-windows, build-mac]
     runs-on: ubuntu-latest
     steps:
       - name: コードをチェックアウト
@@ -301,7 +301,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   rollback-version-for-dev:
-    needs: [release]
+    needs: [create-tag, check-branch, build-windows, build-mac, release]
     runs-on: ubuntu-latest
     steps:
       - name: バージョンをロールバック
