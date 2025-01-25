@@ -2,6 +2,8 @@
 
 on:
   pull_request:
+    branches:
+      - develop
     paths:
       - 'Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv'
 
@@ -13,7 +15,7 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4.2.2
         with:
-          fetch-depth: 0  # フルgit履歴を取得
+          fetch-depth: 0
 
       - name: Pythonをセットアップ
         uses: actions/setup-python@v5.3.0
