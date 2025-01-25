@@ -63,7 +63,6 @@ for idx, row in df.iterrows():
         print(f"キー '{key}' に日本語テキストが存在しないため、翻訳をスキップします。")
 
 # カスタムCSV書き込み関数を定義
-# カスタムCSV書き込み関数を定義
 def write_custom_csv(df, csv_path):
     columns = df.columns.tolist()
     with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
