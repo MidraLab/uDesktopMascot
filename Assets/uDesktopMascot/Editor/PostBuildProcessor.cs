@@ -67,6 +67,9 @@ namespace uDesktopMascot.Editor
             {
                 // ビルドフォルダを最大圧縮で ZIP 圧縮
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
+
+                // インストーラーのバージョンファイルを作成
+                CreateInstallerSetupTextFile(buildDirectory);
             }
 
             // 不要なフォルダを削除
@@ -132,6 +135,13 @@ namespace uDesktopMascot.Editor
                 Directory.CreateDirectory(bgmPath);
                 Log.Debug($"BGM フォルダを作成しました: {bgmPath}");
             }
+        }
+
+        private static void CreateInstallerSetupTextFile(string buildDirectory)
+        {
+            var projectVersion = PlayerSettings.bundleVersion;
+            var setupFilePath = Path.Combine(buildDirectory, "..", "..", "setup.txt");
+            File.WriteAllText(setupFilePath, $"#define MyAppVersion \"{projectVersion}\"");
         }
 
         /// <summary>

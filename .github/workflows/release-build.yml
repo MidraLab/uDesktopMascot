@@ -51,7 +51,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
-      old_version: ${{ steps.get_version.outputs.old_version }}
       project_version: ${{ steps.get_version.outputs.project_version }}
     steps:
       - uses: actions/checkout@v4
@@ -64,21 +63,9 @@ jobs:
           TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           echo "タグ名: $TAG_NAME"
           current_version="${TAG_NAME#v}"
-          old_version=$(grep '#define MyAppVersion' Installer/setup.txt | cut -d '"' -f2)
           project_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          echo "old_version=${old_version}" >> $GITHUB_OUTPUT
           echo "project_version=${project_version}" >> $GITHUB_OUTPUT
-          if [ "$old_version" != "$current_version" ]; then
-            echo "現在のプロジェクトバージョン: $current_version"
-            echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
-            echo "setup.txt の内容: $(cat Installer/setup.txt)"
-            git config --global user.name "github-actions"
-            git config --global user.email "github-actions@github.com"
-            git add Installer/setup.txt
-            git commit -m "Update version file"
-            git push origin HEAD:${{ github.ref }}
-          fi
 
       - name: タグ名の確認
         run: |
@@ -183,36 +170,17 @@ jobs:
           name: ${{ steps.build_info.outputs.artifact_name }}
           path: build/uDesktopMascot
 
-      - name: Change directory to Installer
-        run: cd Installer
-
       - name: Set up Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
         with:
-          path: 'Installer/setup.iss'
-
-      - name: Change directory to Root
-        run: cd ..
+          path: 'setup.iss'
 
       - name: Upload Installer
         uses: actions/upload-artifact@v4.6.0
         with:
           name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
-          path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
+          path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
-      - name: バージョンをロールバック
-        if: ${{ needs.create-tag.outputs.tag_name == 'v99.99.99' }}
-        shell: bash
-        run: |
-          current_version=${{ needs.check-branch.outputs.project_version }}
-          echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
-          echo "setup.txt の内容: $(cat Installer/setup.txt)"
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add Installer/setup.txt
-          git commit -m "Update version file"
-          git push origin HEAD:${{ github.ref }}
-  
   build-mac:
     needs: [create-tag, check-branch]
     runs-on: macos-latest

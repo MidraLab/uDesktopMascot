@@ -36,20 +36,7 @@ jobs:
           echo "イベント名: ${{ github.event_name }}"
           # ProjectSettings.assetから現在のバージョンを取得
           current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
-          old_version=$(grep '#define MyAppVersion' Installer/setup.txt | cut -d '"' -f2)
           echo "current_version=${current_version}" >> $GITHUB_OUTPUT
-          if [ "$old_version" != "$current_version" ]; then
-            echo "現在のプロジェクトバージョン: $current_version"
-            echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
-            echo "setup.txt の内容: $(cat Installer/setup.txt)"
-            git config --global user.name "github-actions"
-            git config --global user.email "github-actions@github.com"
-            git add Installer/setup.txt
-            git commit -m "Update version file"
-            git push origin HEAD:${{ github.ref }}
-          else
-            echo "バージョンは変更されていません。$current_version"
-          fi
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
@@ -145,22 +132,16 @@ jobs:
           name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot
 
-      - name: Change directory to Installer
-        run: cd Installer
-
       - name: Set up Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
         with:
-          path: 'Installer/setup.iss'
-
-      - name: Change directory to Root
-        run: cd ..
+          path: 'setup.iss'
 
       - name: Upload Installer
         uses: actions/upload-artifact@v4.6.0
         with:
           name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
-          path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
+          path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
     if: ${{ github.event_name == 'pull_request' || inputs.build_mac }}
