@@ -12,7 +12,7 @@ namespace uDesktopMascot
     /// <summary>
     /// モデルのモーションを制御するクラス
     /// </summary>
-    public class CharacterManager : MonoBehaviour
+    public partial class CharacterManager : MonoBehaviour
     {
         /// <summary>
         /// モデルのアニメーター
