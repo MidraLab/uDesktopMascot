@@ -114,7 +114,7 @@ jobs:
           fi
 
   build-windows:
-    needs: [check-branch]
+    needs: [create-tag, check-branch]
     runs-on: windows-latest
     steps:
       - name: Check out my unity project.
@@ -194,6 +194,18 @@ jobs:
         with:
           name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
           path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
+
+      - name: バージョンをロールバック
+        if: ${{ needs.create-tag.outputs.tag_name == 'v99.99.99' }}
+        run: |
+          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
+          echo "setup.txt の内容: $(cat Installer/setup.txt)"
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Installer/setup.txt
+          git commit -m "Update version file"
+          git push origin HEAD:${{ github.ref }}
   
   build-mac:
     needs: [check-branch]
@@ -299,19 +311,3 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  rollback-version-for-dev:
-    needs: [create-tag, check-branch, build-windows, build-mac, release]
-    runs-on: ubuntu-latest
-    steps:
-      - name: バージョンをロールバック
-        if: ${{ needs.create-tag.outputs.tag_name == 'v99.99.99' }}
-        run: |
-          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
-          echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
-          echo "setup.txt の内容: $(cat Installer/setup.txt)"
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add Installer/setup.txt
-          git commit -m "Update version file"
-          git push origin HEAD:${{ github.ref }}
