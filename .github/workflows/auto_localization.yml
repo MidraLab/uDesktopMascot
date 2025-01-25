@@ -22,7 +22,7 @@ jobs:
 
       - name: 依存関係のインストール
         run: |
-          pip install openai pandas gitpython
+          pip install openai pandas
 
       - name: 翻訳スクリプトを実行
         env:
@@ -45,12 +45,6 @@ jobs:
             else
               echo "Rebase failed. Please review the errors."
               exit 1  # エラーが発生した場合、処理を中止
-            fi
-
-            # スタッシュが必要かを確認
-            if git stash list | grep -q "stash@{0}"; then
-              # スタッシュが存在する場合はポップする
-              git stash pop
             fi
 
             # 最後にプッシュ
