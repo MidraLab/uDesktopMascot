@@ -1,5 +1,4 @@
 ﻿import os
-import sys
 import pandas as pd
 from openai import OpenAI
 import csv
@@ -24,12 +23,12 @@ target_languages = {
 def translate_text(text, target_language):
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
-            ]
-        )
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
+                    ]
+                )
         # 翻訳結果を取得
         translation = response.choices[0].message.content.strip()
         return translation
@@ -54,13 +53,49 @@ for idx, row in df.iterrows():
             if pd.isnull(current_translation) or current_translation.strip() == '':
                 translation = translate_text(japanese_text, target_language)
                 if translation:
-                    df.at[idx, column] = f'"{translation}"'
+                    df.at[idx, column] = translation
                     print(f"{target_language}への翻訳結果：{translation}")
                 else:
                     print(f"キー '{key}' の {target_language} への翻訳に失敗しました。")
+            else:
+                print(f"'{column}' 列には既に翻訳が存在します。翻訳をスキップします。")
     else:
         print(f"キー '{key}' に日本語テキストが存在しないため、翻訳をスキップします。")
 
-# 更新されたCSVを保存
-df.to_csv(csv_path, index=False, encoding='utf-8')
+# カスタムCSV書き込み関数を定義
+def write_custom_csv(df, csv_path):
+    # 列名のリストを取得
+    columns = df.columns.tolist()
+    # 各列のクォート要否を指定（True: クォートする, False: クォートしない）
+    quote_columns = {col: (col != 'Key') for col in columns}  # 'Key' 列はクォートしない
+
+    with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        
+        # ヘッダーを書き込む（'Key' 列のみクォートしない）
+        header = []
+        for col in columns:
+            if quote_columns[col]:
+                header.append(f'"{col}"')
+            else:
+                header.append(col)
+        writer.writerow(header)
+        
+        # データ行を書き込む
+        for idx, row in df.iterrows():
+            data_row = []
+            for col in columns:
+                value = row[col]
+                if pd.isnull(value):
+                    value = ''
+                if quote_columns[col]:
+                    # データ内にダブルクォーテーションが含まれる場合はエスケープ
+                    value = str(value).replace('"', '""')
+                    data_row.append(f'"{value}"')
+                else:
+                    data_row.append(value)
+            writer.writerow(data_row)
+
+# カスタム関数でCSVを保存
+write_custom_csv(df, csv_path)
 print("翻訳が完了し、CSVファイルが更新されました。")
