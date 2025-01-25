@@ -208,7 +208,7 @@ jobs:
           git push origin HEAD:${{ github.ref }}
   
   build-mac:
-    needs: [check-branch]
+    needs: [create-tag, check-branch]
     runs-on: macos-latest
     steps:
       - name: Check out my unity project.
