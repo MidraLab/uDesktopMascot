@@ -172,6 +172,7 @@ jobs:
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
           Compress-Archive -Path "uDesktopMascot\*" -DestinationPath "${{ steps.build_info.outputs.artifact_name }}.zip"
+          ls -la
           cd ..
           mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
@@ -280,7 +281,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ${{ steps.build_info.outputs.artifact_name }}
-          path: "${{ steps.build_info.outputs.artifact_name }}.zip"
+          path: build/uDesktopMascot
 
       - name: Set up Installer
         run: |
