@@ -39,13 +39,12 @@ jobs:
       - name: タグを作成してプッシュ
         env:
           TAG_NAME: ${{ steps.get_tag.outputs.tag_name }}
+        if: ${{ steps.get_tag.outputs.tag_name != 'v99.99.99' }}
         run: |
-          if [ "$TAG_NAME" != "v99.99.99" ]; then
-            git config --global user.name "${{ github.actor }}"
-            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-            git tag "$TAG_NAME"
-            git push origin "$TAG_NAME"
-          fi
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
 
   check-branch:
     needs: [create_tag]
@@ -195,12 +194,6 @@ jobs:
         with:
           name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
           path: "Installer/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
-
-      - name: Redo version file
-        shell: pwsh
-        run: |
-          echo "${{ needs.check-branch.outputs.current_version }}"
-          echo "${{ needs.check-branch.outputs.old_version }}"
   
   build-mac:
     needs: [check-branch]
@@ -306,3 +299,19 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  roll-back-version-for-dev:
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: バージョンをロールバック
+        if: ${{ needs.check-branch.outputs.current_version == '99.99.99' }}
+        run: |
+          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          echo "#define MyAppVersion \"$current_version\"" > Installer/setup.txt
+          echo "setup.txt の内容: $(cat Installer/setup.txt)"
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Installer/setup.txt
+          git commit -m "Update version file"
+          git push origin HEAD:${{ github.ref }}
