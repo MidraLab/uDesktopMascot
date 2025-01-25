@@ -1,0 +1,94 @@
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace uDesktopMascot
+{
+    /// <summary>
+    ///     メニューのビュー
+    /// </summary>
+    public class MenuView : MonoBehaviour
+    {
+        /// <summary>
+        ///    メニューキャンバス
+        /// </summary>
+        private Canvas _menuCanvas;
+
+        /// <summary>
+        ///     モデル設定ボタン
+        /// </summary>
+        [SerializeField] private Button modelSettingButton;
+
+        /// <summary>
+        ///     便利機能ボタン
+        /// </summary>
+        [SerializeField] private Button helpButton;
+
+        /// <summary>
+        ///     アプリケーション設定
+        /// </summary>
+        [SerializeField] private Button appSettingButton;
+
+        /// <summary>
+        ///     アプリ終了ボタン
+        /// </summary>
+        [SerializeField] private Button quitButton;
+        
+        /// <summary>
+        ///    ヘルプボタン
+        /// </summary>
+        public Action OnHelpAction { get; set; }
+        
+        /// <summary>
+        ///    モデル設定ボタンのクリックイベント
+        /// </summary>
+        public Action OnModelSettingAction { get; set; }
+        
+        /// <summary>
+        ///   アプリケーション設定ボタンのクリックイベント
+        /// </summary>
+        public Action OnAppSettingAction { get; set; }
+        
+        /// <summary>
+        /// アプリ終了ボタンのクリックイベント
+        /// </summary>
+        public Action OnCloseAction { get; set; }
+        
+                
+        private void Awake()
+        {
+            _menuCanvas = GetComponent<Canvas>();
+            SetButtonEvent();
+        }
+        
+        /// <summary>
+        /// ボタンのイベントの登録
+        /// </summary>
+        private void SetButtonEvent()
+        {
+            helpButton.onClick.AddListener(() => OnHelpAction?.Invoke());
+            modelSettingButton.onClick.AddListener(() => OnModelSettingAction?.Invoke());
+            appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
+            quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
+        }
+
+        /// <summary>
+        ///    モデル設定ボタンのクリックイベント
+        /// </summary>
+        /// <param name="screenPosition"></param>
+        public void Show(Vector3 screenPosition)
+        {
+            _menuCanvas.enabled = true;
+            // Canvasの位置を設定
+            _menuCanvas.transform.position = screenPosition;
+        }
+        
+        /// <summary>
+        ///   メニューを非表示にする
+        /// </summary>
+        public void Hide()
+        {
+            _menuCanvas.enabled = false;
+        }
+    }
+}
