@@ -161,8 +161,11 @@ namespace uDesktopMascot.Editor
                     Log.Warning("Player Settings のバージョンが設定されていません。デフォルト値 '0.0.0' を使用します。");
                 }
 
-                // ZIP ファイルの保存先（親ディレクトリに {appName}_v{projectVersion}.zip として保存）
-                var zipFileName = $"{appName}_v{projectVersion}.zip";
+                // バージョン文字列をファイル名に使用できる形式に変換
+                var sanitizedVersion = Regex.Replace(projectVersion, @"[^\d\.]", "").Replace(".", "_");
+
+                // ZIP ファイルの保存先（親ディレクトリに {appName}_v{sanitizedVersion}.zip として保存）
+                var zipFileName = $"{appName}_v{sanitizedVersion}.zip";
                 var zipFilePath = Path.Combine(parentDirectory, zipFileName);
 
                 // 既存の ZIP ファイルを削除
