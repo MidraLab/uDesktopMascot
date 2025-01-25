@@ -13,7 +13,7 @@ namespace uDesktopMascot
         ///    メニューキャンバス
         /// </summary>
         private Canvas _menuCanvas;
-
+        
         private void Awake()
         {
             _menuCanvas = GetComponent<Canvas>();
@@ -62,9 +62,12 @@ namespace uDesktopMascot
         /// <summary>
         ///    モデル設定ボタンのクリックイベント
         /// </summary>
-        public void Show()
+        /// <param name="screenPosition"></param>
+        public void Show(Vector3 screenPosition)
         {
             _menuCanvas.enabled = true;
+            // Canvasの位置を設定
+            _menuCanvas.transform.position = screenPosition;
         }
         
         /// <summary>

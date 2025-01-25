@@ -18,6 +18,11 @@ namespace uDesktopMascot
         /// </summary>
         public bool IsOpened { get;private set; }
 
+        /// <summary>
+        ///  メニューの表示位置のオフセット
+        /// </summary>
+        private static readonly Vector3 MenuOffset = new Vector3(2.5f, 2, -1);
+
         private void Awake()
         {
             IsOpened = false;
@@ -31,10 +36,11 @@ namespace uDesktopMascot
         /// <summary>
         ///   メニューを表示する
         /// </summary>
-        public void Show()
+        /// <param name="screenPosition"></param>
+        public void Show(Vector3 screenPosition)
         {
             IsOpened = true;
-            menuView.Show();
+            menuView.Show(screenPosition + MenuOffset);
         }
         
         /// <summary>

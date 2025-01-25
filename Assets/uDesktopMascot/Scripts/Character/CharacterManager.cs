@@ -384,9 +384,11 @@ namespace uDesktopMascot
             if(_menuPresenter.IsOpened)
             {
                 _menuPresenter.Hide();
-            } else
+            }
+            else
             {
-                _menuPresenter.Show();
+                // メニューを表示. モデルよりも少し前方に表示
+                _menuPresenter.Show(_model.transform.position);
             }
         }
 

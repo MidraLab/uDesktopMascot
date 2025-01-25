@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae9dd34775a14a408cc7a9970d713bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuPanelRectTransform: {fileID: 1774960792885638364}
   modelSettingButton: {fileID: 8826497682611424134}
   helpButton: {fileID: 6633409362927841304}
   appSettingButton: {fileID: 4380041490969524475}
