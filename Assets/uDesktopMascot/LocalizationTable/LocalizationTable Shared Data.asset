@@ -14,7 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TableCollectionName: LocalizationTable
   m_TableCollectionNameGuidString: e0bc4458d73676a429c1b840d5dbc577
-  m_Entries: []
+  m_Entries:
+  - m_Id: 552562152116224
+    m_Key: WORD_MENU_APPLICATON_CLOSE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283136
+    m_Key: WORD_MENU_SELECT_MODEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283134
+    m_Key: WORD_MENU_HELP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283131
+    m_Key: WORD_MENU_APPLICATOIN_SETTING
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
