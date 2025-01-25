@@ -53,13 +53,6 @@
       },
       "url": "https://upm.frozenstorminteractive.com"
     },
-    "com.hecomi.udesktopduplication": {
-      "version": "https://github.com/hecomi/uDesktopDuplication.git#upm",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "4619d21fb5379aa486e44bafebcc6f3bf4f26b7f"
-    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,

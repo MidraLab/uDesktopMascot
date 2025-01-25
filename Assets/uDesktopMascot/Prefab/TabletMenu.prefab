@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 150}
+  m_SizeDelta: {x: 0, y: 90}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &7367363465544888572
 MonoBehaviour:
@@ -53,12 +53,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
+    m_Left: 5
+    m_Right: 5
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 55
+  m_Spacing: 12
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -100,10 +100,10 @@ RectTransform:
   - {fileID: 5735102940272032525}
   m_Father: {fileID: 1774960792885638364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1901645680943787054
 CanvasRenderer:
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.76597613, b: 0.36320752, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -173,7 +173,7 @@ RectTransform:
   m_GameObject: {fileID: 2923925539086153038}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2895984550114107393}
@@ -182,7 +182,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 650, y: 800}
+  m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &7557704577370772050
 Canvas:
@@ -193,7 +193,7 @@ Canvas:
   m_GameObject: {fileID: 2923925539086153038}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 2
+  m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_BlockingObjects: 3
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 51
 --- !u!114 &608224240678806904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,11 +681,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_LocalPosition.x
@@ -741,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1774386116682985281, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_fontSize
-      value: 13.25
+      value: 7.55
       objectReference: {fileID: 0}
     - target: {fileID: 2400614796734426947, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_Interactable
@@ -755,6 +755,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 60a8c3461b0862643ba8d5218da29b14, type: 3}
+    - target: {fileID: 6018721579187306676, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 557971768283136
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -920,11 +924,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_LocalPosition.x
@@ -980,7 +984,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1774386116682985281, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_fontSize
-      value: 13.25
+      value: 15.65
       objectReference: {fileID: 0}
     - target: {fileID: 2400614796734426947, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_Interactable
@@ -994,6 +998,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 89a21dc5e80a28548983d5671c4be278, type: 3}
+    - target: {fileID: 6018721579187306676, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 557971768283131
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1155,11 +1163,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1215,7 +1223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1774386116682985281, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_fontSize
-      value: 13.25
+      value: 7.55
       objectReference: {fileID: 0}
     - target: {fileID: 3903742024286823450, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_Name
@@ -1225,6 +1233,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 8e594c115f408df4e97ac9cc95a2d0a5, type: 3}
+    - target: {fileID: 6018721579187306676, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 552562152116224
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1390,11 +1402,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 912795695803733151, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1450,7 +1462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1774386116682985281, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_fontSize
-      value: 15.65
+      value: 12.7
       objectReference: {fileID: 0}
     - target: {fileID: 3903742024286823450, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
       propertyPath: m_Name
@@ -1460,6 +1472,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: a5d55d23f837f9847a9887d2e200a5bc, type: 3}
+    - target: {fileID: 6018721579187306676, guid: 2a4216d0c4c372a4f9b63293093cb898, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 557971768283134
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
