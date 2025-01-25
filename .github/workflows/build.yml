@@ -6,12 +6,12 @@ on:
       build_windows:
         description: 'Build for Windows'
         required: true
-        default: false
+        default: true
         type: boolean
       build_mac:
         description: 'Build for macOS'
         required: true
-        default: false
+        default: true
         type: boolean
   pull_request:
     branches:
