@@ -158,3 +158,5 @@ sysinfo.txt
 uDesktopMascot*.zip
 uDesktopMascotBuild/*
 .vscode/*
+installer-setup.txt
+uDesktopMascot_win64_installer_*.exe
