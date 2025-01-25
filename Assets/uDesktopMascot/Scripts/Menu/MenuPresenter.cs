@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Unity.Logging;
 using UnityEngine;
 
@@ -29,8 +30,8 @@ namespace uDesktopMascot
             IsOpened = false;
             
             menuView.OnHelpAction = OpenHelp;
-            menuView.OnModelSettingAction = () => { Debug.Log("ModelSetting"); };
-            menuView.OnAppSettingAction = () => { Debug.Log("AppSetting"); };
+            menuView.OnModelSettingAction = () => { Log.Debug("ModelSetting"); };
+            menuView.OnAppSettingAction = () => { Log.Debug("AppSetting"); };
             menuView.OnCloseAction = CloseApp;
 
 #if UNITY_EDITOR
@@ -58,11 +59,42 @@ namespace uDesktopMascot
         }
         
         /// <summary>
-        /// ヘルプページを開く
+        /// ヘルプページ（README.txt）を環境に応じて開く
         /// </summary>
         private void OpenHelp()
         {
-            Debug.Log("Help");
+            string path;
+
+#if UNITY_EDITOR
+            // Unity Editorでは、Assetsフォルダ内のパスを使用
+            path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
+#else
+    // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
+    string rootPath = Directory.GetParent(Application.dataPath).FullName;
+    path = Path.Combine(rootPath, "README.txt");
+#endif
+
+            // パスをログに出力
+            Log.Info($"Attempting to open file at path: {path}");
+
+            if (File.Exists(path))
+            {
+                try
+                {
+                    // ファイルURLを作成
+                    string url = $"file:///{path.Replace("\\", "/")}";
+                    // ファイルを開く
+                    Application.OpenURL(url);
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"README.txtを開くことができませんでした:\n{e}");
+                }
+            }
+            else
+            {
+                Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
+            }
         }
         
         /// <summary>
