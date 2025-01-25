@@ -171,16 +171,13 @@ jobs:
         run: |
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
-          Compress-Archive -Path "uDesktopMascot\*" -DestinationPath "${{ steps.build_info.outputs.artifact_name }}.zip"
-          ls -la
           cd ..
-          mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ${{ steps.build_info.outputs.artifact_name }}
-          path: "${{ steps.build_info.outputs.artifact_name }}.zip"
+          path: build/uDesktopMascot
 
       - name: Change directory to Installer
         run: cd Installer
@@ -272,10 +269,7 @@ jobs:
         run: |
           cd build
           mv "StandaloneOSX" "uDesktopMascot"
-          zip -r "${{ steps.build_info.outputs.artifact_name }}.zip" *
-          ls -la
           cd ..
-          mv "build/${{ steps.build_info.outputs.artifact_name }}.zip" "./${{ steps.build_info.outputs.artifact_name }}.zip"
 
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
