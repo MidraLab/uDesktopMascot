@@ -64,18 +64,14 @@ for idx, row in df.iterrows():
 
 # カスタムCSV書き込み関数を定義
 def write_custom_csv(df, csv_path):
-    # 列名のリストを取得
     columns = df.columns.tolist()
-    # 各列のクォート要否を指定（True: クォートする, False: クォートしない）
-    quote_columns = {col: (col != 'Key') for col in columns}  # 'Key' 列はクォートしない
-
     with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-        # quoting=csv.QUOTE_NONE を設定して自動クォートを無効化
-        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE, escapechar='\\')
-
+        # CSVライターを作成（デフォルト設定を使用）
+        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        
         # ヘッダーを書き込む
         writer.writerow(columns)
-
+        
         # データ行を書き込む
         for idx, row in df.iterrows():
             data_row = []
@@ -85,16 +81,14 @@ def write_custom_csv(df, csv_path):
                     value = ''
                 else:
                     value = str(value)
-                if quote_columns[col]:
-                    # ダブルクォーテーションをエスケープ
-                    value = value.replace('"', '""')
-                    # ダブルクォーテーションで囲む
-                    value = f'"{value}"'
+                if col in ['Key', 'Id']:
+                    # 'Key' と 'Id' 列はクォートしない
+                    data_row.append(value)
                 else:
-                    # クォートしない
-                    pass  # 何もしない
-                data_row.append(value)
+                    # その他の列はデフォルトのクォート処理に任せる
+                    data_row.append(value)
             writer.writerow(data_row)
+
 
 # カスタム関数でCSVを保存
 write_custom_csv(df, csv_path)
