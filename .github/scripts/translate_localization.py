@@ -63,16 +63,14 @@ for idx, row in df.iterrows():
         print(f"キー '{key}' に日本語テキストが存在しないため、翻訳をスキップします。")
 
 # カスタムCSV書き込み関数を定義
+# カスタムCSV書き込み関数を定義
 def write_custom_csv(df, csv_path):
     columns = df.columns.tolist()
     with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-        # CSVライターを作成（デフォルト設定を使用）
-        writer = csv.writer(csvfile, delimiter=',')
-        
-        # ヘッダーを書き込む
-        writer.writerow(columns)
-        
-        # データ行を書き込む
+        # ヘッダーを書き込む（ダブルクォーテーションを付けない）
+        csvfile.write(','.join(columns) + '\n')
+
+        # データ行を書き込む（全てのフィールドをダブルクォーテーションで囲む。ただし 'Key' と 'Id' 列を除く）
         for idx, row in df.iterrows():
             data_row = []
             for col in columns:
@@ -80,14 +78,16 @@ def write_custom_csv(df, csv_path):
                 if pd.isnull(value):
                     value = ''
                 else:
-                    value = str(value)
-                if col in ['Key', 'Id']:
-                    # 'Key' と 'Id' 列はクォートしない
+                    value = str(value).replace('\n', '\\n').replace('\r', '\\r')
+                if col in ['Id']:
+                    # Id 列はそのまま
+                    value = value.replace(',', '\\,')
                     data_row.append(value)
                 else:
-                    # その他の列はデフォルトのクォート処理に任せる
-                    data_row.append(value)
-            writer.writerow(data_row)
+                    # ダブルクォーテーションで囲み、内部のダブルクォーテーションをエスケープ
+                    value = value.replace('"', '""')
+                    data_row.append(f'"{value}"')
+            csvfile.write(','.join(data_row) + '\n')
 
 
 # カスタム関数でCSVを保存
