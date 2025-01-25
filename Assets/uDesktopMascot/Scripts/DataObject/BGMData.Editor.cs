@@ -1,14 +1,13 @@
-﻿using NaughtyAttributes;
+﻿#if UNITY_EDITOR
+using NaughtyAttributes;
 using UnityEngine;
-
-#if UNITY_EDITOR
 
 namespace uDesktopMascot
 {
     /// <summary>
-    ///    BGMを制御するクラス Editor拡張
+    ///   BGMのデータを保持するDataObject Editor拡張
     /// </summary>
-    public partial class BGMController
+    public partial class BGMData
     {
         [Button("BGMファイル登録を最新化")]
         private void UpdateBGMFiles()
