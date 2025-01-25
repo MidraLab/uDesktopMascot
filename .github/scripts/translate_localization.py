@@ -26,7 +26,7 @@ def translate_text(text, target_language):
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Translate the following text to {target_language}:\n\n{text}"}
+                {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
             ]
         )
         # 翻訳結果を取得
