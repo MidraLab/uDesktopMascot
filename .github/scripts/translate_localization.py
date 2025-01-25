@@ -2,6 +2,7 @@
 import sys
 import pandas as pd
 from openai import OpenAI
+import csv
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
@@ -61,5 +62,5 @@ for idx, row in df.iterrows():
         print(f"キー '{key}' に日本語テキストが存在しないため、翻訳をスキップします。")
 
 # 更新されたCSVを保存
-df.to_csv(csv_path, index=False)
+df.to_csv(csv_path, index=False, encoding='utf-8', quoting=csv.QUOTE_ALL)
 print("翻訳が完了し、CSVファイルが更新されました。")
