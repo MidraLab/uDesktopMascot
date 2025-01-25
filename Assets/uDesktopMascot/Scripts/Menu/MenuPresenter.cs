@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Logging;
 using UnityEngine;
 
 namespace uDesktopMascot
@@ -6,7 +7,7 @@ namespace uDesktopMascot
     /// <summary>
     ///    メニューのプレゼンター
     /// </summary>
-    public class MenuPresenter : MonoBehaviour
+    public partial class MenuPresenter : MonoBehaviour
     {
         /// <summary>
         ///    メニューのビュー
@@ -31,6 +32,10 @@ namespace uDesktopMascot
             menuView.OnModelSettingAction = () => { Debug.Log("ModelSetting"); };
             menuView.OnAppSettingAction = () => { Debug.Log("AppSetting"); };
             menuView.OnCloseAction = CloseApp;
+
+#if UNITY_EDITOR
+            InitDebugMenu();
+#endif
         }
 
         /// <summary>
@@ -65,11 +70,24 @@ namespace uDesktopMascot
         /// </summary>
         private void CloseApp()
         {
+            Log.Debug("Close App");
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
-        } 
+        }
+
+        private void OnDestroy()
+        {
+            menuView.OnHelpAction = null;
+            menuView.OnModelSettingAction = null;
+            menuView.OnAppSettingAction = null;
+            menuView.OnCloseAction = null;
+            
+#if UNITY_EDITOR
+            OnDestroyEditor();
+#endif
+        }
     }
 }

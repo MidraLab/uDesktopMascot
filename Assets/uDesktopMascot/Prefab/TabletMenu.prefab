@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_BlockingObjects: 3
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -259,7 +259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae9dd34775a14a408cc7a9970d713bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuPanelRectTransform: {fileID: 1774960792885638364}
   modelSettingButton: {fileID: 8826497682611424134}
   helpButton: {fileID: 6633409362927841304}
   appSettingButton: {fileID: 4380041490969524475}
@@ -313,11 +312,11 @@ RectTransform:
   - {fileID: 9091209976712816391}
   m_Father: {fileID: 2895984550114107393}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0, y: 650}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!1001 &1641552868474610126
 PrefabInstance:
   m_ObjectHideFlags: 0
