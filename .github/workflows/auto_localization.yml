@@ -57,6 +57,7 @@ jobs:
             git push origin HEAD:${{ github.head_ref }}
           else
             echo "No changes to commit"
+          fi
 
       - name: PRにコメントを追加
         if: success() || failure()
