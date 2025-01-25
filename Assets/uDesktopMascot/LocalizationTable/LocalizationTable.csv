@@ -1,5 +1,5 @@
 Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
-"WORD_MENU_APPLICATON_CLOSE",552562152116224,,,,"アプリ終了",
-"WORD_MENU_SELECT_MODEL",557971768283136,,,,"モデル変更",
-"WORD_MENU_HELP",557971768283134,,,,"ヘルプ",
-"WORD_MENU_APPLICATOIN_SETTING",557971768283131,,,,"設定",
+WORD_MENU_APPLICATON_CLOSE,552562152116224,"""App exit""","""Fermeture de l'application""","""Chiusura dell'applicazione""",アプリ終了,"""앱 종료"""
+WORD_MENU_SELECT_MODEL,557971768283136,"""Model change""","""Changement de modèle""","""Cambio di modello""",モデル変更,"""모델 변경"""
+WORD_MENU_HELP,557971768283134,"""Help""","""Aide""","""Aiuto""",ヘルプ,"""도움"""
+WORD_MENU_APPLICATOIN_SETTING,557971768283131,"""Setting""","""Paramètres""","""Impostazioni""",設定,"""설정"""
