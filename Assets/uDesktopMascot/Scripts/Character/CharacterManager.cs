@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Kirurobo;
 
 namespace uDesktopMascot
 {
@@ -23,6 +24,8 @@ namespace uDesktopMascot
         /// モデルのデフォルトアニメーションクリップ
         /// </summary>
         [SerializeField] private List<AnimationClip> _defaultAnimationClip;
+
+        [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
 
         /// <summary>
         /// モデルのゲームオブジェクト
@@ -199,11 +202,12 @@ namespace uDesktopMascot
             // _characterAnimationController.Update();
             
             // モーションを切り替える
-            if (_isDragging && _isDraggingModel)
+            if (_isDragging && _uniWindowMoveHandle.IsDragging)
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
                 _modelAnimator.SetBool(Const.IsSitting, false);
                 _modelAnimator.SetBool(Const.IsDragging, true);
+                Log.Debug("ドラッグ中 ハンギングモーション");
             } else
             {
                 _modelAnimator.SetBool(Const.IsDragging, false);
