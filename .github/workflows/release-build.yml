@@ -201,17 +201,6 @@ jobs:
         run: |
           echo "${{ needs.check-branch.outputs.current_version }}"
           echo "${{ needs.check-branch.outputs.old_version }}"
-          if ("${{ needs.check-branch.outputs.current_version }}" -ceq "99.99.99") {
-            $old_version = "${{ needs.check-branch.outputs.old_version }}"
-            Write-Output $old_version
-            "#define MyAppVersion `"$old_version`"" | Out-File -FilePath Installer/setup.txt -Encoding utf8
-            Write-Output "setup.txt の内容: $(Get-Content Installer/setup.txt)"
-            git config --global user.name "github-actions"
-            git config --global user.email "github-actions@github.com"
-            git add Installer/setup.txt
-            git commit -m "Update version file"
-            git push origin HEAD:${{ github.ref }}
-          }
   
   build-mac:
     needs: [check-branch]
