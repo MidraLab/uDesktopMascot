@@ -15,6 +15,11 @@ namespace uDesktopMascot
         private Canvas _menuCanvas;
 
         /// <summary>
+        ///    メニューのRectTransform
+        /// </summary>
+        private RectTransform _menuRectTransform;
+
+        /// <summary>
         ///     モデル設定ボタン
         /// </summary>
         [SerializeField] private Button modelSettingButton;
@@ -53,11 +58,11 @@ namespace uDesktopMascot
         /// アプリ終了ボタンのクリックイベント
         /// </summary>
         public Action OnCloseAction { get; set; }
-        
                 
         private void Awake()
         {
             _menuCanvas = GetComponent<Canvas>();
+            _menuRectTransform = GetComponent<RectTransform>();
             SetButtonEvent();
         }
         
@@ -73,14 +78,15 @@ namespace uDesktopMascot
         }
 
         /// <summary>
-        ///    モデル設定ボタンのクリックイベント
+        ///    メニューを表示する
         /// </summary>
         /// <param name="screenPosition"></param>
         public void Show(Vector3 screenPosition)
         {
             _menuCanvas.enabled = true;
-            // Canvasの位置を設定
-            _menuCanvas.transform.position = screenPosition;
+
+            // メニューの位置を調整して、画面内に収まるようにする
+            AdjustMenuPosition(screenPosition);
         }
         
         /// <summary>
@@ -89,6 +95,55 @@ namespace uDesktopMascot
         public void Hide()
         {
             _menuCanvas.enabled = false;
+        }
+
+        /// <summary>
+        /// メニューの位置を調整して、画面内に収まるようにする
+        /// </summary>
+        /// <param name="screenPosition">表示したいスクリーン座標</param>
+        private void AdjustMenuPosition(Vector3 screenPosition)
+        {
+            // メニューのサイズを取得
+            Vector2 menuSize = _menuRectTransform.sizeDelta;
+
+            // スクリーンの幅と高さを取得
+            float screenWidth = Screen.width;
+            float screenHeight = Screen.height;
+
+            // RectTransformのpivotを考慮して、メニューの四隅の位置を計算
+            Vector2 pivotOffset = new Vector2(menuSize.x * _menuRectTransform.pivot.x, menuSize.y * _menuRectTransform.pivot.y);
+
+            // メニューの表示位置を調整するための変数
+            Vector3 adjustedPosition = screenPosition;
+
+            // メニューが画面の右端を超える場合の補正
+            float rightEdge = adjustedPosition.x + (menuSize.x - pivotOffset.x);
+            if (rightEdge > screenWidth)
+            {
+                adjustedPosition.x -= (rightEdge - screenWidth);
+            }
+            // メニューが画面の左端を超える場合の補正
+            float leftEdge = adjustedPosition.x - pivotOffset.x;
+            if (leftEdge < 0)
+            {
+                adjustedPosition.x -= leftEdge;
+            }
+
+            // メニューが画面の上端を超える場合の補正
+            float topEdge = adjustedPosition.y + (menuSize.y - pivotOffset.y);
+            if (topEdge > screenHeight)
+            {
+                adjustedPosition.y -= (topEdge - screenHeight);
+            }
+            // メニューが画面の下端を超える場合の補正
+            float bottomEdge = adjustedPosition.y - pivotOffset.y;
+            if (bottomEdge < 0)
+            {
+                adjustedPosition.y -= bottomEdge;
+            }
+
+            // RectTransformの位置を設定
+            _menuRectTransform.position = adjustedPosition;
         }
     }
 }
