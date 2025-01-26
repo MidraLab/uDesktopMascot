@@ -1,11 +1,6 @@
 ﻿using System;
-using System.IO;
-using Unity.Logging;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using UniTask = Cysharp.Threading.Tasks.UniTask;
-using UniTaskExtensions = Cysharp.Threading.Tasks.UniTaskExtensions;
 
 namespace uDesktopMascot
 {
@@ -74,7 +69,6 @@ namespace uDesktopMascot
             _menuCanvas = GetComponent<Canvas>();
             _menuRectTransform = GetComponent<RectTransform>();
             SetButtonEvent();
-            ApplyMenuUISettings();
         }
 
         /// <summary>
@@ -107,74 +101,23 @@ namespace uDesktopMascot
         {
             _menuCanvas.enabled = false;
         }
-
+        
         /// <summary>
-        /// メニューの表示設定を適用する
+        /// 背景色を設定する
         /// </summary>
-        private void ApplyMenuUISettings()
+        /// <param name="color"></param>
+        public void SetBackgroundColor(Color color)
         {
-            var menuUISettings = ApplicationSettings.Instance.MenuUI;
-
-            // 背景色を適用
-            if (!string.IsNullOrEmpty(menuUISettings.BackgroundColor))
-            {
-                if (ColorUtility.TryParseHtmlString(menuUISettings.BackgroundColor, out Color color))
-                {
-                    backgroundImage.color = color;
-                } else
-                {
-                    Log.Warning("背景色の指定が不正です。正しいカラーコードを設定してください。");
-                }
-            }
-
-            // 背景画像を適用
-            if (!string.IsNullOrEmpty(menuUISettings.BackgroundImagePath))
-            {
-                LoadBackgroundImage(menuUISettings.BackgroundImagePath);
-            }
+            backgroundImage.color = color;
         }
-
+        
         /// <summary>
-        /// 背景画像をロードする
+        /// 背景画像を設定する
         /// </summary>
-        /// <param name="relativePath"></param>
-        private void LoadBackgroundImage(string relativePath)
+        /// <param name="sprite"></param>
+        public void SetBackgroundImage(Sprite sprite)
         {
-            UniTaskExtensions.Forget(LoadBackgroundImageCoroutine(relativePath));
-        }
-
-        /// <summary>
-        /// 背景画像をロードするコルーチン
-        /// </summary>
-        /// <param name="relativePath"></param>
-        private async UniTask LoadBackgroundImageCoroutine(string relativePath)
-        {
-            string fullPath = Path.Combine(Application.streamingAssetsPath, relativePath);
-
-            UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(fullPath);
-
-            await uwr.SendWebRequest();
-
-            if (uwr.result != UnityWebRequest.Result.Success)
-            {
-                Log.Error("背景画像のロードに失敗しました。パスを確認してください: " + fullPath + " エラー: " + uwr.error);
-            } else
-            {
-                Texture2D texture = DownloadHandlerTexture.GetContent(uwr);
-                if (texture != null)
-                {
-                    Rect rect = new Rect(0, 0, texture.width, texture.height);
-                    Vector2 pivot = new Vector2(0.5f, 0.5f);
-                    Sprite sprite = Sprite.Create(texture, rect, pivot);
-
-                    backgroundImage.sprite = sprite;
-                    backgroundImage.color = Color.white; // スプライトの色が正しく表示されるようにする
-                    backgroundImage.type = Image.Type.Sliced; // 必要に応じて設定
-                } else
-                {
-                    Log.Error("背景画像のテクスチャがロードできませんでした。パスを確認してください: " + fullPath);
-                }
-            }
+            backgroundImage.sprite = sprite;
         }
 
         /// <summary>
