@@ -369,6 +369,7 @@ namespace uDesktopMascot
 
             // アニメーターのパラメータをリセット
             _modelAnimator.SetBool(Const.IsDragging, false);
+            Log.Debug("Click終了");
         }
 
         /// <summary>
