@@ -117,34 +117,13 @@ namespace uDesktopMascot
         {
             string fullPath = Path.Combine(Application.streamingAssetsPath, relativePath);
 
-            // ファイルが存在しない場合はエラーログを出力して終了
-            if (!File.Exists(fullPath))
+            Sprite sprite = await ImageLoader.LoadSpriteAsync(fullPath, cancellationToken);
+            if (sprite != null)
             {
-                Log.Error("背景画像が見つかりません。パスを確認してください: " + fullPath);
-                return;
-            }
-
-            UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(fullPath);
-
-            await uwr.SendWebRequest().WithCancellation(cancellationToken);
-
-            if (uwr.result != UnityWebRequest.Result.Success)
+                menuView.SetBackgroundImage(sprite);
+            }else
             {
-                Log.Error("背景画像のロードに失敗しました。パスを確認してください: " + fullPath + " エラー: " + uwr.error);
-            } else
-            {
-                Texture2D texture = DownloadHandlerTexture.GetContent(uwr);
-                if (texture != null)
-                {
-                    Rect rect = new Rect(0, 0, texture.width, texture.height);
-                    Vector2 pivot = new Vector2(0.5f, 0.5f);
-                    Sprite sprite = Sprite.Create(texture, rect, pivot);
-
-                    menuView.SetBackgroundImage(sprite);
-                } else
-                {
-                    Log.Error("背景画像のテクスチャがロードできませんでした。パスを確認してください: " + fullPath);
-                }
+                Log.Warning("背景画像のロードに失敗しました。パスを確認してください: " + fullPath);
             }
         }
 
