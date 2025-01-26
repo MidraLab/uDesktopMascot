@@ -166,7 +166,6 @@ jobs:
           git lfs pull
           git add .
           git reset --hard
-          ls -la
 
       - uses: actions/cache@v4.2.0
         with:
@@ -183,7 +182,6 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: StandaloneOSX
-          skipActivation: true
           unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
           versioning: Custom

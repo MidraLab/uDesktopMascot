@@ -25,6 +25,9 @@ namespace uDesktopMascot
         /// </summary>
         [SerializeField] private List<AnimationClip> _defaultAnimationClip;
 
+        /// <summary>
+        /// ウィンドウ移動ハンドラ
+        /// </summary>
         [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
 
         /// <summary>
@@ -202,7 +205,7 @@ namespace uDesktopMascot
             // _characterAnimationController.Update();
             
             // モーションを切り替える
-            if (_isDragging)
+            if (_isDragging && _uniWindowMoveHandle.IsDragging)
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
                 _modelAnimator.SetBool(Const.IsSitting, false);
