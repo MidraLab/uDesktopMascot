@@ -7,52 +7,47 @@ on:
     paths:
       - README.md
 
+permissions:
+  contents: write
+
 jobs:
   translate_readme:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v5.3.0
-      with:
-        python-version: '3.11'
+      - name: Confirm current branch
+        run: |
+          echo "Current branch: $(git branch --show-current)"
 
-    - name: Install OpenAI library
-      run: pip install openai
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.11'
 
-    - name: Run translation script
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: python .github/scripts/translate_readme.py
+      - name: Install OpenAI library
+        run: pip install openai
 
-    - name: Commit changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+      - name: Run translation script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python .github/scripts/translate_readme.py
 
-        # 変更をステージしてコミット
-        git add README_EN.md README_CN.md README_ES.md README_FR.md
-        if git commit -m "Update translations"; then
-          echo "Changes committed successfully."
-
-          # Pullでリモートの最新の変更を取り込み、リベース
-          if git pull --rebase origin ${{ github.head_ref }}; then
-            echo "Successfully rebased."
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add README_EN.md README_CN.md README_ES.md README_FR.md
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit."
           else
-            echo "Rebase failed. Please review the errors."
-            exit 1  # エラーが発生した場合、処理を中止
+            git commit -m "Update translations"
+            echo "Changes committed successfully."
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
           fi
-
-          # スタッシュが必要かを確認
-          if git stash list | grep -q "stash@{0}"; then
-            # スタッシュが存在する場合はポップする
-            git stash pop
-          fi
-
-          # 最後にプッシュ
-          git push origin HEAD:${{ github.head_ref }}
-        else
-          echo "No changes to commit"
-        fi
