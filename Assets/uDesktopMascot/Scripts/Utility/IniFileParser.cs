@@ -56,7 +56,7 @@ namespace uDesktopMascot.Utility
                         var value = trimmedLine.Substring(separatorIndex + 1).Trim();
 
                         // 行内コメントを除去
-                        var commentIndex = value.IndexOfAny(new char[] { ';', '#' });
+                        var commentIndex = value.IndexOfAny(new char[] { ';'});
                         if (commentIndex >= 0)
                         {
                             value = value.Substring(0, commentIndex).Trim();

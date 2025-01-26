@@ -155,6 +155,8 @@ sysinfo.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/unity,rider
 
-uDesktopMascot.zip
+uDesktopMascot*.zip
 uDesktopMascotBuild/*
 .vscode/*
+installer-setup.txt
+uDesktopMascot_win64_installer_*.exe

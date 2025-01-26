@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using uDesktopMascot.Utility;
 using Unity.Logging;
@@ -17,7 +18,7 @@ namespace uDesktopMascot
         /// <summary>
         ///    設定ファイルのパス
         /// </summary>
-        private static string SettingsFilePath;
+        private static string _settingsFilePath;
 
         /// <summary>
         ///   キャラクター設定
@@ -40,6 +41,11 @@ namespace uDesktopMascot
         public PerformanceSettings Performance { get; private set; }
         
         /// <summary>
+        /// メニューUIの設定
+        /// </summary>
+        public MenuUISettings MenuUISettings { get; private set; }
+        
+        /// <summary>
         /// 設定ファイルが存在するかどうか
         /// </summary>
         public bool IsLoaded { get; private set; } = false;
@@ -51,18 +57,19 @@ namespace uDesktopMascot
         {
             try
             {
-                SettingsFilePath = Path.Combine(Application.streamingAssetsPath, "application_settings.txt");
+                _settingsFilePath = Path.Combine(Application.streamingAssetsPath, "application_settings.txt");
 
                 // デフォルト値で初期化
                 Character = new CharacterSettings();
                 Sound = new SoundSettings();
                 Display = new DisplaySettings();
                 Performance = new PerformanceSettings();
+                MenuUISettings = new MenuUISettings();
 
                 LoadSettings();
                 
                 // 設定ファイルが存在するか判定
-                IsLoaded = File.Exists(SettingsFilePath);
+                IsLoaded = File.Exists(_settingsFilePath);
             }
             catch (Exception ex)
             {
@@ -75,12 +82,12 @@ namespace uDesktopMascot
         /// </summary>
         private void LoadSettings()
         {
-            if (File.Exists(SettingsFilePath))
+            if (File.Exists(_settingsFilePath))
             {
                 // 設定ファイルが存在する場合、読み込む
-                var settingsData = IniFileParser.Parse(SettingsFilePath);
+                var settingsData = IniFileParser.Parse(_settingsFilePath);
                 AssignValues(settingsData);
-                Log.Info("設定ファイルを読み込みました: " + SettingsFilePath);
+                Log.Info("設定ファイルを読み込みました: " + _settingsFilePath);
 
                 // 設定値の検証と修正
                 ValidateSettings();
@@ -88,7 +95,7 @@ namespace uDesktopMascot
             else
             {
                 // 設定ファイルが存在しない場合、デフォルト設定を使用し、ファイルを生成
-                Log.Warning("設定ファイルが見つかりませんでした。デフォルト設定でファイルを生成します: " + SettingsFilePath);
+                Log.Warning("設定ファイルが見つかりませんでした。デフォルト設定でファイルを生成します: " + _settingsFilePath);
 
                 // 必要であれば、動的に設定値を調整
                 ValidateSettings();
@@ -126,6 +133,10 @@ namespace uDesktopMascot
                     case "Performance":
                         AssignSettings(Performance, section.Value);
                         break;
+                    case "MenuUISettings":
+                        AssignSettings(MenuUISettings, section.Value);
+                        Log.Debug("MenuUISettings: " + MenuUISettings.BackgroundColor);
+                        break;
                     default:
                         Log.Warning($"未知の設定セクションが見つかりました: {section.Key}");
                         break;
@@ -139,7 +150,7 @@ namespace uDesktopMascot
         /// <param name="settingsInstance"></param>
         /// <param name="values"></param>
         /// <typeparam name="T"></typeparam>
-        private void AssignSettings<T>(T settingsInstance, Dictionary<string, string> values) where T : class
+        private void AssignSettings<T>(T settingsInstance, Dictionary<string, string> values)
         {
             if (settingsInstance == null || values == null)
             {
@@ -154,7 +165,19 @@ namespace uDesktopMascot
                 {
                     try
                     {
-                        var value = ConvertValue(property.PropertyType, kvp.Value, property.GetValue(settingsInstance));
+                        object value;
+                        if (property.PropertyType == typeof(List<string>))
+                        {
+                            var list = kvp.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(item => item.Trim())
+                                .ToList();
+                            value = list;
+                        }
+                        else
+                        {
+                            // 通常の値の変換
+                            value = ConvertValue(property.PropertyType, kvp.Value, property.GetValue(settingsInstance));
+                        }
                         property.SetValue(settingsInstance, value);
                     }
                     catch (Exception ex)
@@ -240,15 +263,16 @@ namespace uDesktopMascot
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(SettingsFilePath))
+                using (StreamWriter writer = new StreamWriter(_settingsFilePath))
                 {
                     WriteSection(writer, "Character", Character);
                     WriteSection(writer, "Sound", Sound);
                     WriteSection(writer, "Display", Display);
                     WriteSection(writer, "Performance", Performance);
+                    WriteSection(writer, "MenuUISettings", MenuUISettings);
                 }
 
-                Log.Info("設定ファイルを生成しました: " + SettingsFilePath);
+                Log.Info("設定ファイルを生成しました: " + _settingsFilePath);
             }
             catch (Exception ex)
             {

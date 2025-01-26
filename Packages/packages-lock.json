@@ -28,12 +28,30 @@
       "dependencies": {},
       "hash": "8a8fa5a9659a6d63f196391c71e06c4286c8acd7"
     },
-    "com.hecomi.udesktopduplication": {
-      "version": "https://github.com/hecomi/uDesktopDuplication.git#upm",
-      "depth": 0,
-      "source": "git",
+    "com.frozenstorminteractive.assimp": {
+      "version": "4.1.0",
+      "depth": 1,
+      "source": "registry",
       "dependencies": {},
-      "hash": "4619d21fb5379aa486e44bafebcc6f3bf4f26b7f"
+      "url": "https://upm.frozenstorminteractive.com"
+    },
+    "com.frozenstorminteractive.assimp.macos": {
+      "version": "4.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.frozenstorminteractive.assimp": "4.1.0"
+      },
+      "url": "https://upm.frozenstorminteractive.com"
+    },
+    "com.frozenstorminteractive.assimp.windows": {
+      "version": "4.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.frozenstorminteractive.assimp": "4.1.0"
+      },
+      "url": "https://upm.frozenstorminteractive.com"
     },
     "com.unity.2d.animation": {
       "version": "10.1.4",
@@ -238,7 +256,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.localization": {
-      "version": "1.5.3",
+      "version": "1.5.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -294,6 +312,13 @@
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.playablegraph-visualizer": {
+      "version": "0.2.1-preview.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

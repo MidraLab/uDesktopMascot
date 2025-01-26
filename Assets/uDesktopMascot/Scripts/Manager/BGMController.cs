@@ -9,12 +9,12 @@ namespace uDesktopMascot
     /// <summary>
     ///     BGMを制御するクラス
     /// </summary>
-    public partial class BGMController : SingletonMonoBehaviour<BGMController>
+    public class BGMController : SingletonMonoBehaviour<BGMController>
     {
         /// <summary>
         ///     BGMのリスト
         /// </summary>
-        [SerializeField] private List<AudioClip> bgmClips = new();
+        [SerializeField] private BGMData bgmData;
 
         /// <summary>
         ///     オーディオソース
@@ -80,7 +80,7 @@ namespace uDesktopMascot
         {
             await SoundUtility.LoadSoundsAsync(
                 BgmFolderPath,
-                bgmClips,
+                bgmData.BgmClips,
                 count =>
                 {
                     _bgmLoaded = true;
@@ -106,17 +106,14 @@ namespace uDesktopMascot
         /// </summary>
         private void PlayNextBGM()
         {
-            if (!_bgmLoaded || bgmClips.Count == 0)
+            if (!_bgmLoaded || bgmData.BgmClips.Count == 0)
             {
                 Log.Warning("BGMがロードされていないか、BGMが存在しません。");
                 return;
             }
-
-            // 次のBGMのインデックスを決定（循環再生）
-            _currentBgmIndex = (_currentBgmIndex + 1) % bgmClips.Count;
-
+            
             // 選択したBGMを再生
-            _audioSource.clip = bgmClips[_currentBgmIndex];
+            _audioSource.clip = bgmData.BgmClips[Random.Range(0, bgmData.BgmClips.Count)];
             _audioSource.Play();
 
             Log.Debug("再生中のBGM: {0}", _audioSource.clip.name);
@@ -137,7 +134,7 @@ namespace uDesktopMascot
         private void Update()
         {
             // BGMが再生終了したら次の曲を再生
-            if (_bgmLoaded && !_audioSource.isPlaying && bgmClips.Count > 0)
+            if (_bgmLoaded && !_audioSource.isPlaying && bgmData.BgmClips.Count > 0)
             {
                 PlayNextBGM();
             }

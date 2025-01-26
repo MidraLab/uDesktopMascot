@@ -1,23 +1,42 @@
 ﻿name: Run build
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      build_windows:
+        description: 'Build for Windows'
+        required: true
+        default: true
+        type: boolean
+      build_mac:
+        description: 'Build for macOS'
+        required: true
+        default: true
+        type: boolean
   pull_request:
     branches:
       - main
     types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 0 * * *'  # 毎日UTCで午前0時に実行
 
 jobs:
   check-branch:
     runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.check_branch.outputs.current_version }}
     steps:
       - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0  # すべての履歴とタグを取得
 
       - name: Check event type and branch
+        id: check_branch
         run: |
           echo "イベント名: ${{ github.event_name }}"
+          # ProjectSettings.assetから現在のバージョンを取得
+          current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "これはプルリクエストイベントです。"
             echo "PRのソースブランチ: ${{ github.head_ref }}"
@@ -25,13 +44,9 @@ jobs:
             if [ "${{ github.head_ref }}" == "develop" ] && [ "${{ github.base_ref }}" == "main" ]; then
               echo "これは 'develop' から 'main' へのPRです。バージョンチェックを実行します。"
 
-              # ProjectSettings.assetから現在のバージョンを取得
-              current_version=$(grep -m1 'bundleVersion:' ProjectSettings/ProjectSettings.asset | awk '{print $2}')
-              echo "現在のプロジェクトバージョン: $current_version"
-
               # gitからバージョンタグのリストを取得
               git fetch --tags
-              version_tags=$(git tag -l 'v*')
+              version_tags=$(git tag -l 'v*' | grep -v '^v99\.99\.99$')
               echo "既存のバージョンタグ: $version_tags"
 
               # タグからバージョン番号を抽出
@@ -61,25 +76,10 @@ jobs:
             echo "プルリクエストイベントではありません。チェックをスキップします。"
           fi
 
-  build:
+  build-windows:
+    if: ${{ github.event_name == 'pull_request' || inputs.build_windows }}
     needs: [check-branch]
-    runs-on: ${{ matrix.runsOn }}
-    name: Run builds for Windows, Mac
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows64
-          - StandaloneOSX
-        unityVersion: ['6000.0.31f1']
-        include:
-          - targetPlatform: StandaloneWindows64
-            runsOn: windows-latest
-            modules: windows-il2cpp
-          - targetPlatform: StandaloneOSX
-            runsOn: macos-latest
-            modules: mac-il2cpp
-
+    runs-on: windows-latest
     steps:
       - name: Check out my unity project.
         uses: actions/checkout@v4.2.2
@@ -100,9 +100,72 @@ jobs:
           git add .
           git reset --hard
 
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4.2.0
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Run the build for StandaloneWindows64
+        uses: game-ci/unity-builder@v4.3.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows64
+          unityVersion: '6000.0.31f1'
+          buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ needs.check-branch.outputs.current_version }}
+
+      - name: Change build folder name
+        run: |
+          cd build
+          mv "StandaloneWindows64" "uDesktopMascot"
+          cd ..
+
+      - name: Upload the Build for StandaloneWindows64
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
+          path: build/uDesktopMascot
+
+      - name: Set up Inno Setup
+        uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
+        with:
+          path: 'setup.iss'
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
+
+  build-mac:
+    if: ${{ github.event_name == 'pull_request' || inputs.build_mac }}
+    needs: [check-branch]
+    runs-on: macos-latest
+    steps:
+      - name: Check out my unity project.
+        uses: actions/checkout@v4.2.2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v4.2.0
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
 
       - uses: actions/cache@v4.2.0
         with:
@@ -111,38 +174,38 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Run the build for ${{ matrix.targetPlatform }}
+      - name: Run the build for StandaloneOSX
         uses: game-ci/unity-builder@v4.3.0
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: StandaloneOSX
+          unityVersion: '6000.0.31f1'
           buildName: 'uDesktopMascot'
+          versioning: Custom
+          version: ${{ needs.check-branch.outputs.current_version }}
 
       - name: Change build folder name
         run: |
           cd build
-          mv "${{ matrix.targetPlatform }}" "uDesktopMascot"
+          mv "StandaloneOSX" "uDesktopMascot"
           cd ..
 
-      - name: Upload the Build for ${{ matrix.targetPlatform }}
+      - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: Build-${{ matrix.targetPlatform }}-${{ steps.vars.outputs.sha_short }}
-          path: build
+          name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
+          path: build/uDesktopMascot
 
-      - name: Set up Inno Setup
-        if: matrix.targetPlatform == 'StandaloneWindows64'
-        uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
-        with:
-          path: 'setup.iss'
+      - name: Set up Installer
+        run: |
+          cd build
+          productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
 
       - name: Upload Installer
-        if: matrix.targetPlatform == 'StandaloneWindows64'
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: uDesktopMascot_win64_installer
-          path: "build/uDesktopMascot_win64_installer.exe"
+          name: uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}
+          path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
