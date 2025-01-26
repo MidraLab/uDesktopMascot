@@ -64,11 +64,16 @@ namespace uDesktopMascot
         /// マウスがドラッグ中かどうか
         /// </summary>
         private bool _isDragging = false;
+        
+        /// <summary>
+        /// マウスがモデルをドラッグ中かどうか
+        /// </summary>
+        private bool _isDraggingModel = false;
 
         /// <summary>
-        ///     ドラッグ対象のオブジェクトがモデルかどうか
+        /// マウスがアバターをホールド中かどうか
         /// </summary>
-        private bool _isDraggingModel;
+        private bool _isHolding = false;
 
         /// <summary>
         ///     終了処理中かどうか
@@ -205,17 +210,32 @@ namespace uDesktopMascot
             // _characterAnimationController.Update();
             
             // モーションを切り替える
-            if (_isDragging && _uniWindowMoveHandle.IsDragging)
+            if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
                 _modelAnimator.SetBool(Const.IsSitting, false);
                 _modelAnimator.SetBool(Const.IsDragging, true);
-                Log.Debug("ドラッグ中 ハンギングモーション");
+
+                if (!_isHolding)
+                {
+                    // アバターをホールド中にする
+                    _isHolding = true;
+
+                    // ホールド中のボイスを再生
+                    VoiceController.Instance.PlayHoldVoice();
+                }
+
             } else
             {
                 _modelAnimator.SetBool(Const.IsDragging, false);
                 // 座りモーションまたは立ちモーションに切り替え
                 _modelAnimator.SetBool(Const.IsSitting, false);
+
+                if (_isHolding)
+                {
+                    // アバターをホールド中から離す
+                    _isHolding = false;
+                }
             }
         }
 
@@ -328,27 +348,6 @@ namespace uDesktopMascot
         private void OnHoldPerformed(InputAction.CallbackContext context)
         {
             _isDragging = !_isDragging;
-
-            // マウス位置を取得
-            var mousePosition = _inputActions.UI.Point.ReadValue<Vector2>();
-
-            // マウス位置からレイを飛ばす
-            var ray = _mainCamera.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, out var hit))
-            {
-                if (hit.transform == _model.transform || hit.transform.IsChildOf(_model.transform))
-                {
-                    // モデルがクリックされた
-                    _isDraggingModel = true;
-                    VoiceController.Instance.PlayHoldVoice();
-                } else
-                {
-                    _isDraggingModel = false;
-                }
-            } else
-            {
-                _isDraggingModel = false;
-            }
         }
 
         /// <summary>
@@ -370,7 +369,6 @@ namespace uDesktopMascot
 
             // アニメーターのパラメータをリセット
             _modelAnimator.SetBool(Const.IsDragging, false);
-            Log.Debug("Click終了");
         }
 
         /// <summary>
