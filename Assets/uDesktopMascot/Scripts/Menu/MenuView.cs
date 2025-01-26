@@ -20,6 +20,11 @@ namespace uDesktopMascot
         private RectTransform _menuRectTransform;
 
         /// <summary>
+        /// メニューの背景画像
+        /// </summary>
+        [SerializeField] private Image backgroundImage;
+
+        /// <summary>
         ///     モデル設定ボタン
         /// </summary>
         [SerializeField] private Button modelSettingButton;
@@ -38,34 +43,34 @@ namespace uDesktopMascot
         ///     アプリ終了ボタン
         /// </summary>
         [SerializeField] private Button quitButton;
-        
+
         /// <summary>
         ///    ヘルプボタン
         /// </summary>
         public Action OnHelpAction { get; set; }
-        
+
         /// <summary>
         ///    モデル設定ボタンのクリックイベント
         /// </summary>
         public Action OnModelSettingAction { get; set; }
-        
+
         /// <summary>
         ///   アプリケーション設定ボタンのクリックイベント
         /// </summary>
         public Action OnAppSettingAction { get; set; }
-        
+
         /// <summary>
         /// アプリ終了ボタンのクリックイベント
         /// </summary>
         public Action OnCloseAction { get; set; }
-                
+
         private void Awake()
         {
             _menuCanvas = GetComponent<Canvas>();
             _menuRectTransform = GetComponent<RectTransform>();
             SetButtonEvent();
         }
-        
+
         /// <summary>
         /// ボタンのイベントの登録
         /// </summary>
@@ -88,13 +93,31 @@ namespace uDesktopMascot
             // メニューの位置を調整して、画面内に収まるようにする
             AdjustMenuPosition(screenPosition);
         }
-        
+
         /// <summary>
         ///   メニューを非表示にする
         /// </summary>
         public void Hide()
         {
             _menuCanvas.enabled = false;
+        }
+        
+        /// <summary>
+        /// 背景色を設定する
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetBackgroundColor(Color color)
+        {
+            backgroundImage.color = color;
+        }
+        
+        /// <summary>
+        /// 背景画像を設定する
+        /// </summary>
+        /// <param name="sprite"></param>
+        public void SetBackgroundImage(Sprite sprite)
+        {
+            backgroundImage.sprite = sprite;
         }
 
         /// <summary>
@@ -111,7 +134,8 @@ namespace uDesktopMascot
             float screenHeight = Screen.height;
 
             // RectTransformのpivotを考慮して、メニューの四隅の位置を計算
-            Vector2 pivotOffset = new Vector2(menuSize.x * _menuRectTransform.pivot.x, menuSize.y * _menuRectTransform.pivot.y);
+            Vector2 pivotOffset = new Vector2(menuSize.x * _menuRectTransform.pivot.x,
+                menuSize.y * _menuRectTransform.pivot.y);
 
             // メニューの表示位置を調整するための変数
             Vector3 adjustedPosition = screenPosition;
@@ -122,6 +146,7 @@ namespace uDesktopMascot
             {
                 adjustedPosition.x -= (rightEdge - screenWidth);
             }
+
             // メニューが画面の左端を超える場合の補正
             float leftEdge = adjustedPosition.x - pivotOffset.x;
             if (leftEdge < 0)
@@ -135,6 +160,7 @@ namespace uDesktopMascot
             {
                 adjustedPosition.y -= (topEdge - screenHeight);
             }
+
             // メニューが画面の下端を超える場合の補正
             float bottomEdge = adjustedPosition.y - pivotOffset.y;
             if (bottomEdge < 0)

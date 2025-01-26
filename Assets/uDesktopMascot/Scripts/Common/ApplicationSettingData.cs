@@ -202,4 +202,20 @@ namespace uDesktopMascot
             set => _qualityLevel = Mathf.Clamp(value, 0, 5);
         }
     }
+    
+    /// <summary>
+    /// メニューUIの設定
+    /// </summary>
+    public class MenuUISettings
+    {
+        /// <summary>
+        /// メニューUIの背景色（#RRGGBB 形式のカラーコード）
+        /// </summary>
+        public string BackgroundColor { get; set; } = "#FFDA9B";
+
+        /// <summary>
+        /// メニューUIの背景画像のパス
+        /// </summary>
+        public string BackgroundImagePath { get; set; } = "test.png";
+    }
 }

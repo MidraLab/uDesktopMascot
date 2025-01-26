@@ -62,11 +62,11 @@ namespace uDesktopMascot.Editor.EditorTest
             // Arrange
             var iniContent = @"
             ; This is a comment
-            # Another comment
+            ; Another comment
 
             [Section]
             Key1=Value1  ; Inline comment
-            Key2=Value2  # Another inline comment
+            Key2=Value2  ; Another inline comment
 
             ; Comment after section
         ";
@@ -223,7 +223,7 @@ namespace uDesktopMascot.Editor.EditorTest
             Assert.IsTrue(result.ContainsKey("セクション"));
             Assert.AreEqual("値1", result["セクション"]["キー1"]);
             Assert.AreEqual("値=2", result["セクション"]["キー2"]);
-            Assert.AreEqual("値", result["セクション"]["キー3"]);
+            Assert.AreEqual("値#3", result["セクション"]["キー3"]);
         }
     }
 }

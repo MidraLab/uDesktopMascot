@@ -138,6 +138,14 @@ namespace uDesktopMascot.Editor
                 Directory.CreateDirectory(bgmPath);
                 Log.Debug($"BGM フォルダを作成しました: {bgmPath}");
             }
+            
+            // Menu フォルダを作成
+            var menuPath = Path.Combine(streamingAssetsPath, "Menu");
+            if (!Directory.Exists(menuPath))
+            {
+                Directory.CreateDirectory(menuPath);
+                Log.Debug($"Menu フォルダを作成しました: {menuPath}");
+            }
         }
 
         /// <summary>
