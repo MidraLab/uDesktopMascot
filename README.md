@@ -94,6 +94,22 @@ QualityLevel=2
 
 </details>
 
+<details>
+
+<summary>メニュー画面</summary>
+
+* メニュー画面の背景画像および背景色を設定できます。
+  * 背景画像は、StreamingAssets/Menu/ に配置した画像ファイルを読み込むことができます。対応している画像フォーマットは以下です
+    * PNG
+    * JPG(JPEG)
+    * BMP
+    * GIF(静止画)
+    * TGA
+    * TIFF
+  * 背景色は、カラーコードを指定することができます。
+
+</details>
+
 ## macOSでの実行について
 
 macOSでアプリを実行する際、GateKeeperによってアプリがブロックされる場合があります。
