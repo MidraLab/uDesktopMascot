@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
@@ -46,8 +47,6 @@ namespace uDesktopMascot.Editor
 
             // アプリケーション名を取得
             var appName = Path.GetFileNameWithoutExtension(outputPath);
-
-            SetExecPermissionForMacOS(buildDirectory, appName);
 
             // プラットフォームに応じた StreamingAssets のパスを取得
             var streamingAssetsPath = GetStreamingAssetsPath(target, buildDirectory, appName);
@@ -221,7 +220,13 @@ namespace uDesktopMascot.Editor
                 var relativePath = GetRelativePath(sourceDir, file);
 
                 // ZIP エントリとして追加
-                zipArchive.CreateEntryFromFile(file, relativePath, compressionLevel);
+                var entry = zipArchive.CreateEntryFromFile(file, relativePath, compressionLevel);
+                var fi = new FileInfo(file);
+                entry.LastWriteTime = fi.LastWriteTime;
+                if (TryGetUnixMode(file, out var mode))
+                {
+                    entry.ExternalAttributes = (mode & 0xFFF) << 16;
+                }
             }
         }
         
@@ -261,26 +266,52 @@ namespace uDesktopMascot.Editor
                 .Replace('/', Path.DirectorySeparatorChar));
         }
 
-        /// <summary>
-        ///     実行パーミッションを設定する
-        /// </summary>
-        /// <param name="buildDirectory">ビルドディレクトリのパス</param>
-        /// <param name="appName">アプリケーション名</param>
-        private static void SetExecPermissionForMacOS(string buildDirectory, string appName)
+#if UNITY_EDITOR_OSX
+        [StructLayout(LayoutKind.Sequential)]
+        private struct Stat
         {
-#if UNITY_OSX_EDITOR
-            var execPath = Path.Combine(buildDirectory, $"{appName}.app", "Contents", "MacOS", "uDesktopMascot");
-            if (File.Exists(execPath))
-            {
-                sys_chmod(execPath, 0x775);
-            }
-#endif
+            public Int32 st_dev;
+            public UInt16 st_mode;
+            public UInt16 st_nlink;
+            public UInt64 st_no;
+            public ulong st_uid;
+            public uint st_gid;
+            public uint st_rdev;
+            public long st_atime;
+            public long st_atimensec;
+            public long st_mtime;
+            public long st_mtimensec;
+            public long st_ctime;
+            public long st_ctimensec;
+            public long st_birthtime;
+            public long st_birthtimensec;
+            public Int64 st_size;
+            public Int64 st_blocks;
+            public Int32 st_blocksize;
+            public UInt32 st_flags;
+            public UInt32 st_gen;
+            public UInt32 st_lspare;
+            public UInt64 st_qspare1;
+            public UInt64 st_qspare2;
         }
 
-#if UNITY_OSX_EDITOR
-        [DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
-        private static extern int sys_chmod(string path, uint mode);
+        [DllImport("libc", EntryPoint = "stat", SetLastError = true)]
+        private static extern int sys_stat(string path, out Stat buf);
 #endif
+        
+        private static bool TryGetUnixMode(string path, out UInt16 mode)
+        {
+#if !UNITY_EDITOR_WIN
+            if (sys_stat(path, out var stat) == 0)
+            {
+                mode = stat.st_mode;
+                return true;
+            }
+#endif
+
+            mode = 0;
+            return false;
+        }
 
         /// <summary>
         ///     不要なフォルダを削除する
