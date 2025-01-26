@@ -2,7 +2,7 @@
 
 [![Unity Version](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
 [![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
-[![CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg?branch=develop)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg?branch=develop)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
