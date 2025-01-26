@@ -30,7 +30,6 @@ namespace uDesktopMascot
         /// </summary>
         [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
 
-        
         /// <summary>
         /// メニューのビュー
         /// </summary>
