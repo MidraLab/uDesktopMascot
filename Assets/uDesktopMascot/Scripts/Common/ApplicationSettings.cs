@@ -41,6 +41,11 @@ namespace uDesktopMascot
         public PerformanceSettings Performance { get; private set; }
         
         /// <summary>
+        /// メニューUIの設定
+        /// </summary>
+        public MenuUISettings MenuUI { get; private set; }
+        
+        /// <summary>
         /// 設定ファイルが存在するかどうか
         /// </summary>
         public bool IsLoaded { get; private set; } = false;
@@ -59,6 +64,7 @@ namespace uDesktopMascot
                 Sound = new SoundSettings();
                 Display = new DisplaySettings();
                 Performance = new PerformanceSettings();
+                MenuUI = new MenuUISettings();
 
                 LoadSettings();
                 
@@ -127,6 +133,9 @@ namespace uDesktopMascot
                     case "Performance":
                         AssignSettings(Performance, section.Value);
                         break;
+                    case "MenuUI":
+                        AssignSettings(MenuUI, section.Value);
+                        break;
                     default:
                         Log.Warning($"未知の設定セクションが見つかりました: {section.Key}");
                         break;
@@ -140,7 +149,7 @@ namespace uDesktopMascot
         /// <param name="settingsInstance"></param>
         /// <param name="values"></param>
         /// <typeparam name="T"></typeparam>
-        private void AssignSettings<T>(T settingsInstance, Dictionary<string, string> values) where T : class
+        private void AssignSettings<T>(T settingsInstance, Dictionary<string, string> values)
         {
             if (settingsInstance == null || values == null)
             {
@@ -259,6 +268,7 @@ namespace uDesktopMascot
                     WriteSection(writer, "Sound", Sound);
                     WriteSection(writer, "Display", Display);
                     WriteSection(writer, "Performance", Performance);
+                    WriteSection(writer, "MenuUI", MenuUI);
                 }
 
                 Log.Info("設定ファイルを生成しました: " + _settingsFilePath);

@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae9dd34775a14a408cc7a9970d713bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backgroundImage: {fileID: 2286071587733755090}
   modelSettingButton: {fileID: 4623602444775744588}
   helpButton: {fileID: 3975135025879450140}
   appSettingButton: {fileID: 7721927851968667442}
