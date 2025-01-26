@@ -6,13 +6,14 @@ using Cysharp.Threading.Tasks;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Kirurobo;
 
 namespace uDesktopMascot
 {
     /// <summary>
     /// モデルのモーションを制御するクラス
     /// </summary>
-    public class CharacterManager : MonoBehaviour
+    public partial class CharacterManager : MonoBehaviour
     {
         /// <summary>
         /// モデルのアニメーター
@@ -23,7 +24,12 @@ namespace uDesktopMascot
         /// モデルのデフォルトアニメーションクリップ
         /// </summary>
         [SerializeField] private List<AnimationClip> _defaultAnimationClip;
-        
+
+        /// <summary>
+        /// ウィンドウ移動ハンドラ
+        /// </summary>
+        [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
+
         /// <summary>
         /// メニューのビュー
         /// </summary>
@@ -58,19 +64,24 @@ namespace uDesktopMascot
         /// マウスがドラッグ中かどうか
         /// </summary>
         private bool _isDragging = false;
-
+        
         /// <summary>
-        ///     ドラッグ対象のオブジェクトがモデルかどうか
+        /// マウスがモデルをドラッグ中かどうか
         /// </summary>
-        private bool _isDraggingModel;
+        private bool _isDraggingModel = false;
 
         /// <summary>
-        ///     終了処理中かどうか
+        /// マウスがモデルをホールド中かどうか
+        /// </summary>
+        private bool _isHolding = false;
+
+        /// <summary>
+        /// 終了処理中かどうか
         /// </summary>
         private bool _isQuitting;
 
         /// <summary>
-        ///     ドラッグ開始位置
+        /// ドラッグ開始位置
         /// </summary>
         private Vector2 _startDragPosition;
 
@@ -194,16 +205,32 @@ namespace uDesktopMascot
             // _characterAnimationController.Update();
             
             // モーションを切り替える
-            if (_isDragging && _isDraggingModel)
+            if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
                 _modelAnimator.SetBool(Const.IsSitting, false);
                 _modelAnimator.SetBool(Const.IsDragging, true);
+
+                if (!_isHolding)
+                {
+                    // アバターをホールド中にする
+                    _isHolding = true;
+
+                    // ホールド中のボイスを再生
+                    VoiceController.Instance.PlayHoldVoice();
+                }
+
             } else
             {
                 _modelAnimator.SetBool(Const.IsDragging, false);
                 // 座りモーションまたは立ちモーションに切り替え
                 _modelAnimator.SetBool(Const.IsSitting, false);
+
+                if (_isHolding)
+                {
+                    // アバターをホールド中から離す
+                    _isHolding = false;
+                }
             }
         }
 
@@ -316,27 +343,6 @@ namespace uDesktopMascot
         private void OnHoldPerformed(InputAction.CallbackContext context)
         {
             _isDragging = !_isDragging;
-
-            // マウス位置を取得
-            var mousePosition = InputController.Instance.UI.Point.ReadValue<Vector2>();
-
-            // マウス位置からレイを飛ばす
-            var ray = _mainCamera.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, out var hit))
-            {
-                if (hit.transform == _model.transform || hit.transform.IsChildOf(_model.transform))
-                {
-                    // モデルがクリックされた
-                    _isDraggingModel = true;
-                    VoiceController.Instance.PlayHoldVoice();
-                } else
-                {
-                    _isDraggingModel = false;
-                }
-            } else
-            {
-                _isDraggingModel = false;
-            }
         }
 
         /// <summary>
