@@ -301,7 +301,7 @@ namespace uDesktopMascot.Editor
         
         private static bool TryGetUnixMode(string path, out UInt16 mode)
         {
-#if !UNITY_EDITOR_WIN
+#if UNITY_EDITOR_OSX
             if (sys_stat(path, out var stat) == 0)
             {
                 mode = stat.st_mode;
