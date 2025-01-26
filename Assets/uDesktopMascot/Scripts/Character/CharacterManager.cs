@@ -72,17 +72,17 @@ namespace uDesktopMascot
         private bool _isDraggingModel = false;
 
         /// <summary>
-        /// マウスがアバターをホールド中かどうか
+        /// マウスがモデルをホールド中かどうか
         /// </summary>
         private bool _isHolding = false;
 
         /// <summary>
-        ///     終了処理中かどうか
+        /// 終了処理中かどうか
         /// </summary>
         private bool _isQuitting;
 
         /// <summary>
-        ///     ドラッグ開始位置
+        /// ドラッグ開始位置
         /// </summary>
         private Vector2 _startDragPosition;
 
@@ -219,8 +219,6 @@ namespace uDesktopMascot
 
                     // ホールド中のボイスを再生
                     VoiceController.Instance.PlayHoldVoice();
-
-                    Log.Debug("ホールド中");
                 }
 
             } else
@@ -346,27 +344,6 @@ namespace uDesktopMascot
         private void OnHoldPerformed(InputAction.CallbackContext context)
         {
             _isDragging = !_isDragging;
-
-            // マウス位置を取得
-            var mousePosition = InputController.Instance.UI.Point.ReadValue<Vector2>();
-
-            // マウス位置からレイを飛ばす
-            var ray = _mainCamera.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, out var hit))
-            {
-                if (hit.transform == _model.transform || hit.transform.IsChildOf(_model.transform))
-                {
-                    // モデルがクリックされた
-                    _isDraggingModel = true;
-                    VoiceController.Instance.PlayHoldVoice();
-                } else
-                {
-                    _isDraggingModel = false;
-                }
-            } else
-            {
-                _isDraggingModel = false;
-            }
         }
 
         /// <summary>
