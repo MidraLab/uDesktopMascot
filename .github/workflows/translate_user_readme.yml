@@ -1,0 +1,49 @@
+﻿name: Translate User README
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'Assets/uDesktopMascot/Document/README.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  translate_user_readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Install OpenAI library
+        run: pip install openai
+
+      - name: Run translation script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python .github/scripts/translate_user_readme.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Add translated files
+          git add Assets/uDesktopMascot/Document/README_*.txt
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update translations for User README.txt"
+            git push
+          fi
