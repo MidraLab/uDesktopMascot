@@ -1,0 +1,73 @@
+﻿name: Auto Localization
+
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv'
+
+jobs:
+  translate_localization:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: コミットフラグを初期化
+        run: echo "COMMIT_MADE=false" >> $GITHUB_ENV
+
+      - name: Pythonをセットアップ
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: 依存関係のインストール
+        run: |
+          pip install openai pandas
+
+      - name: 翻訳スクリプトを実行
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python .github/scripts/translate_localization.py
+
+      - name: 変更をコミット
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # 変更をステージしてコミット
+          git add Assets/uDesktopMascot/LocalizationTable/LocalizationTable.csv
+          if git commit -m "自動翻訳を追加（GitHub Actionsによる）"; then
+            echo "Changes committed successfully."
+            # コミットが成功した場合、フラグを設定
+            echo "COMMIT_MADE=true" >> $GITHUB_ENV
+
+            # リモートの最新の変更を取り込み、リベース
+            if git pull --rebase origin ${{ github.head_ref }}; then
+              echo "Successfully rebased."
+            else
+              echo "Rebase failed. Please review the errors."
+              exit 1  # エラーが発生した場合、処理を中止
+            fi
+
+            # 最後にプッシュ
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: PRにコメントを追加
+        if: success() && env.COMMIT_MADE == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.pull_request.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "自動翻訳が完了し、ローカライズCSVに反映されました。"
+            })

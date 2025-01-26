@@ -30,6 +30,12 @@ namespace uDesktopMascot
         /// </summary>
         [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
 
+        
+        /// <summary>
+        /// メニューのビュー
+        /// </summary>
+        [SerializeField] private MenuPresenter _menuPresenter;
+
         /// <summary>
         /// モデルのゲームオブジェクト
         /// </summary>
@@ -50,11 +56,6 @@ namespace uDesktopMascot
         /// </summary>
         private bool _isInitialized = false;
 
-        /// <summary>
-        /// Input Systemのアクション
-        /// </summary>
-        private UDMInputActions _inputActions;
-        
         /// <summary>
         /// キャラクターのアニメーションコントローラ
         /// </summary>
@@ -89,35 +90,30 @@ namespace uDesktopMascot
         {
             _mainCamera = Camera.main;
             _cancellationTokenSource = new CancellationTokenSource();
-
-            // InputActionsのインスタンスを作成
-            _inputActions = new UDMInputActions();
         }
 
         private void OnEnable()
         {
-            // 入力アクションを有効化
-            _inputActions.Enable();
-
             // イベントの購読
-            _inputActions.UI.Click.started += OnClickStarted;
-            _inputActions.UI.Click.canceled += OnClickCanceled;
+            InputController.Instance.UI.Click.started += OnClickStarted;
+            InputController.Instance.UI.Click.canceled += OnClickCanceled;
 
-            _inputActions.UI.Hold.performed += OnHoldPerformed;
+            InputController.Instance.UI.Hold.performed += OnHoldPerformed;
+            
+            InputController.Instance.UI.RightClick.started += OnRightClick;
 
             Application.wantsToQuit += OnWantsToQuit;
         }
 
         private void OnDisable()
         {
-            // 入力アクションを無効化
-            _inputActions.Disable();
-
             // イベントの購読解除
-            _inputActions.UI.Click.started -= OnClickStarted;
-            _inputActions.UI.Click.canceled -= OnClickCanceled;
+            InputController.Instance.UI.Click.started -= OnClickStarted;
+            InputController.Instance.UI.Click.canceled -= OnClickCanceled;
 
-            _inputActions.UI.Hold.performed -= OnHoldPerformed;
+            InputController.Instance.UI.Hold.performed -= OnHoldPerformed;
+            
+            InputController.Instance.UI.RightClick.started -= OnRightClick;
 
             Application.wantsToQuit -= OnWantsToQuit;
         }
@@ -350,6 +346,27 @@ namespace uDesktopMascot
         private void OnHoldPerformed(InputAction.CallbackContext context)
         {
             _isDragging = !_isDragging;
+
+            // マウス位置を取得
+            var mousePosition = InputController.Instance.UI.Point.ReadValue<Vector2>();
+
+            // マウス位置からレイを飛ばす
+            var ray = _mainCamera.ScreenPointToRay(mousePosition);
+            if (Physics.Raycast(ray, out var hit))
+            {
+                if (hit.transform == _model.transform || hit.transform.IsChildOf(_model.transform))
+                {
+                    // モデルがクリックされた
+                    _isDraggingModel = true;
+                    VoiceController.Instance.PlayHoldVoice();
+                } else
+                {
+                    _isDraggingModel = false;
+                }
+            } else
+            {
+                _isDraggingModel = false;
+            }
         }
 
         /// <summary>
@@ -371,7 +388,23 @@ namespace uDesktopMascot
 
             // アニメーターのパラメータをリセット
             _modelAnimator.SetBool(Const.IsDragging, false);
-            Log.Debug("Click終了");
+        }
+
+        /// <summary>
+        ///    右クリックが押されたときの処理
+        /// </summary>
+        /// <param name="context"></param>
+        private void OnRightClick(InputAction.CallbackContext context)
+        {
+            if(_menuPresenter.IsOpened)
+            {
+                _menuPresenter.Hide();
+            }
+            else
+            {
+                // メニューを表示. モデルよりも少し前方に表示
+                _menuPresenter.Show(_model.transform.position);
+            }
         }
 
         /// <summary>
