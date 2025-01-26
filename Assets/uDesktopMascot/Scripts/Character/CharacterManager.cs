@@ -223,6 +223,8 @@ namespace uDesktopMascot
 
                     // ホールド中のボイスを再生
                     VoiceController.Instance.PlayHoldVoice();
+
+                    Log.Debug("ホールド中");
                 }
 
             } else
