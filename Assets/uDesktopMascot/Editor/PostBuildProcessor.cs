@@ -266,7 +266,7 @@ namespace uDesktopMascot.Editor
                 .Replace('/', Path.DirectorySeparatorChar));
         }
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR_OSX
         [StructLayout(LayoutKind.Sequential)]
         private struct Stat
         {
@@ -301,7 +301,7 @@ namespace uDesktopMascot.Editor
         
         private static bool TryGetUnixMode(string path, out UInt16 mode)
         {
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR_OSX
             if (sys_stat(path, out var stat) == 0)
             {
                 mode = stat.st_mode;
