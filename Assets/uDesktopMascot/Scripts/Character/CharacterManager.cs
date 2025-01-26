@@ -202,7 +202,7 @@ namespace uDesktopMascot
             // _characterAnimationController.Update();
             
             // モーションを切り替える
-            if (_isDragging && _uniWindowMoveHandle.IsDragging)
+            if (_isDragging)
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
                 _modelAnimator.SetBool(Const.IsSitting, false);
