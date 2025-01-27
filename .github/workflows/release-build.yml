@@ -79,7 +79,7 @@ jobs:
 
           # gitから既存のバージョンタグのリストを取得
           git fetch --tags
-          version_tags=$(git tag -l 'v*')
+          version_tags=$(git tag -l 'v*' | grep -v '^v99\.99\.99$')
           echo "既存のバージョンタグ: $version_tags"
 
           # タグからバージョン番号を抽出
