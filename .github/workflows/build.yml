@@ -121,6 +121,7 @@ jobs:
           version: ${{ needs.check-branch.outputs.current_version }}
 
       - name: Git Push setup.iss
+        shell: bash
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
