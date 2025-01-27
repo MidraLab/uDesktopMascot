@@ -253,11 +253,17 @@ namespace uDesktopMascot.Editor
                 Debug.LogWarning($"READMEファイルが見つかりません: {sourceReadmePath}");
                 return;
             }
-            
+
             // ビルドフォルダにコピー
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             var destReadmePath = Path.Combine(buildDirectory, "README.txt");
             File.Copy(sourceReadmePath, destReadmePath, true);
             Log.Debug($"READMEファイルをビルドフォルダにコピーしました: {destReadmePath}");
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            var destReadmePath = Path.Combine(buildDirectory, "Contents", "Resources", "README.txt");
+            File.Copy(sourceReadmePath, destReadmePath, true);
+            Log.Debug($"READMEファイルをビルドフォルダにコピーしました: {destReadmePath}");
+#endif
         }
 
         /// <summary>
