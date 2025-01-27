@@ -47,12 +47,9 @@ namespace uDesktopMascot
             menuView.OnHelpAction = OpenHelp;
             menuView.OnModelSettingAction = () =>
             {
-                Log.Debug("ModelSetting");
+                Log.Debug("Open Model Setting");
             };
-            menuView.OnAppSettingAction = () =>
-            {
-                Log.Debug("AppSetting");
-            };
+            menuView.OnAppSettingAction = OpenAppSetting;
             menuView.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
@@ -106,6 +103,85 @@ namespace uDesktopMascot
                 LoadBackgroundImageAsync(Path.Combine(MenuUIPath, menuUISettings.BackgroundImagePath),
                     _cancellationTokenSource.Token).Forget();
             }
+        }
+        
+        /// <summary>
+        /// 設定ファイルおよびフォルダを開く
+        /// </summary>
+        private void OpenAppSetting()
+        {
+            string folderPath = Application.streamingAssetsPath;
+            string filePath = Path.Combine(folderPath, "application_settings.txt");
+
+            Log.Info($"Opening settings file: {filePath}");
+            Log.Info($"Opening settings folder: {folderPath}");
+
+#if UNITY_EDITOR
+            // In Unity Editor, open the folder and file
+            if (Directory.Exists(folderPath))
+            {
+                UnityEditor.EditorUtility.OpenWithDefaultApp(folderPath);
+            }
+            else
+            {
+                Log.Warning($"Folder not found: {folderPath}");
+            }
+
+            if (File.Exists(filePath))
+            {
+                UnityEditor.EditorUtility.OpenWithDefaultApp(filePath);
+            }
+            else
+            {
+                Log.Warning($"File not found: {filePath}");
+            }
+#else
+            bool openedFolder = false;
+            bool openedFile = false;
+            try
+            {
+                // Open the folder
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = folderPath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+                openedFolder = true;
+            }
+            catch (Exception e)
+            {
+                Log.Warning("Process.Start failed to open folder: " + e);
+            }
+
+            try
+            {
+                // Open the file
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = filePath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+                openedFile = true;
+            }
+            catch (Exception e)
+            {
+                Log.Warning("Process.Start failed to open file: " + e);
+            }
+
+            if (!openedFolder)
+            {
+                // Fallback to Application.OpenURL for folder
+                Application.OpenURL("file://" + folderPath.Replace("\\", "/"));
+            }
+
+            if (!openedFile)
+            {
+                // Fallback to Application.OpenURL for file
+                Application.OpenURL("file://" + filePath.Replace("\\", "/"));
+            }
+#endif
         }
 
         /// <summary>
