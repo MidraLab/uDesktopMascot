@@ -120,6 +120,18 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
+      - name: Git Push setup.iss
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add setup.iss
+          if ! git diff --cached --quiet; then
+            git commit -m "Update setup.iss"
+            git push
+          else
+            echo "No changes to setup.iss, skipping commit and push"
+          fi
+
       - name: Change build folder name
         run: |
           cd build
