@@ -40,6 +40,7 @@
 <details>
 
 <summary>モデル・アニメーション</summary>
+
 * StreamingAssetsに配置した任意モデルファイルを読み込んで表示します。
   * VRM(1.x, 0.x)形式のモデルをサポートしています。
   * GLB/GLTF形式のモデルをサポートしています。(アニメーションは対応していません)
@@ -51,6 +52,7 @@
 <details>
 
 <summary>ボイス・BGM</summary>
+
 * SteamingAssets/Voice/以下に配置した音声ファイルを読み込んで再生します。複数ある場合は、ランダムで再生します。
   * クリック時に再生される音声は、StreamingAssets/Voice/Click/に配置した音声ファイルを読み込んで再生します。 
 * SteamingAssets/BGM/以下に配置した音楽ファイルを読み込んで再生します。複数ある場合は、ランダムで再生します。
