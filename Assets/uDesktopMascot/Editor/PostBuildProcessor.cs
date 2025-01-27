@@ -57,7 +57,7 @@ namespace uDesktopMascot.Editor
             }
             
             // READMEファイルをビルドフォルダにコピー
-            CopyReadmeToBuildFolder(buildDirectory);
+            CopyReadmeToBuildFolder(buildDirectory, appName);
 
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
@@ -242,7 +242,7 @@ namespace uDesktopMascot.Editor
         ///    README ファイルをビルドフォルダにコピーする
         /// </summary>
         /// <param name="buildDirectory"></param>
-        private void CopyReadmeToBuildFolder(string buildDirectory)
+        private void CopyReadmeToBuildFolder(string buildDirectory, string appName)
         {
             // Unityプロジェクト内のREADMEファイルのパス
             var sourceReadmePath = Path.Combine(Application.dataPath, "uDesktopMascot", "Document", "README.txt");
@@ -260,7 +260,8 @@ namespace uDesktopMascot.Editor
             File.Copy(sourceReadmePath, destReadmePath, true);
             Log.Debug($"READMEファイルをビルドフォルダにコピーしました: {destReadmePath}");
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-            var destReadmePath = Path.Combine(buildDirectory, "Contents", "Resources", "README.txt");
+            var resourcesPath = Path.Combine(buildDirectory, $"{appName}.app", "Contents", "Resources");
+            var destReadmePath = Path.Combine(resourcesPath, "README.txt");
             File.Copy(sourceReadmePath, destReadmePath, true);
             Log.Debug($"READMEファイルをビルドフォルダにコピーしました: {destReadmePath}");
 #endif
