@@ -220,11 +220,11 @@ namespace uDesktopMascot
 #elif UNITY_STANDALONE_OSX
             // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
             string rootPath = Directory.GetParent(Application.dataPath).FullName;
-            path = Path.Combine(rootPath, "Contents", "Resources", "README.txt");
+            path = Path.Combine(rootPath, "Resources", "README.txt");
 #endif
 
             // パスをログに出力
-            Log.Info($"Attempting to open file at path: {path}");
+            Log.Info( $"Attempting to open file at path: {path}");
 
             if (File.Exists(path))
             {
