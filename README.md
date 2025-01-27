@@ -2,23 +2,23 @@
 
 [![Unity Version](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
 [![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
-[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg?branch=develop)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
 **注意**: 上記の言語（English、中文、Español、Français）は、GPT-4o-miniによる自動翻訳で生成されています。翻訳の精度やニュアンスに関しては、原文（日本語）をご参照ください。
 
 <!-- TOC -->
-* [uDesktopMascot](#udesktopmascot)
-  * [概要](#概要)
-  * [機能一覧](#機能一覧)
-  * [macOSでの実行について](#macosでの実行について)
-  * [requirements](#requirements)
-  * [license](#license)
-  * [素材について](#素材について)
-  * [制作者クレジット](#制作者クレジット)
-  * [3rd Party Notices](#3rd-party-notices)
-  * [sponsor](#sponsor)
+- [uDesktopMascot](#udesktopmascot)
+  - [概要](#概要)
+  - [機能一覧](#機能一覧)
+  - [macOSでの実行について](#macosでの実行について)
+  - [requirements](#requirements)
+  - [license](#license)
+  - [素材について](#素材について)
+  - [制作者クレジット](#制作者クレジット)
+  - [3rd Party Notices](#3rd-party-notices)
+  - [sponsor](#sponsor)
 <!-- TOC -->
 
 ## 概要
