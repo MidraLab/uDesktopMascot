@@ -226,7 +226,24 @@ namespace uDesktopMascot
             // パスをログに出力
             Log.Info( $"Attempting to open file at path: {path}");
 
-            if (File.Exists(path))
+            bool openedFile = false;
+            try
+            {
+                // Open the file
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = path,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+                openedFile = true;
+            }
+            catch (Exception e)
+            {
+                Log.Warning("Process.Start failed to open file: " + e);
+            }
+
+            if (!openedFile)
             {
                 try
                 {
@@ -238,9 +255,6 @@ namespace uDesktopMascot
                 {
                     Log.Error($"README.txtを開くことができませんでした:\n{e}");
                 }
-            } else
-            {
-                Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
             }
         }
 
