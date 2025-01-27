@@ -155,8 +155,31 @@ namespace uDesktopMascot.Editor
         private static void CreateInstallerSetupTextFile(string buildDirectory)
         {
             var projectVersion = PlayerSettings.bundleVersion;
-            var setupFilePath = Path.Combine(buildDirectory, "..", "..", "installer-setup.txt");
-            File.WriteAllText(setupFilePath, $"#define MyAppVersion \"{projectVersion}\"");
+
+            // setup.iss のパスを取得
+            var issFilePath = Path.Combine(buildDirectory, "..", "..", "setup.iss");
+            if (File.Exists(issFilePath))
+            {
+                // 行ごとに読み込み
+                var lines = File.ReadAllLines(issFilePath);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    // #define MyAppVersion が含まれている行を探す
+                    // 前後に空白等があるかもしれないので Trim() して判定
+                    if (lines[i].Trim().StartsWith("#define MyAppVersion"))
+                    {
+                        // バージョン番号をプロジェクトバージョンに置き換える
+                        lines[i] = $"#define MyAppVersion \"{projectVersion}\"";
+                        break; // 最初に見つかった行だけ置換して抜ける
+                    }
+                }
+                // 上書き保存
+                File.WriteAllLines(issFilePath, lines);
+            }
+            else
+            {
+                Log.Warning($"setup.iss が見つかりません: {issFilePath}");
+            }
         }
 
         /// <summary>
