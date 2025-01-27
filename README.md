@@ -9,16 +9,16 @@
 **注意**: 上記の言語（English、中文、Español、Français）は、GPT-4o-miniによる自動翻訳で生成されています。翻訳の精度やニュアンスに関しては、原文（日本語）をご参照ください。
 
 <!-- TOC -->
-- [uDesktopMascot](#udesktopmascot)
-  - [概要](#概要)
-  - [機能一覧](#機能一覧)
-  - [macOSでの実行について](#macosでの実行について)
-  - [requirements](#requirements)
-  - [license](#license)
-  - [素材について](#素材について)
-  - [制作者クレジット](#制作者クレジット)
-  - [3rd Party Notices](#3rd-party-notices)
-  - [sponsor](#sponsor)
+* [uDesktopMascot](#udesktopmascot)
+  * [概要](#概要)
+  * [機能一覧](#機能一覧)
+  * [macOSでの実行について](#macosでの実行について)
+  * [requirements](#requirements)
+  * [license](#license)
+  * [素材について](#素材について)
+  * [制作者クレジット](#制作者クレジット)
+  * [3rd Party Notices](#3rd-party-notices)
+  * [sponsor](#sponsor)
 <!-- TOC -->
 
 ## 概要
