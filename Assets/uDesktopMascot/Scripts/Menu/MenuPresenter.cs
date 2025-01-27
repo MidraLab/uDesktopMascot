@@ -213,11 +213,11 @@ namespace uDesktopMascot
 #if UNITY_EDITOR
             // Unity Editorでは、Assetsフォルダ内のパスを使用
             path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
-#elif UNITY_EDITOR_WIN
+#elif UNITY_STANDALONE_WIN
             // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
             string rootPath = Directory.GetParent(Application.dataPath).FullName;
             path = Path.Combine(rootPath, "README.txt");
-#elif UNITY_EDITOR_OSX
+#elif UNITY_STANDALONE_OSX
             // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
             string rootPath = Directory.GetParent(Application.dataPath).FullName;
             path = Path.Combine(rootPath, "Contents", "Resources", "README.txt");
