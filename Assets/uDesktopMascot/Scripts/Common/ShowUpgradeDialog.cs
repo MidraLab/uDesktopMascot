@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace uDesktopMascot
 {
@@ -12,6 +13,20 @@ namespace uDesktopMascot
         /// メッセージテキスト
         /// </summary>
         [SerializeField] private TextMeshProUGUI messageText;
+        
+        /// <summary>
+        /// アップグレードダイアログをスキップするかどうかのトグル
+        /// </summary>
+        [SerializeField] private Toggle skipShowUpgradeDialogToggle;
+        
+        /// <summary>
+        /// アップグレードダイアログをスキップするかどうか
+        /// </summary>
+        public bool SkipShowUpgradeDialog
+        {
+            get => skipShowUpgradeDialogToggle.isOn;
+            set => skipShowUpgradeDialogToggle.isOn = value;
+        }
 
         /// <summary>
         /// テーブル名の定数

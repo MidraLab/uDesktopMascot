@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: MSG_NEW_VERSION
     m_Metadata:
       m_Items: []
+  - m_Id: 2544266770059264
+    m_Key: WORD_SKIP_SHOW_UPDATE_DIALOG
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

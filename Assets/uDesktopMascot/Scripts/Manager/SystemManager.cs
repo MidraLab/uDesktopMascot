@@ -68,9 +68,15 @@ namespace uDesktopMascot
         /// </summary>
         private async UniTask CheckUpdateAsync()
         {
+            if (showUpgradeDialog.SkipShowUpgradeDialog)
+            {
+                // アップグレードダイアログをスキップする場合、アップデートチェックを行わない
+                return;
+            }
+            
             // アップデートチェック
             var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
-            //
+            
             // if (isUpdateAvailable)
             // {
                 // アップデートがある場合、アップグレードダイアログを表示
