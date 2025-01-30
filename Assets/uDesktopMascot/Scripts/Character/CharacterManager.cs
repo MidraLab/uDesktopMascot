@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -7,6 +8,8 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Kirurobo;
+using UniGLTF;
+using UniVRM10;
 
 namespace uDesktopMascot
 {
@@ -54,7 +57,7 @@ namespace uDesktopMascot
         /// マウスがドラッグ中かどうか
         /// </summary>
         private bool _isDragging = false;
-        
+
         /// <summary>
         /// マウスがモデルをドラッグ中かどうか
         /// </summary>
@@ -74,7 +77,7 @@ namespace uDesktopMascot
         /// ドラッグ開始位置
         /// </summary>
         private Vector2 _startDragPosition;
-        
+
         /// <summary>
         /// キャラクターモデルのロードクラス
         /// </summary>
@@ -94,7 +97,7 @@ namespace uDesktopMascot
             InputController.Instance.UI.Click.canceled += OnClickCanceled;
 
             InputController.Instance.UI.Hold.performed += OnHoldPerformed;
-            
+
             InputController.Instance.UI.RightClick.started += OnRightClick;
 
             Application.wantsToQuit += OnWantsToQuit;
@@ -107,33 +110,41 @@ namespace uDesktopMascot
             InputController.Instance.UI.Click.canceled -= OnClickCanceled;
 
             InputController.Instance.UI.Hold.performed -= OnHoldPerformed;
-            
+
             InputController.Instance.UI.RightClick.started -= OnRightClick;
 
             Application.wantsToQuit -= OnWantsToQuit;
         }
 
-        private void Start()
+        private async void Start()
         {
-            InitModel().Forget();
-            // InitAnimation();
+            await InitModel();
+            await InitAnimation();
             VoiceController.Instance.PlayStartVoiceAsync(_cancellationTokenSource.Token).Forget();
+        }
+
+        /// <summary>
+        /// アニメーションの初期化
+        /// </summary>
+        private async UniTask InitAnimation()
+        {
+            // steaming assetsのMotionフォルダ内のvrmaファイルを読み込む
+            var path = Path.Combine(Application.streamingAssetsPath, "Motion", "VRMA_01.vrma");
+
+            await _loadCharacterModel.LoadVRMA(path);
         }
 
         /// <summary>
         /// モデルの初期化
         /// </summary>
-        private async UniTaskVoid InitModel()
+        private async UniTask InitModel()
         {
             try
             {
                 await _loadCharacterModel.LoadModel(_cancellationTokenSource.Token);
-                
-                // await UniTask.SwitchToMainThread();
-                
+
                 // モデルの初期調節
                 OnModelLoaded(_loadCharacterModel.CharacterModelObject);
-                
             } catch (Exception e)
             {
                 Log.Error($"モデルの初期化中にエラーが発生しました: {e.Message}");
@@ -150,7 +161,8 @@ namespace uDesktopMascot
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
             // モデルのスクリーン座標を取得
-            var modelScreenPos = ScreenUtility.GetModelScreenPosition(_mainCamera, _loadCharacterModel.CharacterModelObject.transform);
+            var modelScreenPos =
+                ScreenUtility.GetModelScreenPosition(_mainCamera, _loadCharacterModel.CharacterModelObject.transform);
 
             // エクスプローラーウィンドウの位置を取得
             var explorerWindows = ExplorerWindowDetector.GetExplorerWindows();
@@ -184,35 +196,34 @@ namespace uDesktopMascot
 #endif
 
             // _characterAnimationController.Update();
-            
+
             // モーションを切り替える
-            if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
-            {
-                // ドラッグ中はハンギングモーション（ぶら下がりモーション）
-                _modelAnimator.SetBool(Const.IsSitting, false);
-                _modelAnimator.SetBool(Const.IsDragging, true);
-
-                if (!_isHolding)
-                {
-                    // アバターをホールド中にする
-                    _isHolding = true;
-
-                    // ホールド中のボイスを再生
-                    VoiceController.Instance.PlayHoldVoice();
-                }
-
-            } else
-            {
-                _modelAnimator.SetBool(Const.IsDragging, false);
-                // 座りモーションまたは立ちモーションに切り替え
-                _modelAnimator.SetBool(Const.IsSitting, false);
-
-                if (_isHolding)
-                {
-                    // アバターをホールド中から離す
-                    _isHolding = false;
-                }
-            }
+            // if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
+            // {
+            //     // ドラッグ中はハンギングモーション（ぶら下がりモーション）
+            //     _modelAnimator.SetBool(Const.IsSitting, false);
+            //     _modelAnimator.SetBool(Const.IsDragging, true);
+            //
+            //     if (!_isHolding)
+            //     {
+            //         // アバターをホールド中にする
+            //         _isHolding = true;
+            //
+            //         // ホールド中のボイスを再生
+            //         VoiceController.Instance.PlayHoldVoice();
+            //     }
+            // } else
+            // {
+            //     _modelAnimator.SetBool(Const.IsDragging, false);
+            //     // 座りモーションまたは立ちモーションに切り替え
+            //     _modelAnimator.SetBool(Const.IsSitting, false);
+            //
+            //     if (_isHolding)
+            //     {
+            //         // アバターをホールド中から離す
+            //         _isHolding = false;
+            //     }
+            // }
         }
 
         /// <summary>
@@ -226,7 +237,7 @@ namespace uDesktopMascot
 
             // モデルを子オブジェクトに設定
             model.transform.SetParent(modelContainer.transform, false);
-            
+
             // モデルコンテナをカメラの前方に配置
             Vector3 cameraPosition = _mainCamera.transform.position;
             Vector3 cameraForward = _mainCamera.transform.forward;
@@ -235,25 +246,30 @@ namespace uDesktopMascot
 
             // モデルコンテナをカメラの方向に向ける
             modelContainer.transform.LookAt(cameraPosition, Vector3.up);
-            
+
             var characterApplicationSettings = ApplicationSettings.Instance.Character;
 
             // モデルのスケールを調整（必要に応じて変更）
             modelContainer.transform.localScale = Vector3.one * characterApplicationSettings.Scale;
 
             // モデルコンテナの相対位置を設定
-            modelContainer.transform.position += new Vector3(characterApplicationSettings.PositionX, characterApplicationSettings.PositionY, characterApplicationSettings.PositionZ);
-            
+            modelContainer.transform.position += new Vector3(characterApplicationSettings.PositionX,
+                characterApplicationSettings.PositionY, characterApplicationSettings.PositionZ);
+
             // モデルコンテナの相対回転を設定
             var currentRotation = modelContainer.transform.rotation.eulerAngles;
-            modelContainer.transform.rotation = Quaternion.Euler(currentRotation.x + characterApplicationSettings.RotationX, currentRotation.y + characterApplicationSettings.RotationY, currentRotation.z + characterApplicationSettings.RotationZ);
-            
-            Log.Info("キャラクター設定: スケール {0}, 位置 {1}, 回転 {2}", characterApplicationSettings.Scale, modelContainer.transform.position, modelContainer.transform.rotation.eulerAngles);
+            modelContainer.transform.rotation = Quaternion.Euler(
+                currentRotation.x + characterApplicationSettings.RotationX,
+                currentRotation.y + characterApplicationSettings.RotationY,
+                currentRotation.z + characterApplicationSettings.RotationZ);
+
+            Log.Info("キャラクター設定: スケール {0}, 位置 {1}, 回転 {2}", characterApplicationSettings.Scale,
+                modelContainer.transform.position, modelContainer.transform.rotation.eulerAngles);
 
             // アニメータの取得と設定
             _modelAnimator = _loadCharacterModel.CharacterModelObject.GetComponentInChildren<Animator>();
-            
-            if(_modelAnimator == null)
+
+            if (_modelAnimator == null)
             {
                 Log.Debug("Animatorが見つからなかったため、新しく追加します。");
                 _modelAnimator = model.AddComponent<Animator>();
@@ -269,13 +285,13 @@ namespace uDesktopMascot
             {
                 Log.Warning("モデルからAvatarを生成できませんでした。アニメーションが正しく再生されない可能性があります。");
             }
-            
+
             // アニメーションコントローラーを設定
             // LoadVrm.UpdateAnimationController(_modelAnimator);
 
             _isInitialized = true;
         }
-        
+
         /// <summary>
         /// モデルからAvatarを生成します。
         /// </summary>
@@ -350,11 +366,10 @@ namespace uDesktopMascot
         /// <param name="context"></param>
         private void OnRightClick(InputAction.CallbackContext context)
         {
-            if(_menuPresenter.IsOpened)
+            if (_menuPresenter.IsOpened)
             {
                 _menuPresenter.Hide();
-            }
-            else
+            } else
             {
                 // メニューを表示. モデルよりも少し前方に表示
                 _menuPresenter.Show(_loadCharacterModel.CharacterModelObject.transform.position);

@@ -61,6 +61,15 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        /// VRMAファイルをロードする
+        /// </summary>
+        /// <param name="path"></param>
+        public async UniTask LoadVRMA(string path)
+        {
+           await _loadVrm.LoadMotionsAsync(path);
+        }
+
+        /// <summary>
         /// モデルのシェーダーをlilToonに置き換える
         /// </summary>
         /// <param name="model"></param>
