@@ -25,11 +25,9 @@ namespace uDesktopMascot
             var ext = Path.GetExtension(path).ToLower();
             if (ext == ".bvh")
             {
-                return null;
-                // return BvhMotion.LoadBvhFromPath(path);
+                return BvhMotionUtility.LoadBvhFromPath(path);
             }
-
-            // gltf, glb etc...
+            
             using GltfData data = new AutoGltfFileParser(path).Parse();
             using var loader = new VrmAnimationImporter(data);
             RuntimeGltfInstance instance = await loader.LoadAsync(new ImmediateCaller());

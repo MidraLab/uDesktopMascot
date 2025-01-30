@@ -56,11 +56,6 @@ namespace uDesktopMascot
         private bool _isInitialized = false;
 
         /// <summary>
-        /// キャラクターのアニメーションコントローラ
-        /// </summary>
-        private CharacterAnimationController _characterAnimationController;
-
-        /// <summary>
         /// マウスがドラッグ中かどうか
         /// </summary>
         private bool _isDragging = false;
@@ -84,11 +79,17 @@ namespace uDesktopMascot
         /// ドラッグ開始位置
         /// </summary>
         private Vector2 _startDragPosition;
+        
+        /// <summary>
+        /// キャラクターモデルのロードクラス
+        /// </summary>
+        private LoadCharacterModel _loadCharacterModel;
 
         private void Awake()
         {
             _mainCamera = Camera.main;
             _cancellationTokenSource = new CancellationTokenSource();
+            _loadCharacterModel = new LoadCharacterModel();
         }
 
         private void OnEnable()
@@ -125,33 +126,18 @@ namespace uDesktopMascot
         }
 
         /// <summary>
-        /// アニメーションの初期化
-        /// </summary>
-        private void InitAnimation()
-        {
-            _characterAnimationController = new CharacterAnimationController(_modelAnimator);
-            var initAnimation = _defaultAnimationClip.FirstOrDefault(x => x.name == "idle");
-            if(initAnimation == null)
-            {
-                Log.Error("デフォルトのアニメーションクリップが見つかりませんでした。");
-                return;
-            }
-            _characterAnimationController.SetInitialAnimation(initAnimation);
-        }
-
-        /// <summary>
         /// モデルの初期化
         /// </summary>
         private async UniTaskVoid InitModel()
         {
             try
             {
-                _model = await LoadCharacterModel.LoadModel(_cancellationTokenSource.Token);
+                await _loadCharacterModel.LoadModel(_cancellationTokenSource.Token);
                 
-                await UniTask.SwitchToMainThread();
+                // await UniTask.SwitchToMainThread();
                 
                 // モデルの初期調節
-                OnModelLoaded(_model);
+                // OnModelLoaded(_model);
                 
             } catch (Exception e)
             {
@@ -293,7 +279,7 @@ namespace uDesktopMascot
             }
             
             // アニメーションコントローラーを設定
-            LoadVRM.UpdateAnimationController(_modelAnimator);
+            // LoadVrm.UpdateAnimationController(_modelAnimator);
 
             _isInitialized = true;
         }
@@ -425,7 +411,7 @@ namespace uDesktopMascot
         /// </summary>
         private void OnDestroy()
         {
-            _characterAnimationController?.Dispose();
+            _loadCharacterModel?.Dispose();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
         }

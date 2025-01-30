@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Unity.Logging;
 using UniGLTF;
+using Unity.VisualScripting;
 using UniVRM10;
 using Object = UnityEngine.Object;
 
@@ -14,7 +13,7 @@ namespace uDesktopMascot
     /// <summary>
     /// VRMファイルを読み込む
     /// </summary>
-    public static class LoadVRM
+    public class LoadVrm : IDisposable
     {
         /// <summary>
         /// デフォルトのVRMファイル名
@@ -22,183 +21,101 @@ namespace uDesktopMascot
         private const string DefaultVrmFileName = "DefaultModel/DefaultModel";
 
         /// <summary>
-        /// アニメーションコントローラーを設定
+        ///    runtime gltf instance
         /// </summary>
-        /// <param name="animator"></param>
-        public static void UpdateAnimationController(Animator animator)
-        {
-            if (animator == null)
-            {
-                Log.Error("Animator が null です。アニメーションコントローラーを設定できません。");
-                return;
-            }
-
-            var controller = Resources.Load<RuntimeAnimatorController>("CharacterAnimationController");
-            if (controller != null)
-            {
-                animator.runtimeAnimatorController = controller;
-                Log.Info("アニメーションコントローラーを設定しました。");
-
-                if (animator.avatar == null)
-                {
-                    Log.Warning("Animator の avatar が設定されていません。アニメーションが正しく再生されない可能性があります。");
-                }
-            } else
-            {
-                Log.Error("CharacterAnimationController が Resources に見つかりませんでした。アニメーションコントローラーが正しく設定されているか確認してください。");
-            }
-        }
+        private RuntimeGltfInstance _runtimeGltfInstance;
 
         /// <summary>
-        /// モデルをロードする
+        ///   VRMモデルのインスタンス
         /// </summary>
-        public static async UniTask<GameObject> LoadModelAsync(string modelPath,CancellationToken cancellationToken)
-        {
-            try
-            {
-                GameObject model = null;
+        private Vrm10Instance _vrm10Instance;
 
-                if (!string.IsNullOrEmpty(modelPath))
-                {
-                    Log.Info($"指定されたモデルパス: {modelPath}");
+        /// <summary>
+        ///   VRMモデルのインスタンス
+        /// </summary>
+        public Vrm10Instance Instance => _vrm10Instance;
 
-                    // StreamingAssets フォルダ内のフルパスを作成
-                    var fullModelPath = Path.Combine(Application.streamingAssetsPath, modelPath);
+        /// <summary>
+        ///  VRMモデルのコントロールリグ
+        /// </summary>
+        public Vrm10RuntimeControlRig ControlRig => _vrm10Instance.Runtime.ControlRig;
 
-                    // モデルファイルが存在するか確認
-                    if (File.Exists(fullModelPath))
-                    {
-                        Log.Info($"指定されたモデルファイルをロードします: {modelPath}");
-                        // 指定されたモデルをロード
-                        model = await LoadAndDisplayModel(fullModelPath, cancellationToken);
-                    } else
-                    {
-                        Log.Warning($"指定されたモデルファイルが見つかりませんでした: {modelPath}");
-                        // この後、他のモデルファイルを探します
-                    }
-                } else
-                {
-                    Log.Info("モデルパスが指定されていません。");
-                }
-
-                return model;
-            } catch (Exception e)
-            {
-                Log.Error($"モデルの読み込みまたは表示中にエラーが発生しました: {e.Message}");
-                return null;
-            }
-        }
+        /// <summary>
+        /// VRMモデルのランタイム
+        /// </summary>
+        public Vrm10Runtime Runtime => _vrm10Instance.Runtime;
 
         /// <summary>
         ///     デフォルトのVRMモデルをロードして表示する
         /// </summary>
-        public static GameObject LoadDefaultModel()
+        public async UniTask LoadDefaultModel(CancellationToken cancellationToken)
         {
-            // ResourcesフォルダからPrefabをロード
-            var prefab = Resources.Load<GameObject>(DefaultVrmFileName);
-            if (prefab == null)
+            Vrm10Instance loadPrefab = null;
+            try
+            {
+                // ResourcesフォルダからPrefabをロード
+                loadPrefab = await Resources.LoadAsync<Vrm10Instance>(DefaultVrmFileName).WithCancellation(cancellationToken) as Vrm10Instance;
+
+            } catch (Exception e)
+            {
+                Log.Error($"デフォルトのPrefabのロードに失敗しました: {DefaultVrmFileName}.prefab");
+            }
+            
+            if (loadPrefab == null)
             {
                 Log.Error($"デフォルトのPrefabがResourcesフォルダに見つかりません: {DefaultVrmFileName}.prefab");
-                return null;
+                return;
             }
 
             // Prefabをインスタンス化
-            var model = Object.Instantiate(prefab);
+            _vrm10Instance = GameObject.Instantiate(loadPrefab);
+
+            if (_vrm10Instance != null)
+            {
+                _vrm10Instance.UpdateType = Vrm10Instance.UpdateTypes.LateUpdate;
+                _vrm10Instance.LookAtTargetType = VRM10ObjectLookAt.LookAtTargetTypes.YawPitchValue;
+            }
 
             Log.Debug("デフォルトモデルのロードと表示が完了しました: " + DefaultVrmFileName);
-
-            return model;
         }
 
         /// <summary>
-        /// VRMファイルを読み込み、モデルを表示する
-        /// </summary>
-        /// <param name="path">モデルファイルのパス</param>
-        /// <param name="cancellationToken"></param>
-        private static async UniTask<GameObject> LoadAndDisplayModel(string path, CancellationToken cancellationToken)
-        {
-            return await LoadAndDisplayModelFromPath(path, cancellationToken);
-        }
-
-        /// <summary>
-        /// ファイルパスからモデルをロードして表示する
+        ///    VRMファイルをロードして表示する
         /// </summary>
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        private static async UniTask<GameObject> LoadAndDisplayModelFromPath(string path,
-            CancellationToken cancellationToken)
+        public async UniTask LoadVrmModel(string path,CancellationToken cancellationToken)
         {
-            // ファイルの拡張子を取得
-            var extension = Path.GetExtension(path).ToLowerInvariant();
-
-            GameObject model = null;
-
-            if (extension == ".vrm")
+            var vrm10Instance = await Vrm10.LoadPathAsync(path,
+                canLoadVrm0X: true,
+                ct: cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
             {
-                // VRMファイルをロード（VRM 0.x および 1.x に対応）
-                Vrm10Instance instance = await Vrm10.LoadPathAsync(path, canLoadVrm0X: true, ct: cancellationToken);
-
-                // モデルのGameObjectを取得
-                model = instance.gameObject;
-            } else if (extension == ".glb" || extension == ".gltf")
-            {
-                // GLBまたはglTFファイルをロード
-                model = await LoadGlbOrGltfModelAsync(path);
-            } else
-            {
-                Log.Error($"サポートされていないファイル形式です: {extension}");
-                return null;
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(vrm10Instance.gameObject);
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
-            if (model == null)
+            if (vrm10Instance == null)
             {
-                Log.Error("モデルのロードに失敗しました。");
-                return null;
+                Debug.LogWarning("LoadPathAsync is null");
+                return;
             }
-
-            Log.Info("モデルのロードと表示が完了しました: " + path);
-
-            return model;
+            _vrm10Instance = vrm10Instance.GetComponent<Vrm10Instance>();
+            if (_vrm10Instance != null)
+            {
+                _vrm10Instance.UpdateType = Vrm10Instance.UpdateTypes.LateUpdate;
+                _vrm10Instance.LookAtTargetType = VRM10ObjectLookAt.LookAtTargetTypes.YawPitchValue;
+            }
         }
 
         /// <summary>
-        /// GLBまたはglTFファイルをロードしてモデルを取得
+        ///    リソースを解放する
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private static async UniTask<GameObject> LoadGlbOrGltfModelAsync(string path)
+        public void Dispose()
         {
-            try
+            if (_runtimeGltfInstance != null)
             {
-                // ファイルを自動的にパースする
-                var parser = new AutoGltfFileParser(path);
-
-                using var gltfData = parser.Parse();
-                // ImporterContextを作成
-                var importer = new ImporterContext(gltfData);
-
-                // IAwaitCallerを作成
-                var awaitCaller = new RuntimeOnlyAwaitCaller();
-
-                // モデルを非同期でロード
-                var gltfInstance = await importer.LoadAsync(awaitCaller);
-
-                // 必要に応じてメッシュを表示
-                gltfInstance.ShowMeshes();
-
-                // ルートのGameObjectを取得
-                var model = gltfInstance.Root;
-
-                return model;
-            } catch (OperationCanceledException)
-            {
-                Log.Warning("モデルのロードがキャンセルされました。");
-                return null;
-            } catch (Exception e)
-            {
-                Log.Error($"モデルのロード中にエラーが発生しました: {e.Message}");
-                return null;
+                Object.Destroy(_runtimeGltfInstance.gameObject);
             }
         }
     }

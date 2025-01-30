@@ -2,7 +2,7 @@
 using System.IO;
 using Unity.Logging;
 
-namespace uDesktopMascot.Utility
+namespace uDesktopMascot
 {
     /// <summary>
     ///     INIファイルの読み込みとパースを行うユーティリティクラス
