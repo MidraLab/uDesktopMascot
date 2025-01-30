@@ -31,6 +31,10 @@ namespace uDesktopMascot
             messageText.text = message;
         }
 
+        /// <summary>
+        /// ダイアログを表示する
+        /// </summary>
+        /// <param name="latestVersion"></param>
         public void Show(string latestVersion)
         {
             base.Show();
