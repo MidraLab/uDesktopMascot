@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: it
   m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4582709081126994015
   m_TableData:
   - m_Id: 552562152116224
     m_Localized: Chiusura dell'app.
@@ -34,6 +35,17 @@ MonoBehaviour:
     m_Localized: Impostazioni
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: 
+    m_Metadata:
+      m_Items:
+      - rid: 4582709081126994015
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4582709081126994015
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2499933916303360

@@ -31,6 +31,10 @@ MonoBehaviour:
     m_Key: WORD_MENU_APPLICATOIN_SETTING
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Key: MGS_NEW_VERSION
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
