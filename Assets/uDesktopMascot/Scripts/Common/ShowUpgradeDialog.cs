@@ -25,7 +25,7 @@ namespace uDesktopMascot
         private void SetMessage(string latestVersion)
         {
             // LocalizationUtility を使用してローカライズされた文字列を同期的に取得
-            string message = LocalizationUtility.GetLocalizedStringSync(TableName, "MGS_NEW_VERSION", latestVersion);
+            string message = LocalizationUtility.GetLocalizedStringSync(TableName, "MSG_NEW_VERSION", latestVersion);
 
             // メッセージテキストを更新
             messageText.text = message;

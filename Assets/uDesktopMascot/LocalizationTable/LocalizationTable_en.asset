@@ -36,7 +36,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2499933916303360
-    m_Localized: 
+    m_Localized: A new version v{0} has been released.
     m_Metadata:
       m_Items:
       - rid: 4582709081126994013
