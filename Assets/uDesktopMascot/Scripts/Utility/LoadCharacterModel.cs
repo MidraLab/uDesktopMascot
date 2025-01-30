@@ -19,6 +19,11 @@ namespace uDesktopMascot
         private readonly LoadVrm _loadVrm;
         
         /// <summary>
+        /// キャラクターモデルのGameObject
+        /// </summary>
+        public GameObject CharacterModelObject => _loadVrm.Instance.gameObject;
+        
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public LoadCharacterModel()

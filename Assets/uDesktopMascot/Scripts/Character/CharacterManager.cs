@@ -36,11 +36,6 @@ namespace uDesktopMascot
         [SerializeField] private MenuPresenter _menuPresenter;
 
         /// <summary>
-        /// モデルのゲームオブジェクト
-        /// </summary>
-        private GameObject _model;
-
-        /// <summary>
         /// メインカメラ
         /// </summary>
         private Camera _mainCamera;
@@ -137,7 +132,7 @@ namespace uDesktopMascot
                 // await UniTask.SwitchToMainThread();
                 
                 // モデルの初期調節
-                // OnModelLoaded(_model);
+                OnModelLoaded(_loadCharacterModel.CharacterModelObject);
                 
             } catch (Exception e)
             {
@@ -155,7 +150,7 @@ namespace uDesktopMascot
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
             // モデルのスクリーン座標を取得
-            var modelScreenPos = ScreenUtility.GetModelScreenPosition(_mainCamera, _model.transform);
+            var modelScreenPos = ScreenUtility.GetModelScreenPosition(_mainCamera, _loadCharacterModel.CharacterModelObject.transform);
 
             // エクスプローラーウィンドウの位置を取得
             var explorerWindows = ExplorerWindowDetector.GetExplorerWindows();
@@ -255,11 +250,8 @@ namespace uDesktopMascot
             
             Log.Info("キャラクター設定: スケール {0}, 位置 {1}, 回転 {2}", characterApplicationSettings.Scale, modelContainer.transform.position, modelContainer.transform.rotation.eulerAngles);
 
-            // モデルコンテナをフィールドに保持
-            _model = modelContainer;
-
             // アニメータの取得と設定
-            _modelAnimator = _model.GetComponentInChildren<Animator>();
+            _modelAnimator = _loadCharacterModel.CharacterModelObject.GetComponentInChildren<Animator>();
             
             if(_modelAnimator == null)
             {
@@ -365,7 +357,7 @@ namespace uDesktopMascot
             else
             {
                 // メニューを表示. モデルよりも少し前方に表示
-                _menuPresenter.Show(_model.transform.position);
+                _menuPresenter.Show(_loadCharacterModel.CharacterModelObject.transform.position);
             }
         }
 
