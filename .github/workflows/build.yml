@@ -77,7 +77,7 @@ jobs:
           fi
 
   build-windows:
-    if: ${{ github.event_name == 'pull_request' || inputs.build_windows }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || inputs.build_windows }}
     needs: [check-branch]
     runs-on: windows-latest
     steps:
@@ -157,7 +157,7 @@ jobs:
           path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
-    if: ${{ github.event_name == 'pull_request' || inputs.build_mac }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || inputs.build_mac }}
     needs: [check-branch]
     runs-on: macos-latest
     steps:
