@@ -72,7 +72,7 @@ namespace uDesktopMascot.Editor
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
 
                 // インストーラーのバージョンファイルを作成
-                CreateInstallerSetupTextFile(buildDirectory);
+                UpdateSetupFileWithProjectVersion(buildDirectory);
             }
 
             // 不要なフォルダを削除
