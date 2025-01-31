@@ -120,7 +120,7 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
-      - name: Git Push setup.iss
+      - name: Update setup.iss
         shell: bash
         run: |
           git config --global user.name "github-actions"

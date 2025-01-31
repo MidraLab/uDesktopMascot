@@ -149,10 +149,10 @@ namespace uDesktopMascot.Editor
         }
 
         /// <summary>
-        ///     インストーラーのバージョンファイルを作成する
+        ///     setup.iss のバージョンをプロジェクトバージョンに更新する
         /// </summary>
         /// <param name="buildDirectory">ビルドディレクトリのパス</param>
-        private static void CreateInstallerSetupTextFile(string buildDirectory)
+        private static void UpdateSetupFileWithProjectVersion(string buildDirectory)
         {
             var projectVersion = PlayerSettings.bundleVersion;
 
