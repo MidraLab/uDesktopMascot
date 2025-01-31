@@ -125,10 +125,14 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          
+          # リモートの最新変更を取得してリベース
+          git fetch origin
+          git rebase origin/${{ github.ref_name }}
+          
           git add setup.iss
           if ! git diff --cached --quiet; then
             git commit -m "Update setup.iss"
-            git pull origin ${{ github.ref_name }} --rebase
             git push origin HEAD:${{ github.ref }}
           else
             echo "No changes to setup.iss, skipping commit and push"
