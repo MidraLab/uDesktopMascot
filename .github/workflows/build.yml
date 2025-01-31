@@ -218,7 +218,7 @@ jobs:
   build-uwp:
     if: ${{ github.event_name == 'pull_request' || inputs.build_uwp }}
     needs: [check-branch]
-    runs-on: self-hosted  # 自己ホストランナーを使用（Windowsマシン）
+    runs-on: windows-latest
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4.2.2
