@@ -1,4 +1,7 @@
-﻿name: Build and Release
+﻿permissions:
+  contents: write
+
+name: Build and Release
 
 on:
   workflow_dispatch:
@@ -294,16 +297,11 @@ jobs:
           echo "リリースタグ名は '${TAG_NAME}' です"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
-      - name: アーティファクトの内容を確認
-        run: |
-          ls -la ./artifacts
-
       - name: ドラフトリリースを作成し、アーティファクトをアップロード
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.tag_name }}
           draft: true
           files: artifacts/**/*
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
