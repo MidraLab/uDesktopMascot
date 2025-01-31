@@ -173,6 +173,11 @@ namespace uDesktopMascot
         /// 常に最前面に表示するかどうか
         /// </summary>
         public bool AlwaysOnTop { get; set; } = true;
+        
+        /// <summary>
+        /// アップデータダイアログを表示しないかどうか
+        /// </summary>
+        public bool IsSkipShowUpgradeDialog { get; set; } = false;
     }
 
     /// <summary>

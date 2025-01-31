@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace uDesktopMascot
 {
@@ -13,11 +15,27 @@ namespace uDesktopMascot
         private protected Canvas _canvas;
         
         /// <summary>
+        /// 閉じるボタン
+        /// </summary>
+        [SerializeField] private Button closeButton;
+        
+        /// <summary>
+        /// 閉じるボタンのクリックイベント
+        /// </summary>
+        public Action OnClose { get; set; }
+        
+        /// <summary>
         ///  awake
         /// </summary>
         private protected virtual void Awake()
         {
             _canvas = GetComponent<Canvas>();
+            
+            closeButton.onClick.AddListener(() =>
+            {
+                OnClose?.Invoke();
+                Hide();
+            });
         }
 
         /// <summary>
