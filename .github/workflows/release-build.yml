@@ -197,6 +197,7 @@ jobs:
           path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
       - name: ビルド成果物を圧縮
+        shell: bash
         run: |
           cd build
           zip -r "uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip" "uDesktopMascot"
