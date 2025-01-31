@@ -302,6 +302,10 @@ jobs:
         with:
           tag_name: ${{ steps.vars.outputs.tag_name }}
           draft: true
-          files: artifacts/**/*
+          files: |
+            artifacts/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
