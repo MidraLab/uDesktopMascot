@@ -246,22 +246,18 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Unity Editorのセットアップ
-        uses: game-ci/unity-setup@v2
-        with:
-          unityVersion: '6000.0.31f1'
-          modules: WindowsUWP
-
       - name: UWP向けにUnityプロジェクトをビルド
         uses: game-ci/unity-builder@v4.3.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: 'WSAPlayer'
           buildName: 'uDesktopMascotUWP'
-          projectPath: '.'
-          outputDir: 'build'
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
-          unityVersion: '6000.0.31f1'  # ご使用のUnityバージョンに合わせて調整してください
+          unityVersion: '6000.0.31f1'
 
       - name: MSBuildのセットアップ
         uses: microsoft/setup-msbuild@v1.0.3
