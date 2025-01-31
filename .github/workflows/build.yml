@@ -128,7 +128,7 @@ jobs:
           
           # リモートの最新変更を取得してリベース
           git fetch origin
-          git rebase origin/${{ github.ref_name }}
+          git rebase origin/${{ github.ref_name }} --autostash
           
           git add setup.iss
           if ! git diff --cached --quiet; then
