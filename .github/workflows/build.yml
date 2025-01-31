@@ -16,7 +16,7 @@ on:
       build_uwp:
         description: 'Build for UWP'
         required: true
-        default: false
+        default: true
         type: boolean
   pull_request:
     branches:
