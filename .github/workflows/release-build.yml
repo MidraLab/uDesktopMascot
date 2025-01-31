@@ -158,6 +158,19 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
+      - name: Update setup.iss
+        shell: bash
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add setup.iss
+          if ! git diff --cached --quiet; then
+            git commit -m "Update setup.iss"
+            git push origin HEAD:${{ github.ref }}
+          else
+            echo "No changes to setup.iss, skipping commit and push"
+          fi
+
       - name: ビルド成果物を圧縮して名前を変更
         run: |
           cd build
