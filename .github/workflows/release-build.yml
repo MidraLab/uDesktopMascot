@@ -183,13 +183,14 @@ jobs:
         run: |
           cd build
           mv "StandaloneWindows64" "uDesktopMascot"
+          zip -r "uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip" "uDesktopMascot"
           cd ..
 
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ${{ steps.build_info.outputs.artifact_name }}
-          path: build/uDesktopMascot
+          path: build/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
 
       - name: Set up Inno Setup
         uses: Minionguyjpro/Inno-Setup-Action@v1.0.0
@@ -259,13 +260,14 @@ jobs:
         run: |
           cd build
           mv "StandaloneOSX" "uDesktopMascot"
+          zip -r "uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip" "uDesktopMascot"
           cd ..
 
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ${{ steps.build_info.outputs.artifact_name }}
-          path: build/uDesktopMascot
+          path: build/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
 
       - name: Set up Installer
         run: |
@@ -304,12 +306,10 @@ jobs:
       - name: ドラフトリリースを作成し、アーティファクトをアップロード
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.vars.outputs.tag_name }}
-          draft: true
           files: |
             artifacts/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
-            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
             artifacts/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe
-            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
