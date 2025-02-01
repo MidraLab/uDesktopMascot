@@ -980,7 +980,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:e0bc4458d73676a429c1b840d5dbc577
     m_TableEntryReference:
-      m_KeyId: 0
+      m_KeyId: 3116372423544832
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8.25
+  m_fontSize: 8.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1221,7 +1221,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:e0bc4458d73676a429c1b840d5dbc577
     m_TableEntryReference:
-      m_KeyId: 2544266770059264
+      m_KeyId: 3116588740579328
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
