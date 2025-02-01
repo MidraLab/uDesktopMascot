@@ -1,4 +1,8 @@
-﻿using UnityEngine.Localization;
+﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using Unity.Logging;
+using UnityEngine.Localization;
 
 namespace uDesktopMascot
 {
@@ -47,20 +51,18 @@ namespace uDesktopMascot
         /// プリロード済みであることが前提です。
         /// </summary>
         /// <param name="localizedString">LocalizedString オブジェクト</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>ローカライズされた文字列</returns>
-        public static string GetLocalizedStringSync(LocalizedString localizedString)
+        public static async UniTask<string> GetLocalizedStringAsync(LocalizedString localizedString, CancellationToken cancellationToken)
         {
-            var handle = localizedString.GetLocalizedStringAsync();
-
-            if (handle.IsDone)
+            try
             {
-                return handle.Result;
+                return await localizedString.GetLocalizedStringAsync().ToUniTask(cancellationToken: cancellationToken);
             }
-            else
+            catch (Exception ex)
             {
-                // プリロードされていない場合の対処
-                handle.WaitForCompletion();
-                return handle.Result;
+                Log.Error("ローカライズ文字列の取得中にエラーが発生しました: " + ex.Message);
+                return string.Empty;
             }
         }
 
@@ -71,23 +73,12 @@ namespace uDesktopMascot
         /// <param name="tableName">String Table コレクション名</param>
         /// <param name="key">ローカライズされた文字列のキー</param>
         /// <param name="arguments">プレースホルダーに挿入する引数</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>ローカライズされた文字列</returns>
-        public static string GetLocalizedStringSync(string tableName, string key, params object[] arguments)
+        public static async UniTask<string> GetLocalizedStringAsync(string tableName, string key,CancellationToken cancellationToken, params object[] arguments)
         {
             var localizedString = GetLocalizedStringFromTable(tableName, key, arguments);
-            return GetLocalizedStringSync(localizedString);
-        }
-
-        /// <summary>
-        /// デフォルトのテーブル名を使用して、指定されたキーと引数でローカライズされた文字列を同期的に取得します。
-        /// プリロード済みであることが前提です。
-        /// </summary>
-        /// <param name="key">ローカライズされた文字列のキー</param>
-        /// <param name="arguments">プレースホルダーに挿入する引数</param>
-        /// <returns>ローカライズされた文字列</returns>
-        public static string GetLocalizedStringSync(string key, params object[] arguments)
-        {
-            return GetLocalizedStringSync(DefaultTableName, key, arguments);
+            return await GetLocalizedStringAsync(localizedString,cancellationToken);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +22,17 @@ namespace uDesktopMascot
         [SerializeField] private Toggle skipShowUpgradeDialogToggle;
         
         /// <summary>
+        /// キャンセルトークンソース
+        /// </summary>
+        private CancellationTokenSource _cancellationTokenSource;
+
+        private protected override void Awake()
+        {
+            base.Awake();
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        /// <summary>
         /// アップグレードダイアログをスキップするかどうか
         /// </summary>
         public bool SkipShowUpgradeDialog
@@ -37,10 +50,11 @@ namespace uDesktopMascot
         /// メッセージを設定する
         /// </summary>
         /// <param name="latestVersion">最新バージョン番号</param>
-        private void SetMessage(string latestVersion)
+        /// <param name="cancellationToken"></param>
+        private async UniTask SetMessage(string latestVersion,CancellationToken cancellationToken)
         {
             // LocalizationUtility を使用してローカライズされた文字列を同期的に取得
-            string message = LocalizationUtility.GetLocalizedStringSync(TableName, "MSG_NEW_VERSION", latestVersion);
+            string message = await LocalizationUtility.GetLocalizedStringAsync(TableName, "MSG_NEW_VERSION",cancellationToken, latestVersion);
 
             // メッセージテキストを更新
             messageText.text = message;
@@ -53,7 +67,13 @@ namespace uDesktopMascot
         public void Show(string latestVersion)
         {
             base.Show();
-            SetMessage(latestVersion);
+            SetMessage(latestVersion,_cancellationTokenSource.Token).Forget();
+        }
+
+        private void OnDestroy()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
         }
     }
 }
