@@ -326,8 +326,8 @@ jobs:
           draft: true
           files: |
             artifacts/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
-            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
             artifacts/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe
-            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}/**
+            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
