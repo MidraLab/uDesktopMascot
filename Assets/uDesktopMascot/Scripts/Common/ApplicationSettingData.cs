@@ -173,6 +173,11 @@ namespace uDesktopMascot
         /// 常に最前面に表示するかどうか
         /// </summary>
         public bool AlwaysOnTop { get; set; } = true;
+        
+        /// <summary>
+        /// アップデータダイアログでスキップするかversion
+        /// </summary>
+        public string SkippedVersion { get; set; } = string.Empty;
     }
 
     /// <summary>
