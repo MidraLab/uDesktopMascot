@@ -4,5 +4,5 @@ Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
 "WORD_MENU_HELP",557971768283134,"Help","Aide","Aiuto","ヘルプ","도움"
 "WORD_MENU_APPLICATOIN_SETTING",557971768283131,"Setting","paramètres","Impostazioni","設定","설정"
 "MSG_NEW_VERSION",2499933916303360,"A new version v{0} has been released.","La nouvelle version de v{0} a été publiée.","È stata rilasciata la nuova versione di v{0}.","新しいVerのv{0}が\nリリースされています","새로운 Ver의 v{0}가\n배포되었습니다"
-"WORD_CLOSE_BUTTON_TEXT",3116372423544832,,,,"閉じる",
-"MSG_SKIP_UPDATE_DIALOG_TOGGLE_TEXT",3116588740579328,,,,"次のversionまでダイアログを表示しない",
+"WORD_CLOSE_BUTTON_TEXT",3116372423544832,"Close","Fermer","Chiudere","閉じる","닫기"
+"MSG_SKIP_UPDATE_DIALOG_TOGGLE_TEXT",3116588740579328,"Do not display the dialog until the next version.","Ne pas afficher de dialogue jusqu'à la prochaine version","Non mostrare il dialogo fino alla prossima versione.","次のversionまでダイアログを表示しない","다음 버전까지 다이얼로그를 표시하지 않음"
