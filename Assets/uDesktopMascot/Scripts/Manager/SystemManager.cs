@@ -20,7 +20,7 @@ namespace uDesktopMascot
         /// <summary>
         ///   アップグレードダイアログを表示する
         /// </summary>
-        [SerializeField] private ShowUpgradeDialog showUpgradeDialog;
+        [SerializeField] private ShowUpdateDialog showUpdateDialog;
         
         /// <summary>
         /// キャンセルトークンソース
@@ -47,8 +47,22 @@ namespace uDesktopMascot
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
 
+        }
+
+        private void Start()
+        {
+            SetEvent();
+            
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
+        }
+
+        /// <summary>
+        ///   イベントを設定
+        /// </summary>
+        private void SetEvent()
+        {
+            showUpdateDialog.OnClose = SaveSkipUpdateDialog;
         }
 
         /// <summary>
@@ -68,20 +82,51 @@ namespace uDesktopMascot
         /// </summary>
         private async UniTask CheckUpdateAsync()
         {
-            if (showUpgradeDialog.SkipShowUpgradeDialog)
-            {
-                // アップグレードダイアログをスキップする場合、アップデートチェックを行わない
-                return;
-            }
-            
             // アップデートチェック
             var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
             
-            // if (isUpdateAvailable)
-            // {
-                // アップデートがある場合、アップグレードダイアログを表示
-                showUpgradeDialog.Show(_checkVersion.LatestVersion);
-            // }
+            if (isUpdateAvailable)
+            {
+                var displaySettings = ApplicationSettings.Instance.Display;
+
+                // スキップしたバージョンを取得
+                var skippedVersion = displaySettings.SkippedVersion;
+
+                // スキップしたバージョンが設定されている場合
+                if (!string.IsNullOrEmpty(skippedVersion))
+                {
+                    // 最新バージョンがスキップしたバージョンより新しいかを確認
+                    if (_checkVersion.IsNewerVersion(_checkVersion.LatestVersion, skippedVersion))
+                    {
+                        // 新しいバージョンがある場合、ダイアログを表示
+                        showUpdateDialog.Show(_checkVersion.LatestVersion);
+                    }
+                    else
+                    {
+                        // スキップしたバージョンと同じかそれより古い場合、ダイアログを表示しない
+                        Log.Info("ユーザーがスキップしたバージョンのため、アップデートダイアログを表示しません。");
+                    }
+                }
+                else
+                {
+                    // スキップしたバージョンがない場合、ダイアログを表示
+                    showUpdateDialog.Show(_checkVersion.LatestVersion);
+                }
+            }
+        }
+
+        /// <summary>
+        ///    アップグレードダイアログをスキップするかどうかを保存
+        /// </summary>
+        private void SaveSkipUpdateDialog()
+        {
+            var displaySettings = ApplicationSettings.Instance.Display;
+
+            // ユーザーがスキップを選択した場合、現在の最新バージョンを保存
+            displaySettings.SkippedVersion = showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion :
+                string.Empty;
+
+            ApplicationSettings.Instance.SaveSettings();
         }
 
         /// <summary>

@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowController: {fileID: 808887759}
-  showUpgradeDialog: {fileID: 5362069048953419040}
+  showUpdateDialog: {fileID: 5362069048953419040}
 --- !u!4 &288916653
 Transform:
   m_ObjectHideFlags: 0

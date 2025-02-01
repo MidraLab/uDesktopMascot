@@ -5,9 +5,9 @@ using UnityEngine.UI;
 namespace uDesktopMascot
 {
     /// <summary>
-    ///  アップグレードダイアログを表示する
+    ///  アップデートダイアログを表示する
     /// </summary>
-    public class ShowUpgradeDialog : DialogBase
+    public class ShowUpdateDialog : DialogBase
     {
         /// <summary>
         /// メッセージテキスト

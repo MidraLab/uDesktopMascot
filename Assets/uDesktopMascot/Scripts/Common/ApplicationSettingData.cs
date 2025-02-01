@@ -175,9 +175,9 @@ namespace uDesktopMascot
         public bool AlwaysOnTop { get; set; } = true;
         
         /// <summary>
-        /// アップデータダイアログを表示しないかどうか
+        /// アップデータダイアログでスキップするかversion
         /// </summary>
-        public bool IsSkipShowUpgradeDialog { get; set; } = false;
+        public string SkippedVersion { get; set; } = string.Empty;
     }
 
     /// <summary>

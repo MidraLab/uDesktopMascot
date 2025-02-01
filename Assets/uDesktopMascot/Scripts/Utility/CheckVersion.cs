@@ -87,7 +87,7 @@ namespace uDesktopMascot
         /// <summary>
         /// バージョン文字列を比較して、最新バージョンが現在のバージョンより新しいかを判定します
         /// </summary>
-        private bool IsNewerVersion(string latestVersion, string currentVersion)
+        public bool IsNewerVersion(string latestVersion, string currentVersion)
         {
             try
             {

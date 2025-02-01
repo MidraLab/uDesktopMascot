@@ -40,6 +40,14 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 4582709081126994015
+  - m_Id: 3116372423544832
+    m_Localized: Chiudere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: Non mostrare il dialogo fino alla prossima versione.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
