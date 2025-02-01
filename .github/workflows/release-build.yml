@@ -211,7 +211,7 @@ jobs:
       - name: Upload the Build for StandaloneWindows64
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
+          name: uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
 
   build-mac:
@@ -293,7 +293,7 @@ jobs:
       - name: Upload the Build for StandaloneOSX
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
+          name: uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
 
   release:
@@ -327,7 +327,7 @@ jobs:
           files: |
             artifacts/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
             artifacts/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}/uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe
-            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
-            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
+            artifacts/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
+            artifacts/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
