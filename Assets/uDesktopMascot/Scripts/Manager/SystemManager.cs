@@ -1,5 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
+
+#if !UNITY_WSA
 using Kirurobo;
+#endif
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
@@ -11,10 +14,13 @@ namespace uDesktopMascot
     /// </summary>
     public class SystemManager : SingletonMonoBehaviour<SystemManager>
     {
+#if !UNITY_WSA
+        
         /// <summary>
         ///    ウィンドウコントローラー
         /// </summary>
         [SerializeField] private UniWindowController windowController;
+#endif
 
         private protected override void Awake()
         {
@@ -35,8 +41,12 @@ namespace uDesktopMascot
         private void LoadSetting()
         {
             var systemSettings = ApplicationSettings.Instance.Display;
+
+#if !UNITY_WSA
+            
             windowController.isTopmost = systemSettings.AlwaysOnTop;
             windowController.opacityThreshold = systemSettings.Opacity;
+#endif
 
             Log.Info("System設定 : 常に最前面 = " + systemSettings.AlwaysOnTop + ", 不透明度 = " + systemSettings.Opacity);
         }
