@@ -36,16 +36,25 @@ namespace uDesktopMascot
             CanvasGroup = GetComponent<CanvasGroup>();
         }
 
+        /// <summary>
+        /// OnEnableイベント
+        /// </summary>
         private void OnEnable()
         {
             closeButton.onClick.AddListener(CloseAction);
         }
 
+        /// <summary>
+        /// OnDisableイベント
+        /// </summary>
         private void OnDisable()
         {
             closeButton.onClick.RemoveListener(CloseAction);
         }
 
+        /// <summary>
+        /// 閉じるボタンのアクション
+        /// </summary>
         private void CloseAction()
         {
             OnClose?.Invoke();
