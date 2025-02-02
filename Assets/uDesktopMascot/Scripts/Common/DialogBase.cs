@@ -40,11 +40,21 @@ namespace uDesktopMascot
         {
             Canvas = GetComponent<Canvas>();
             CanvasGroup = GetComponent<CanvasGroup>();
-            
-            closeButton.onClick.AddListener(() =>
-            {
-                OnClose?.Invoke();
-            });
+        }
+
+        private void OnEnable()
+        {
+            closeButton.onClick.AddListener(CloseAction);
+        }
+
+        private void OnDisable()
+        {
+            closeButton.onClick.RemoveListener(CloseAction);
+        }
+
+        private void CloseAction()
+        {
+            OnClose?.Invoke();
         }
 
         /// <summary>
