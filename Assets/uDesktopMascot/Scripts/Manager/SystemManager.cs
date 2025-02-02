@@ -4,6 +4,10 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
+using System.IO;
+using uDesktopMascot.Web.Infrastructure.Framework;
+using uDesktopMascot.Web.Application.Handlers;
+using uDesktopMascot.Web.Application.UseCases;
 
 namespace uDesktopMascot
 {
@@ -32,6 +36,12 @@ namespace uDesktopMascot
         /// </summary>
         private CheckVersion _checkVersion;
 
+        /// <summary>
+        /// Webサーバーのネットワークラッパー
+        /// </summary>
+        private NetWrapper _netWrapper;
+
+
         private protected override void Awake()
         {
             base.Awake();
@@ -55,6 +65,9 @@ namespace uDesktopMascot
             
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
+
+            // Webサーバーの初期化
+            InitializeWebServer();
         }
 
         /// <summary>
@@ -204,6 +217,31 @@ namespace uDesktopMascot
             }
         }
 
+        private void InitializeWebServer()
+        {
+            // 依存関係の初期化
+            var playVoiceUseCase = new PlayVoiceUseCase();
+            var playVoiceHandler = new PlayVoiceHandler(playVoiceUseCase);
+
+            // ルーターの設定
+            _netWrapper = new NetWrapper();
+            var router = new Router(_netWrapper, playVoiceHandler);
+
+            // サーバーの起動
+            _netWrapper.StartServer(8080);
+            Debug.Log($"Webサーバーが起動しました。ポート: {8080}");
+
+            string htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+            if (File.Exists(htmlPath))
+            {
+                Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
+            }
+            else
+            {
+                Debug.LogError($"WebUIファイルが見つかりません: {htmlPath}\nAssets/WebUIフォルダにindex.htmlを作成してください");
+            }
+        }
+
         /// <summary>
         ///   破棄時の処理
         /// </summary>
@@ -211,6 +249,7 @@ namespace uDesktopMascot
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
+            _netWrapper?.Dispose();
         }
     }
 }
