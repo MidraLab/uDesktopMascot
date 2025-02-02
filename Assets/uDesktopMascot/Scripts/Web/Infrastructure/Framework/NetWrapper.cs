@@ -2,6 +2,7 @@ using System.Net;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Logging;
 using System;
 using uDesktopMascot.Web.Domain.Interfaces;
 
@@ -38,28 +39,42 @@ namespace uDesktopMascot.Web.Infrastructure.Framework
             }
             catch (HttpListenerException)
             {
-                Debug.Log("Listener stopped normally");
+                Log.Info("Listener stopped normally");
             }
             catch (ObjectDisposedException)
             {
-                Debug.Log("Listener already disposed");
+                Log.Info("Listener already disposed");
             }
         }
 
         public void StopServer()
         {
-            _listener?.Stop();
-            _listenerThread?.Join();
+            try
+            {
+                _listener?.Stop();
+                _listenerThread?.Join(1000); // 最大1秒待機
+                Log.Info("Listener stopped normally");
+            }
+            catch (ObjectDisposedException)
+            {
+                Log.Info("Listener already disposed");
+            }
+            finally
+            {
+                _listenerThread = null;
+            }
         }
 
         public void Dispose()
         {
             StopServer();
+            _listener?.Close();
+            _listener = null;
         }
 
         private void RegisterHandler(string method, string path, Action<HttpListenerContext> handlerAction, Dictionary<string, Action<HttpListenerContext>> handlers)
         {
-            handlers[path] = context => 
+            handlers[path] = context =>
             {
                 if (context.Request.HttpMethod.Equals(method, StringComparison.OrdinalIgnoreCase))
                 {

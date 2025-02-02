@@ -25,7 +25,7 @@ namespace uDesktopMascot
         ///   アップグレードダイアログを表示する
         /// </summary>
         [SerializeField] private ShowUpdateDialog showUpdateDialog;
-        
+
         /// <summary>
         /// キャンセルトークンソース
         /// </summary>
@@ -62,12 +62,9 @@ namespace uDesktopMascot
         private void Start()
         {
             SetEvent();
-            
+
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
-
-            // Webサーバーの初期化
-            InitializeWebServer();
         }
 
         /// <summary>
@@ -97,7 +94,7 @@ namespace uDesktopMascot
         {
             // アップデートチェック
             var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
-            
+
             if (isUpdateAvailable)
             {
                 var displaySettings = ApplicationSettings.Instance.Display;
@@ -217,19 +214,29 @@ namespace uDesktopMascot
             }
         }
 
-        private void InitializeWebServer()
+        public void InitializeWebServer()
         {
-            // 依存関係の初期化
-            var playVoiceUseCase = new PlayVoiceUseCase();
-            var playVoiceHandler = new PlayVoiceHandler(playVoiceUseCase);
+            // 既に実行中の場合
+            if (_netWrapper != null)
+            {
+                Log.Warning("Webサーバーは既に実行中です。");
+                return;
+            }
 
             // ルーターの設定
             _netWrapper = new NetWrapper();
-            var router = new Router(_netWrapper, playVoiceHandler);
+
+            // 依存関係の初期化
+            var playVoiceUseCase = new PlayVoiceUseCase();
+            var playVoiceHandler = new PlayVoiceHandler(playVoiceUseCase);
+            var shutdownUseCase = new ShutdownUseCase(_netWrapper);
+            var shutdownHandler = new ShutdownHandler(shutdownUseCase);
+
+            var router = new Router(_netWrapper, playVoiceHandler, shutdownHandler);
 
             // サーバーの起動
             _netWrapper.StartServer(8080);
-            Debug.Log($"Webサーバーが起動しました。ポート: {8080}");
+            Log.Info($"Webサーバーが起動しました。ポート: {8080}");
         }
 
         /// <summary>
