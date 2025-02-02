@@ -20,9 +20,11 @@ namespace uDesktopMascot.Web.Application.UseCases
         {
             try
             {
+
                 SendSuccessResponse(context, "サーバーを停止しました");
 
                 _netWrapper.Dispose();
+
             }
             catch (Exception e)
             {
@@ -46,6 +48,7 @@ namespace uDesktopMascot.Web.Application.UseCases
             var errorData = new { error = "シャットダウンに失敗しました", detail = e.Message };
             var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errorData));
 
+            response.AppendHeader("Access-Control-Allow-Origin", "*");
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             response.ContentType = "application/json";
             response.OutputStream.Write(bytes, 0, bytes.Length);

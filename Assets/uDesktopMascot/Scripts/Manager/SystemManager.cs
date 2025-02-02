@@ -219,8 +219,9 @@ namespace uDesktopMascot
             // 既に実行中の場合
             if (_netWrapper != null)
             {
-                Log.Warning("Webサーバーは既に実行中です。");
-                return;
+                _netWrapper.Dispose();
+                _netWrapper = null;
+                Log.Info("Webサーバーを停止しました。再起動を開始します。");
             }
 
             // ルーターの設定
