@@ -20,6 +20,11 @@ namespace uDesktopMascot
         [SerializeField] private Image backgroundImage;
 
         /// <summary>
+        /// WebUIを開くボタン
+        /// </summary>
+        [SerializeField] private Button webUIButton;
+
+        /// <summary>
         ///     モデル設定ボタン
         /// </summary>
         [SerializeField] private Button modelSettingButton;
@@ -55,6 +60,11 @@ namespace uDesktopMascot
         public Action OnAppSettingAction { get; set; }
 
         /// <summary>
+        /// WebUIを開くボタンのクリックイベント
+        /// </summary>
+        public Action OnWebUIAction { get; set; }
+
+        /// <summary>
         /// アプリ終了ボタンのクリックイベント
         /// </summary>
         public Action OnCloseAction { get; set; }
@@ -75,6 +85,7 @@ namespace uDesktopMascot
             modelSettingButton.onClick.AddListener(() => OnModelSettingAction?.Invoke());
             appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
             quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
+            webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
         }
 
         /// <summary>

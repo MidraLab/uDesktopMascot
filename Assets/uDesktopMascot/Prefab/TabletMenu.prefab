@@ -274,6 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   closeButton: {fileID: 8713622907998881195}
   backgroundImage: {fileID: 2286071587733755090}
+  webUIButton: {fileID: 4294579427660593743}
   modelSettingButton: {fileID: 4623602444775744588}
   helpButton: {fileID: 3975135025879450140}
   appSettingButton: {fileID: 7721927851968667442}
@@ -1619,7 +1620,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1631,6 +1632,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4791987971422063645, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
   m_PrefabInstance: {fileID: 6460707010942765448}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4294579427660593743 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+  m_PrefabInstance: {fileID: 6460707010942765448}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7824120148307584785
 PrefabInstance:
   m_ObjectHideFlags: 0

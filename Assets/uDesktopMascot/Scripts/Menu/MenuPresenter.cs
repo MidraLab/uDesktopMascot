@@ -50,6 +50,7 @@ namespace uDesktopMascot
                 Log.Debug("Open Model Setting");
             };
             menuView.OnAppSettingAction = OpenAppSetting;
+            menuView.OnWebUIAction = OpenWebUI;
             menuView.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
@@ -237,6 +238,25 @@ namespace uDesktopMascot
             } else
             {
                 Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
+            }
+        }
+
+        private void OpenWebUI()
+        {
+            string htmlPath;
+#if UNITY_EDITOR
+            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+#else
+            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+#endif
+
+            if (File.Exists(htmlPath))
+            {
+                Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
+            }
+            else
+            {
+                Log.Error($"WebUIファイルが見つかりません: {htmlPath}\nWebUIフォルダを確認してください");
             }
         }
 
