@@ -29,11 +29,5 @@ namespace uDesktopMascot.Web.Application.Handlers
                 _useCase.PlayRandom(context);
             });
         };
-
-        public Action<HttpListenerContext> CreateHandlerAction()
-        {
-            // デフォルトアクション（必要に応じて実装）
-            return context => context.Response.Close();
-        }
     }
 }

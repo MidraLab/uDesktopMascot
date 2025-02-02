@@ -1,10 +1,10 @@
 using System.Net;
 using System;
 
-namespace uDesktopMascot.Web.Domain.Interfaces{
-public interface IRequestHandler
+namespace uDesktopMascot.Web.Domain.Interfaces
 {
-    bool CanHandle(HttpListenerRequest request);
-    Action<HttpListenerContext> CreateHandlerAction();
-} 
+    public interface IRequestHandler
+    {
+        bool CanHandle(HttpListenerRequest request);
+    }
 }
