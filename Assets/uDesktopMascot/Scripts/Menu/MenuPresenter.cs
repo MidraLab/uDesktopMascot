@@ -81,7 +81,7 @@ namespace uDesktopMascot
         public void Hide()
         {
             IsOpened = false;
-            menuView.HideAsync(_cancellationTokenSource.Token).Forget();
+            menuView.Hide();
         }
 
         /// <summary>
