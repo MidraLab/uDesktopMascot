@@ -231,14 +231,20 @@ namespace uDesktopMascot
             _netWrapper.StartServer(8080);
             Debug.Log($"Webサーバーが起動しました。ポート: {8080}");
 
-            string htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+            string htmlPath;
+#if UNITY_EDITOR
+            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+#else
+            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+#endif
+
             if (File.Exists(htmlPath))
             {
                 Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
             }
             else
             {
-                Debug.LogError($"WebUIファイルが見つかりません: {htmlPath}\nAssets/WebUIフォルダにindex.htmlを作成してください");
+                Debug.LogError($"WebUIファイルが見つかりません: {htmlPath}\nWebUIフォルダを確認してください");
             }
         }
 

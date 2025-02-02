@@ -62,6 +62,9 @@ namespace uDesktopMascot.Editor
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
 
+            // WebUIファイルをStreamingAssetsにコピー
+            CopyWebUIToStreamingAssets(streamingAssetsPath);
+
             // Development Buildの場合はスキップする（必要に応じて）
             if (summary.options.HasFlag(BuildOptions.Development))
             {
@@ -145,6 +148,14 @@ namespace uDesktopMascot.Editor
             {
                 Directory.CreateDirectory(menuPath);
                 Log.Debug($"Menu フォルダを作成しました: {menuPath}");
+            }
+
+            // WebUIフォルダを作成
+            var webUIPath = Path.Combine(streamingAssetsPath, "WebUI");
+            if (!Directory.Exists(webUIPath))
+            {
+                Directory.CreateDirectory(webUIPath);
+                Log.Debug($"WebUIフォルダを作成しました: {webUIPath}");
             }
         }
 
@@ -388,6 +399,28 @@ namespace uDesktopMascot.Editor
             if (!folderDeleted)
             {
                 Log.Debug("削除するフォルダが存在しませんでした。");
+            }
+        }
+
+        /// <summary>
+        ///     ファイルをStreamingAssetsにコピーする
+        /// </summary>
+        /// <param name="streamingAssetsPath">StreamingAssetsのフルパス</param>
+        private static void CopyWebUIToStreamingAssets(string streamingAssetsPath)
+        {
+            var sourceWebUIPath = Path.Combine(Application.dataPath, "WebUI");
+            var destWebUIPath = Path.Combine(streamingAssetsPath, "WebUI");
+            
+            if (Directory.Exists(sourceWebUIPath))
+            {
+                foreach (var file in Directory.GetFiles(sourceWebUIPath, "*", SearchOption.AllDirectories))
+                {
+                    var relativePath = GetRelativePath(sourceWebUIPath, file);
+                    var destFile = Path.Combine(destWebUIPath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                    File.Copy(file, destFile, true);
+                }
+                Log.Debug($"WebUIファイルをコピーしました: {destWebUIPath}");
             }
         }
     }
