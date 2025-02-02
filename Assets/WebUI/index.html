@@ -42,6 +42,11 @@
         
         <div>
             <button id="play-voice-button" onclick="sendGetRequest()">ボイス再生</button>
+            <button id="shutdown-button" onclick="shutdownAndClose()">WebUIの処理停止して終了</button>
+            <p style="color: #ff4444; font-size: 0.8em; margin-top: 5px;">
+                ※WebUIの処理を完全に停止するにはこのボタンを押してください<br>
+                （タブを閉じただけではバックグラウンドで動作し続けます）
+            </p>
         </div>
 
         <div id="status"></div>
@@ -80,6 +85,34 @@
                     }, 3000);
                 }
             }
+
+            async function shutdownAndClose() {
+                try {
+                    const shutdownUrl = 'http://localhost:8080/api/shutdown';
+                    await fetch(shutdownUrl, {
+                        method: 'GET',
+                        keepalive: true
+                    });
+                    console.log('シャットダウンリクエストを送信（GET）');
+                    window.close();
+                } catch (error) {
+                    updateStatus(`シャットダウンに失敗しました: ${error.message}`, true);
+                    console.error('Shutdown Error:', error);
+                }
+            }
+
+            window.addEventListener('beforeunload', function(event) {
+                const shutdownUrl = 'http://localhost:8080/api/shutdown';
+                
+                // GETリクエストで送信
+                navigator.sendBeacon(shutdownUrl);
+                fetch(shutdownUrl, {
+                    method: 'GET',
+                    keepalive: true
+                });
+                
+                console.log('シャットダウンリクエストを送信（GET）');
+            });
         </script>
     </div>
 </body>
