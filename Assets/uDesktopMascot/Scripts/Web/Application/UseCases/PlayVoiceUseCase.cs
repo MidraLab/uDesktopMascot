@@ -12,7 +12,7 @@ namespace uDesktopMascot.Web.Application.UseCases
         {
             try
             {
-                Debug.Log("ランダムボイス再生リクエスト受信");
+                Log.Info("ランダムボイス再生リクエスト受信");
                 VoiceController.Instance.PlayClickVoice();
                 SendSuccessResponse(context, "ランダムボイスを再生しました");
             }
@@ -26,7 +26,7 @@ namespace uDesktopMascot.Web.Application.UseCases
         {
             try
             {
-                Debug.Log("特定ボイス再生リクエスト受信");
+                Log.Info("特定ボイス再生リクエスト受信");
                 VoiceController.Instance.PlayClickVoice();
                 SendSuccessResponse(context, "特定ボイスを再生しました");
             }
