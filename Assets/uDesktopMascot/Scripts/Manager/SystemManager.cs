@@ -214,6 +214,9 @@ namespace uDesktopMascot
             }
         }
 
+        /// <summary>
+        ///    Webサーバーを初期化
+        /// </summary>
         public void InitializeWebServer()
         {
             // 既に実行中の場合

@@ -245,6 +245,9 @@ namespace uDesktopMascot
             }
         }
 
+        /// <summary>
+        ///  WebUIを開く
+        /// </summary>
         private void OpenWebUI()
         {
             SystemManager.Instance.InitializeWebServer();
