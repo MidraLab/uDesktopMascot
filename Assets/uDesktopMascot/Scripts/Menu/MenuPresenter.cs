@@ -51,7 +51,6 @@ namespace uDesktopMascot
             };
             menuView.OnAppSettingAction = OpenAppSetting;
             menuView.OnCloseAction = CloseApp;
-            menuView.OnCloseAction = Hide;
 
             ApplyMenuUISettings();
 

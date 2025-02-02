@@ -1188,7 +1188,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_fontSize
@@ -1280,7 +1280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Interactable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
