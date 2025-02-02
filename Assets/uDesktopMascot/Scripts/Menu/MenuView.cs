@@ -91,7 +91,6 @@ namespace uDesktopMascot
         public async UniTask Show(Vector3 screenPosition,CancellationToken cancellationToken)
         {
             await ShowAsync(cancellationToken);
-            // ShowMenuButtons();
 
             // メニューの位置を調整して、画面内に収まるようにする
             AdjustMenuPosition(screenPosition);
