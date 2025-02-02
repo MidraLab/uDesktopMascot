@@ -1,6 +1,6 @@
 Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
 "WORD_MENU_APPLICATON_CLOSE",552562152116224,"App exit","Application terminée","Chiusura dell'app.","アプリ終了","앱 종료"
-"WORD_MENU_SELECT_MODEL",557971768283136,"Model change","Changement de modèle","Modifica del modello","モデル変更","모델 변경"
+"WORD_MENU_SELECT_MODEL",557971768283136,"","","","モデル追加・変更",""
 "WORD_MENU_HELP",557971768283134,"Help","Aide","Aiuto","ヘルプ","도움"
 "WORD_MENU_APPLICATOIN_SETTING",557971768283131,"Setting","paramètres","Impostazioni","設定","설정"
 "MSG_NEW_VERSION",2499933916303360,"A new version v{0} has been released.","La nouvelle version de v{0} a été publiée.","È stata rilasciata la nuova versione di v{0}.","新しいVerのv{0}が\nリリースされています","새로운 Ver의 v{0}가\n배포되었습니다"
