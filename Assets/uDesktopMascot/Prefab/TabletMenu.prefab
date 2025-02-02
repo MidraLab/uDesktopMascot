@@ -54,7 +54,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8545128607306384728
 RectTransform:
   m_ObjectHideFlags: 0
@@ -170,6 +170,7 @@ GameObject:
   - component: {fileID: 136621125454926284}
   - component: {fileID: 8997626080854039974}
   - component: {fileID: 7590325782756801922}
+  - component: {fileID: 7852555740211157350}
   m_Layer: 5
   m_Name: TabletMenu
   m_TagString: Untagged
@@ -291,6 +292,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuView: {fileID: 8997626080854039974}
+--- !u!225 &7852555740211157350
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327219789864460332}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1842568108144236055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,6 +1186,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6426782801493203835}
     m_Modifications:
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_fontSize
+      value: 5.85
+      objectReference: {fileID: 0}
     - target: {fileID: 3452299637799663405, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Name
       value: SelectModel
@@ -1256,6 +1277,10 @@ PrefabInstance:
     - target: {fileID: 4791987971422063645, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_Interactable
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

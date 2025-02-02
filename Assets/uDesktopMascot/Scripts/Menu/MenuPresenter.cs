@@ -51,12 +51,19 @@ namespace uDesktopMascot
             };
             menuView.OnAppSettingAction = OpenAppSetting;
             menuView.OnCloseAction = CloseApp;
+            menuView.OnCloseAction = Hide;
 
             ApplyMenuUISettings();
 
 #if UNITY_EDITOR
             InitDebugMenu();
 #endif
+            
+        }
+
+        private void Start()
+        {
+            Hide();
         }
 
         /// <summary>
@@ -66,7 +73,7 @@ namespace uDesktopMascot
         public void Show(Vector3 screenPosition)
         {
             IsOpened = true;
-            menuView.Show(screenPosition + MenuOffset);
+            menuView.Show(screenPosition + MenuOffset, _cancellationTokenSource.Token).Forget();
         }
 
         /// <summary>
@@ -75,7 +82,7 @@ namespace uDesktopMascot
         public void Hide()
         {
             IsOpened = false;
-            menuView.Hide();
+            menuView.HideAsync(_cancellationTokenSource.Token).Forget();
         }
 
         /// <summary>

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +16,12 @@ namespace uDesktopMascot
         /// <summary>
         /// キャンバス
         /// </summary>
-        private protected Canvas _canvas;
+        private protected Canvas Canvas;
+        
+        /// <summary>
+        /// キャンバスグループ
+        /// </summary>
+        private protected CanvasGroup CanvasGroup;
         
         /// <summary>
         /// 閉じるボタン
@@ -29,12 +38,12 @@ namespace uDesktopMascot
         /// </summary>
         private protected virtual void Awake()
         {
-            _canvas = GetComponent<Canvas>();
+            Canvas = GetComponent<Canvas>();
+            CanvasGroup = GetComponent<CanvasGroup>();
             
             closeButton.onClick.AddListener(() =>
             {
                 OnClose?.Invoke();
-                Hide();
             });
         }
 
@@ -43,15 +52,41 @@ namespace uDesktopMascot
         /// </summary>
         public virtual void Show()
         {
-            _canvas.enabled = true;
+            Canvas.enabled = true;
+        }
+        
+        /// <summary>
+        /// ダイアログを表示する
+        /// </summary>
+        public virtual async UniTask ShowAsync(CancellationToken cancellationToken = default,float fadeAnimationTime = Constant.UIAnimationTime,Ease ease = Constant.UIAnimationDefaultEase)
+        {
+            Show();
+            
+            // フェードイン
+            await LMotion.Create(0f, 1f, fadeAnimationTime)
+                .WithEase(ease)
+                .BindToAlpha(CanvasGroup).ToUniTask(cancellationToken: cancellationToken);
         }
         
         /// <summary>
         /// ダイアログを非表示にする
         /// </summary>
-        public void Hide()
+        public virtual void Hide()
         {
-            _canvas.enabled = false;
+            Canvas.enabled = false;
+        }
+        
+        /// <summary>
+        /// ダイアログを非表示にする
+        /// </summary>
+        public virtual async UniTask HideAsync(CancellationToken cancellationToken = default,float fadeAnimationTime = Constant.UIAnimationTime,Ease ease = Constant.UIAnimationDefaultEase)
+        {
+            // フェードアウト
+            await LMotion.Create(1f, 0f, fadeAnimationTime)
+                .WithEase(ease)
+                .BindToAlpha(CanvasGroup).ToUniTask(cancellationToken: cancellationToken);
+            
+            Hide();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
@@ -18,7 +20,7 @@ namespace uDesktopMascot
         /// アップグレードダイアログをスキップするかどうかのトグル
         /// </summary>
         [SerializeField] private Toggle skipShowUpgradeDialogToggle;
-        
+
         /// <summary>
         /// アップグレードダイアログをスキップするかどうか
         /// </summary>
@@ -42,9 +44,11 @@ namespace uDesktopMascot
         /// ダイアログを表示する
         /// </summary>
         /// <param name="latestVersion"></param>
-        public void Show(string latestVersion)
+        /// <param name="cancellationToken"></param>
+        public async UniTask ShowAsync(string latestVersion,CancellationToken cancellationToken)
         {
-            base.Show();
+            await ShowAsync(cancellationToken);
+            
             SetMessage(latestVersion);
         }
     }

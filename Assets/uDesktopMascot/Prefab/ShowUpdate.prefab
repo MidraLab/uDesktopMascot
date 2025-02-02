@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 8360342144671338539}
   - component: {fileID: 7178809285730366222}
   - component: {fileID: 7481964746143459082}
+  - component: {fileID: 4417260493095414065}
   m_Layer: 5
   m_Name: ShowUpdate
   m_TagString: Untagged
@@ -295,6 +296,18 @@ MonoBehaviour:
   closeButton: {fileID: 6099873561876793913}
   latestVersionLocalizedStringEvent: {fileID: 4344575977041357685}
   skipShowUpgradeDialogToggle: {fileID: 7446035965173396997}
+--- !u!225 &4417260493095414065
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597809613186944653}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &920476251168917263
 GameObject:
   m_ObjectHideFlags: 0
