@@ -14,11 +14,6 @@ namespace uDesktopMascot
     public class DialogBase : MonoBehaviour
     {
         /// <summary>
-        /// キャンバス
-        /// </summary>
-        private protected Canvas Canvas;
-        
-        /// <summary>
         /// キャンバスグループ
         /// </summary>
         private protected CanvasGroup CanvasGroup;
@@ -38,13 +33,31 @@ namespace uDesktopMascot
         /// </summary>
         private protected virtual void Awake()
         {
-            Canvas = GetComponent<Canvas>();
             CanvasGroup = GetComponent<CanvasGroup>();
-            
-            closeButton.onClick.AddListener(() =>
-            {
-                OnClose?.Invoke();
-            });
+        }
+
+        /// <summary>
+        /// OnEnableイベント
+        /// </summary>
+        private void OnEnable()
+        {
+            closeButton.onClick.AddListener(CloseAction);
+        }
+
+        /// <summary>
+        /// OnDisableイベント
+        /// </summary>
+        private void OnDisable()
+        {
+            closeButton.onClick.RemoveListener(CloseAction);
+        }
+
+        /// <summary>
+        /// 閉じるボタンのアクション
+        /// </summary>
+        private void CloseAction()
+        {
+            OnClose?.Invoke();
         }
 
         /// <summary>
@@ -52,7 +65,9 @@ namespace uDesktopMascot
         /// </summary>
         public virtual void Show()
         {
-            Canvas.enabled = true;
+            CanvasGroup.alpha = 1f;
+            CanvasGroup.interactable = true;
+            CanvasGroup.blocksRaycasts = true;
         }
         
         /// <summary>
@@ -60,12 +75,12 @@ namespace uDesktopMascot
         /// </summary>
         public virtual async UniTask ShowAsync(CancellationToken cancellationToken = default,float fadeAnimationTime = Constant.UIAnimationTime,Ease ease = Constant.UIAnimationDefaultEase)
         {
-            Show();
-            
             // フェードイン
             await LMotion.Create(0f, 1f, fadeAnimationTime)
                 .WithEase(ease)
                 .BindToAlpha(CanvasGroup).ToUniTask(cancellationToken: cancellationToken);
+
+            Show();
         }
         
         /// <summary>
@@ -73,7 +88,9 @@ namespace uDesktopMascot
         /// </summary>
         public virtual void Hide()
         {
-            Canvas.enabled = false;
+            CanvasGroup.alpha = 0f;
+            CanvasGroup.interactable = false;
+            CanvasGroup.blocksRaycasts = false;
         }
         
         /// <summary>
