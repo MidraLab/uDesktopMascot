@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>uDesktopMascot コントロールパネル</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>uDesktopMascot コントロール</h1>
+        
+        <div>
+            <button id="play-voice-button" onclick="sendGetRequest()">ボイス再生</button>
+        </div>
+
+        <div id="status"></div>
+
+        <script>
+            function updateStatus(message, isError = false) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.textContent = message;
+                statusDiv.style.backgroundColor = isError ? '#ffebee' : '#e8f5e9';
+                statusDiv.style.color = isError ? '#b71c1c' : '#2e7d32';
+            }
+
+            async function sendGetRequest() {
+                try {
+                    const response = await fetch('http://localhost:8080/api/voice/random');
+                    if (!response.ok) {
+                        throw new Error(`HTTPエラー! ステータス: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    updateStatus(`ボイス再生成功: ${data.message}`);
+                    console.log('GET Response:', data);
+                    setTimeout(() => {
+                        const statusDiv = document.getElementById('status');
+                        statusDiv.textContent = '';
+                        statusDiv.style.backgroundColor = '';
+                        statusDiv.style.color = '';
+                    }, 3000);
+                } catch (error) {
+                    updateStatus(`ボイス再生に失敗しました: ${error.message}`, true);
+                    console.error('GET Error:', error);
+                    setTimeout(() => {
+                        const statusDiv = document.getElementById('status');
+                        statusDiv.textContent = '';
+                        statusDiv.style.backgroundColor = '';
+                        statusDiv.style.color = '';
+                    }, 3000);
+                }
+            }
+        </script>
+    </div>
+</body>
+</html> 
