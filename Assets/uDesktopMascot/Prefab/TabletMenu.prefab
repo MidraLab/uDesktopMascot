@@ -1534,6 +1534,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: f964370a079d591408d3f393c0eb8065, type: 3}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_text
+      value: WebUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_fontSize
+      value: 8.25
+      objectReference: {fileID: 0}
     - target: {fileID: 3452299637799663405, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Name
       value: Web
