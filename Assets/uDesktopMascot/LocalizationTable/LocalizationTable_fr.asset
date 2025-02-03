@@ -16,14 +16,15 @@ MonoBehaviour:
     m_Code: fr
   m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4582709081126994014
   m_TableData:
   - m_Id: 552562152116224
     m_Localized: "Application termin\xE9e"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: "Changement de mod\xE8le"
+    m_Localized: 
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -34,6 +35,25 @@ MonoBehaviour:
     m_Localized: "param\xE8tres"
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "La nouvelle version de v{0} a \xE9t\xE9 publi\xE9e."
+    m_Metadata:
+      m_Items:
+      - rid: 4582709081126994014
+  - m_Id: 3116372423544832
+    m_Localized: Fermer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: "Ne pas afficher de dialogue jusqu'\xE0 la prochaine version"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4582709081126994014
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2499933916303360

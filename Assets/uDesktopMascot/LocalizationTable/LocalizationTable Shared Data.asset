@@ -31,6 +31,18 @@ MonoBehaviour:
     m_Key: WORD_MENU_APPLICATOIN_SETTING
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Key: MSG_NEW_VERSION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116372423544832
+    m_Key: WORD_CLOSE_BUTTON_TEXT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Key: MSG_SKIP_UPDATE_DIALOG_TOGGLE_TEXT
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

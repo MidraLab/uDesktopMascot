@@ -57,6 +57,12 @@ namespace uDesktopMascot
 #if UNITY_EDITOR
             InitDebugMenu();
 #endif
+            
+        }
+
+        private void Start()
+        {
+            Hide();
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace uDesktopMascot
         public void Show(Vector3 screenPosition)
         {
             IsOpened = true;
-            menuView.Show(screenPosition + MenuOffset);
+            menuView.Show(screenPosition + MenuOffset, _cancellationTokenSource.Token).Forget();
         }
 
         /// <summary>

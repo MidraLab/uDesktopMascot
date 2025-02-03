@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,13 +11,8 @@ namespace uDesktopMascot
     /// <summary>
     ///     メニューのビュー
     /// </summary>
-    public class MenuView : MonoBehaviour
+    public class MenuView : DialogBase
     {
-        /// <summary>
-        ///    メニューキャンバス
-        /// </summary>
-        private Canvas _menuCanvas;
-
         /// <summary>
         ///    メニューのRectTransform
         /// </summary>
@@ -64,11 +63,13 @@ namespace uDesktopMascot
         /// </summary>
         public Action OnCloseAction { get; set; }
 
-        private void Awake()
+        private protected override void Awake()
         {
-            _menuCanvas = GetComponent<Canvas>();
+            base.Awake();
             _menuRectTransform = GetComponent<RectTransform>();
             SetButtonEvent();
+            
+            Hide();
         }
 
         /// <summary>
@@ -86,20 +87,13 @@ namespace uDesktopMascot
         ///    メニューを表示する
         /// </summary>
         /// <param name="screenPosition"></param>
-        public void Show(Vector3 screenPosition)
+        /// <param name="cancellationToken"></param>
+        public async UniTask Show(Vector3 screenPosition,CancellationToken cancellationToken)
         {
-            _menuCanvas.enabled = true;
+            await ShowAsync(cancellationToken);
 
             // メニューの位置を調整して、画面内に収まるようにする
             AdjustMenuPosition(screenPosition);
-        }
-
-        /// <summary>
-        ///   メニューを非表示にする
-        /// </summary>
-        public void Hide()
-        {
-            _menuCanvas.enabled = false;
         }
         
         /// <summary>

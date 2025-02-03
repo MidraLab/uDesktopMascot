@@ -16,14 +16,15 @@ MonoBehaviour:
     m_Code: ko
   m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4582709081126994017
   m_TableData:
   - m_Id: 552562152116224
     m_Localized: "\uC571 \uC885\uB8CC"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: "\uBAA8\uB378 \uBCC0\uACBD"
+    m_Localized: 
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -34,6 +35,26 @@ MonoBehaviour:
     m_Localized: "\uC124\uC815"
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "\uC0C8\uB85C\uC6B4 Ver\uC758 v{0}\uAC00\\n\uBC30\uD3EC\uB418\uC5C8\uC2B5\uB2C8\uB2E4"
+    m_Metadata:
+      m_Items:
+      - rid: 4582709081126994017
+  - m_Id: 3116372423544832
+    m_Localized: "\uB2EB\uAE30"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: "\uB2E4\uC74C \uBC84\uC804\uAE4C\uC9C0 \uB2E4\uC774\uC5BC\uB85C\uADF8\uB97C
+      \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC74C"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4582709081126994017
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2499933916303360
