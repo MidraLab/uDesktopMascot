@@ -126,6 +126,12 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           
+          # 変更の有無をチェック
+          if [ -z "$(git status --porcelain setup.iss)" ]; then
+            echo "setup.issに変更はありません"
+            exit 0
+          fi
+
           # ブランチ名を取得
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             TARGET_BRANCH="${{ github.base_ref }}"  # refs/heads/main
@@ -142,9 +148,10 @@ jobs:
           # 現在の変更をスタッシュに保存
           git stash push -u -m "temp setup.iss changes"
 
-          git fetch origin $TARGET_BRANCH
-          git reset --hard origin/$TARGET_BRANCH
-          git checkout -B $SOURCE_BRANCH
+          # ソースブランチを直接チェックアウト
+          git fetch origin $SOURCE_BRANCH
+          git checkout $SOURCE_BRANCH
+          git pull origin $SOURCE_BRANCH
           
           # スタッシュから変更を復元
           git stash pop
@@ -152,9 +159,9 @@ jobs:
           git add setup.iss
           if ! git diff --cached --quiet; then
             git commit -m "Update setup.iss"
-            git push origin $SOURCE_BRANCH --force
+            git push origin $SOURCE_BRANCH
           else
-            echo "No changes to setup.iss, skipping commit and push"
+            echo "変更が競合解決後に消失しました"
           fi
 
       - name: Change build folder name
