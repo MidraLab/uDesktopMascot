@@ -21,11 +21,6 @@ namespace uDesktopMascot
         private Animator _modelAnimator;
 
         /// <summary>
-        /// モデルのデフォルトアニメーションクリップ
-        /// </summary>
-        [SerializeField] private List<AnimationClip> _defaultAnimationClip;
-
-        /// <summary>
         /// ウィンドウ移動ハンドラ
         /// </summary>
         [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
@@ -122,21 +117,6 @@ namespace uDesktopMascot
             InitModel().Forget();
             // InitAnimation();
             VoiceController.Instance.PlayStartVoiceAsync(_cancellationTokenSource.Token).Forget();
-        }
-
-        /// <summary>
-        /// アニメーションの初期化
-        /// </summary>
-        private void InitAnimation()
-        {
-            _characterAnimationController = new CharacterAnimationController(_modelAnimator);
-            var initAnimation = _defaultAnimationClip.FirstOrDefault(x => x.name == "idle");
-            if(initAnimation == null)
-            {
-                Log.Error("デフォルトのアニメーションクリップが見つかりませんでした。");
-                return;
-            }
-            _characterAnimationController.SetInitialAnimation(initAnimation);
         }
 
         /// <summary>

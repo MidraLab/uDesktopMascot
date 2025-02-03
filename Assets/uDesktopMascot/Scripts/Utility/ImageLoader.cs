@@ -61,7 +61,7 @@ namespace uDesktopMascot
             // ファイルが存在しない場合はエラーログを出力して終了
             if (!File.Exists(fullPath))
             {
-                Log.Error("画像ファイルが見つかりません。パスを確認してください: " + fullPath);
+                Log.Warning("画像ファイルが見つかりません。パスを確認してください: " + fullPath);
                 return null;
             }
 

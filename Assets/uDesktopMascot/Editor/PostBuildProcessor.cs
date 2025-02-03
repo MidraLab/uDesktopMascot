@@ -62,6 +62,9 @@ namespace uDesktopMascot.Editor
             // 必要なフォルダを作成
             CreateNecessaryDirectories(streamingAssetsPath);
 
+            // WebUIファイルをStreamingAssetsにコピー
+            CopyWebUIToStreamingAssets(streamingAssetsPath);
+
             // Development Buildの場合はスキップする（必要に応じて）
             if (summary.options.HasFlag(BuildOptions.Development))
             {
@@ -72,7 +75,7 @@ namespace uDesktopMascot.Editor
                 CreateMaxCompressedZipOfBuildFolder(buildDirectory, appName);
 
                 // インストーラーのバージョンファイルを作成
-                CreateInstallerSetupTextFile(buildDirectory);
+                UpdateSetupFileWithProjectVersion(buildDirectory);
             }
 
             // 不要なフォルダを削除
@@ -146,17 +149,48 @@ namespace uDesktopMascot.Editor
                 Directory.CreateDirectory(menuPath);
                 Log.Debug($"Menu フォルダを作成しました: {menuPath}");
             }
+
+            // WebUIフォルダを作成
+            var webUIPath = Path.Combine(streamingAssetsPath, "WebUI");
+            if (!Directory.Exists(webUIPath))
+            {
+                Directory.CreateDirectory(webUIPath);
+                Log.Debug($"WebUIフォルダを作成しました: {webUIPath}");
+            }
         }
 
         /// <summary>
-        ///     インストーラーのバージョンファイルを作成する
+        ///     setup.iss のバージョンをプロジェクトバージョンに更新する
         /// </summary>
         /// <param name="buildDirectory">ビルドディレクトリのパス</param>
-        private static void CreateInstallerSetupTextFile(string buildDirectory)
+        private static void UpdateSetupFileWithProjectVersion(string buildDirectory)
         {
             var projectVersion = PlayerSettings.bundleVersion;
-            var setupFilePath = Path.Combine(buildDirectory, "..", "..", "installer-setup.txt");
-            File.WriteAllText(setupFilePath, $"#define MyAppVersion \"{projectVersion}\"");
+
+            // setup.iss のパスを取得
+            var issFilePath = Path.Combine(buildDirectory, "..", "..", "setup.iss");
+            if (File.Exists(issFilePath))
+            {
+                // 行ごとに読み込み
+                var lines = File.ReadAllLines(issFilePath);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    // #define MyAppVersion が含まれている行を探す
+                    // 前後に空白等があるかもしれないので Trim() して判定
+                    if (lines[i].Trim().StartsWith("#define MyAppVersion"))
+                    {
+                        // バージョン番号をプロジェクトバージョンに置き換える
+                        lines[i] = $"#define MyAppVersion \"{projectVersion}\"";
+                        break; // 最初に見つかった行だけ置換して抜ける
+                    }
+                }
+                // 上書き保存
+                File.WriteAllLines(issFilePath, lines);
+            }
+            else
+            {
+                Log.Warning($"setup.iss が見つかりません: {issFilePath}");
+            }
         }
 
         /// <summary>
@@ -365,6 +399,28 @@ namespace uDesktopMascot.Editor
             if (!folderDeleted)
             {
                 Log.Debug("削除するフォルダが存在しませんでした。");
+            }
+        }
+
+        /// <summary>
+        ///     ファイルをStreamingAssetsにコピーする
+        /// </summary>
+        /// <param name="streamingAssetsPath">StreamingAssetsのフルパス</param>
+        private static void CopyWebUIToStreamingAssets(string streamingAssetsPath)
+        {
+            var sourceWebUIPath = Path.Combine(Application.dataPath, "WebUI");
+            var destWebUIPath = Path.Combine(streamingAssetsPath, "WebUI");
+            
+            if (Directory.Exists(sourceWebUIPath))
+            {
+                foreach (var file in Directory.GetFiles(sourceWebUIPath, "*", SearchOption.AllDirectories))
+                {
+                    var relativePath = GetRelativePath(sourceWebUIPath, file);
+                    var destFile = Path.Combine(destWebUIPath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                    File.Copy(file, destFile, true);
+                }
+                Log.Debug($"WebUIファイルをコピーしました: {destWebUIPath}");
             }
         }
     }

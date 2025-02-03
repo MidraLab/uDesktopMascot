@@ -16,14 +16,15 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4582709081126994013
   m_TableData:
   - m_Id: 552562152116224
     m_Localized: App exit
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: Model change
+    m_Localized: 
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -34,6 +35,29 @@ MonoBehaviour:
     m_Localized: Setting
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: A new version v{0} has been released.
+    m_Metadata:
+      m_Items:
+      - rid: 4582709081126994013
+  - m_Id: 3116372423544832
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: Do not display the dialog until the next version.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3977592391348224
+    m_Localized: WebUI
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4582709081126994013
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2499933916303360

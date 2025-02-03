@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,13 +11,8 @@ namespace uDesktopMascot
     /// <summary>
     ///     メニューのビュー
     /// </summary>
-    public class MenuView : MonoBehaviour
+    public class MenuView : DialogBase
     {
-        /// <summary>
-        ///    メニューキャンバス
-        /// </summary>
-        private Canvas _menuCanvas;
-
         /// <summary>
         ///    メニューのRectTransform
         /// </summary>
@@ -23,6 +22,11 @@ namespace uDesktopMascot
         /// メニューの背景画像
         /// </summary>
         [SerializeField] private Image backgroundImage;
+
+        /// <summary>
+        /// WebUIを開くボタン
+        /// </summary>
+        [SerializeField] private Button webUIButton;
 
         /// <summary>
         ///     モデル設定ボタン
@@ -60,15 +64,22 @@ namespace uDesktopMascot
         public Action OnAppSettingAction { get; set; }
 
         /// <summary>
+        /// WebUIを開くボタンのクリックイベント
+        /// </summary>
+        public Action OnWebUIAction { get; set; }
+
+        /// <summary>
         /// アプリ終了ボタンのクリックイベント
         /// </summary>
         public Action OnCloseAction { get; set; }
 
-        private void Awake()
+        private protected override void Awake()
         {
-            _menuCanvas = GetComponent<Canvas>();
+            base.Awake();
             _menuRectTransform = GetComponent<RectTransform>();
             SetButtonEvent();
+            
+            Hide();
         }
 
         /// <summary>
@@ -80,26 +91,20 @@ namespace uDesktopMascot
             modelSettingButton.onClick.AddListener(() => OnModelSettingAction?.Invoke());
             appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
             quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
+            webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
         }
 
         /// <summary>
         ///    メニューを表示する
         /// </summary>
         /// <param name="screenPosition"></param>
-        public void Show(Vector3 screenPosition)
+        /// <param name="cancellationToken"></param>
+        public async UniTask Show(Vector3 screenPosition,CancellationToken cancellationToken)
         {
-            _menuCanvas.enabled = true;
+            await ShowAsync(cancellationToken);
 
             // メニューの位置を調整して、画面内に収まるようにする
             AdjustMenuPosition(screenPosition);
-        }
-
-        /// <summary>
-        ///   メニューを非表示にする
-        /// </summary>
-        public void Hide()
-        {
-            _menuCanvas.enabled = false;
         }
         
         /// <summary>

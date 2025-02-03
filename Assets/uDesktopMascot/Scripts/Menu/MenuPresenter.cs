@@ -47,12 +47,10 @@ namespace uDesktopMascot
             menuView.OnHelpAction = OpenHelp;
             menuView.OnModelSettingAction = () =>
             {
-                Log.Debug("ModelSetting");
+                Log.Debug("Open Model Setting");
             };
-            menuView.OnAppSettingAction = () =>
-            {
-                Log.Debug("AppSetting");
-            };
+            menuView.OnAppSettingAction = OpenAppSetting;
+            menuView.OnWebUIAction = OpenWebUI;
             menuView.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
@@ -60,6 +58,12 @@ namespace uDesktopMascot
 #if UNITY_EDITOR
             InitDebugMenu();
 #endif
+            
+        }
+
+        private void Start()
+        {
+            Hide();
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace uDesktopMascot
         public void Show(Vector3 screenPosition)
         {
             IsOpened = true;
-            menuView.Show(screenPosition + MenuOffset);
+            menuView.Show(screenPosition + MenuOffset, _cancellationTokenSource.Token).Forget();
         }
 
         /// <summary>
@@ -94,7 +98,8 @@ namespace uDesktopMascot
                 if (ColorUtility.TryParseHtmlString(menuUISettings.BackgroundColor, out Color color))
                 {
                     menuView.SetBackgroundColor(color);
-                } else
+                }
+                else
                 {
                     Log.Warning("背景色の指定が不正です。正しいカラーコードを設定してください。");
                 }
@@ -106,6 +111,85 @@ namespace uDesktopMascot
                 LoadBackgroundImageAsync(Path.Combine(MenuUIPath, menuUISettings.BackgroundImagePath),
                     _cancellationTokenSource.Token).Forget();
             }
+        }
+
+        /// <summary>
+        /// 設定ファイルおよびフォルダを開く
+        /// </summary>
+        private void OpenAppSetting()
+        {
+            string folderPath = Application.streamingAssetsPath;
+            string filePath = Path.Combine(folderPath, "application_settings.txt");
+
+            Log.Info($"Opening settings file: {filePath}");
+            Log.Info($"Opening settings folder: {folderPath}");
+
+#if UNITY_EDITOR
+            // In Unity Editor, open the folder and file
+            if (Directory.Exists(folderPath))
+            {
+                UnityEditor.EditorUtility.OpenWithDefaultApp(folderPath);
+            }
+            else
+            {
+                Log.Warning($"Folder not found: {folderPath}");
+            }
+
+            if (File.Exists(filePath))
+            {
+                UnityEditor.EditorUtility.OpenWithDefaultApp(filePath);
+            }
+            else
+            {
+                Log.Warning($"File not found: {filePath}");
+            }
+#else
+            bool openedFolder = false;
+            bool openedFile = false;
+            try
+            {
+                // Open the folder
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = folderPath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+                openedFolder = true;
+            }
+            catch (Exception e)
+            {
+                Log.Warning("Process.Start failed to open folder: " + e);
+            }
+
+            try
+            {
+                // Open the file
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = filePath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+                openedFile = true;
+            }
+            catch (Exception e)
+            {
+                Log.Warning("Process.Start failed to open file: " + e);
+            }
+
+            if (!openedFolder)
+            {
+                // Fallback to Application.OpenURL for folder
+                Application.OpenURL("file://" + folderPath.Replace("\\", "/"));
+            }
+
+            if (!openedFile)
+            {
+                // Fallback to Application.OpenURL for file
+                Application.OpenURL("file://" + filePath.Replace("\\", "/"));
+            }
+#endif
         }
 
         /// <summary>
@@ -121,7 +205,8 @@ namespace uDesktopMascot
             if (sprite != null)
             {
                 menuView.SetBackgroundImage(sprite);
-            }else
+            }
+            else
             {
                 Log.Warning("背景画像のロードに失敗しました。パスを確認してください: " + fullPath);
             }
@@ -138,9 +223,9 @@ namespace uDesktopMascot
             // Unity Editorでは、Assetsフォルダ内のパスを使用
             path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
 #else
-    // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
-    string rootPath = Directory.GetParent(Application.dataPath).FullName;
-    path = Path.Combine(rootPath, "README.txt");
+            // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
+            string rootPath = Directory.GetParent(Application.dataPath).FullName;
+            path = Path.Combine(rootPath, "README.txt");
 #endif
 
             // パスをログに出力
@@ -154,13 +239,39 @@ namespace uDesktopMascot
                     string url = $"file:///{path.Replace("\\", "/")}";
                     // ファイルを開く
                     Application.OpenURL(url);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Log.Error($"README.txtを開くことができませんでした:\n{e}");
                 }
-            } else
+            }
+            else
             {
                 Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
+            }
+        }
+
+        /// <summary>
+        ///  WebUIを開く
+        /// </summary>
+        private void OpenWebUI()
+        {
+            SystemManager.Instance.InitializeWebServer();
+
+            string htmlPath;
+#if UNITY_EDITOR
+            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+#else
+            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+#endif
+
+            if (File.Exists(htmlPath))
+            {
+                Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
+            }
+            else
+            {
+                Log.Error($"WebUIファイルが見つかりません: {htmlPath}\nWebUIフォルダを確認してください");
             }
         }
 

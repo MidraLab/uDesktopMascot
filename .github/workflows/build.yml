@@ -77,7 +77,7 @@ jobs:
           fi
 
   build-windows:
-    if: ${{ github.event_name == 'pull_request' || inputs.build_windows }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || inputs.build_windows }}
     needs: [check-branch]
     runs-on: windows-latest
     steps:
@@ -120,6 +120,50 @@ jobs:
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
 
+      - name: Update setup.iss
+        shell: bash
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          
+          # 変更の有無をチェック
+          if [ -z "$(git status --porcelain setup.iss)" ]; then
+            echo "setup.issに変更はありません"
+            exit 0
+          fi
+
+          # ブランチ名を取得
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            TARGET_BRANCH="${{ github.base_ref }}"  # refs/heads/main
+            SOURCE_BRANCH="${{ github.head_ref }}"  # refs/heads/develop
+          else
+            TARGET_BRANCH="${{ github.ref }}"       # refs/heads/current-branch
+            SOURCE_BRANCH="${{ github.ref }}"
+          fi
+
+          # refs/heads/プレフィックスを除去
+          TARGET_BRANCH=${TARGET_BRANCH#refs/heads/}
+          SOURCE_BRANCH=${SOURCE_BRANCH#refs/heads/}
+
+          # 現在の変更をスタッシュに保存
+          git stash push -u -m "temp setup.iss changes"
+
+          # ソースブランチを直接チェックアウト
+          git fetch origin $SOURCE_BRANCH
+          git checkout $SOURCE_BRANCH
+          git pull origin $SOURCE_BRANCH
+          
+          # スタッシュから変更を復元
+          git stash pop
+
+          git add setup.iss
+          if ! git diff --cached --quiet; then
+            git commit -m "Update setup.iss"
+            git push origin $SOURCE_BRANCH
+          else
+            echo "変更が競合解決後に消失しました"
+          fi
+
       - name: Change build folder name
         run: |
           cd build
@@ -144,7 +188,7 @@ jobs:
           path: "uDesktopMascot_win64_installer_v${{ needs.check-branch.outputs.current_version }}.exe"
 
   build-mac:
-    if: ${{ github.event_name == 'pull_request' || inputs.build_mac }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || inputs.build_mac }}
     needs: [check-branch]
     runs-on: macos-latest
     steps:

@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using System.IO;
 using UnityEngine;
-using uDesktopMascot.Utility;
 
 namespace uDesktopMascot.Editor.EditorTest
 {

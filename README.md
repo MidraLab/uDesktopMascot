@@ -2,7 +2,7 @@
 
 [![Unity Version](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
 [![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
-[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg?branch=develop)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
@@ -23,7 +23,11 @@
 
 ## 概要
 
-「uDesktopMascot」は、デスクトップ上にキャラクターを表示し、ユーザーのインタラクションに応じた反応や音声を再生するオープンソースのプロジェクトです。このプロジェクトは、Unityを用いて開発されており、VRM形式のキャラクターをサポートしていますので、自分の好きなキャラクターを簡単にデスクトップ上で楽しむことができます。
+「uDesktopMascot」は、`創作の自由化` をテーマにした デスクトップマスコットアプリケーションのオープンソースプロジェクトです。
+一機能の例としてVRMやGLB/FBX形式のモデルを読み込み、デスクトップ上に表示することができます。またメニュー画面やアプリケーションウインドウなどのGUIの色や背景画像を自由に設定することもできます。
+詳しい機能一覧は [機能一覧](#機能一覧) を参照してください。
+
+![](Docs/Image/AppImage.png)
 
 **対応プラットフォーム**
 * Windows 10/11
@@ -38,6 +42,7 @@
 <details>
 
 <summary>モデル・アニメーション</summary>
+
 * StreamingAssetsに配置した任意モデルファイルを読み込んで表示します。
   * VRM(1.x, 0.x)形式のモデルをサポートしています。
   * GLB/GLTF形式のモデルをサポートしています。(アニメーションは対応していません)
@@ -49,6 +54,7 @@
 <details>
 
 <summary>ボイス・BGM</summary>
+
 * SteamingAssets/Voice/以下に配置した音声ファイルを読み込んで再生します。複数ある場合は、ランダムで再生します。
   * クリック時に再生される音声は、StreamingAssets/Voice/Click/に配置した音声ファイルを読み込んで再生します。 
 * SteamingAssets/BGM/以下に配置した音楽ファイルを読み込んで再生します。複数ある場合は、ランダムで再生します。

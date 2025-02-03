@@ -16,14 +16,15 @@ MonoBehaviour:
     m_Code: it
   m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4582709081126994015
   m_TableData:
   - m_Id: 552562152116224
     m_Localized: Chiusura dell'app.
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: Modifica del modello
+    m_Localized: 
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -34,6 +35,29 @@ MonoBehaviour:
     m_Localized: Impostazioni
     m_Metadata:
       m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "\xC8 stata rilasciata la nuova versione di v{0}."
+    m_Metadata:
+      m_Items:
+      - rid: 4582709081126994015
+  - m_Id: 3116372423544832
+    m_Localized: Chiudere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: Non mostrare il dialogo fino alla prossima versione.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3977592391348224
+    m_Localized: Interfaccia utente Web
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4582709081126994015
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 2499933916303360
