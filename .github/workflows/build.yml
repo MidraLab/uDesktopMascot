@@ -126,26 +126,27 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           
-          # ブランチ参照を正規化
+          # ブランチ名を取得
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            TARGET_BRANCH="${{ github.base_ref }}"  # PRのターゲットブランチ（main）
-            SOURCE_BRANCH="${{ github.head_ref }}"  # PRのソースブランチ（develop）
+            TARGET_BRANCH="${{ github.base_ref }}"  # refs/heads/main
+            SOURCE_BRANCH="${{ github.head_ref }}"  # refs/heads/develop
           else
-            TARGET_BRANCH="${{ github.ref_name }}"  # 通常のブランチ名
+            TARGET_BRANCH="${{ github.ref }}"       # refs/heads/current-branch
             SOURCE_BRANCH="${{ github.ref }}"
           fi
 
-          # ブランチ名からrefs/heads/プレフィックスを除去
+          # refs/heads/プレフィックスを除去
           TARGET_BRANCH=${TARGET_BRANCH#refs/heads/}
-          
-          git fetch origin
-          git rebase origin/${TARGET_BRANCH} --autostash
+          SOURCE_BRANCH=${SOURCE_BRANCH#refs/heads/}
+
+          git fetch origin $TARGET_BRANCH
+          git reset --hard origin/$TARGET_BRANCH
+          git checkout -B $SOURCE_BRANCH
           
           git add setup.iss
           if ! git diff --cached --quiet; then
             git commit -m "Update setup.iss"
-            # PR時はソースブランチに、通常時は現在のブランチにプッシュ
-            git push origin HEAD:${SOURCE_BRANCH#refs/heads/}
+            git push origin $SOURCE_BRANCH --force
           else
             echo "No changes to setup.iss, skipping commit and push"
           fi
