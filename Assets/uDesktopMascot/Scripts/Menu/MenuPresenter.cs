@@ -50,6 +50,7 @@ namespace uDesktopMascot
                 Log.Debug("Open Model Setting");
             };
             menuView.OnAppSettingAction = OpenAppSetting;
+            menuView.OnWebUIAction = OpenWebUI;
             menuView.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
@@ -97,7 +98,8 @@ namespace uDesktopMascot
                 if (ColorUtility.TryParseHtmlString(menuUISettings.BackgroundColor, out Color color))
                 {
                     menuView.SetBackgroundColor(color);
-                } else
+                }
+                else
                 {
                     Log.Warning("背景色の指定が不正です。正しいカラーコードを設定してください。");
                 }
@@ -110,7 +112,7 @@ namespace uDesktopMascot
                     _cancellationTokenSource.Token).Forget();
             }
         }
-        
+
         /// <summary>
         /// 設定ファイルおよびフォルダを開く
         /// </summary>
@@ -203,7 +205,8 @@ namespace uDesktopMascot
             if (sprite != null)
             {
                 menuView.SetBackgroundImage(sprite);
-            }else
+            }
+            else
             {
                 Log.Warning("背景画像のロードに失敗しました。パスを確認してください: " + fullPath);
             }
@@ -220,9 +223,9 @@ namespace uDesktopMascot
             // Unity Editorでは、Assetsフォルダ内のパスを使用
             path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
 #else
-    // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
-    string rootPath = Directory.GetParent(Application.dataPath).FullName;
-    path = Path.Combine(rootPath, "README.txt");
+            // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
+            string rootPath = Directory.GetParent(Application.dataPath).FullName;
+            path = Path.Combine(rootPath, "README.txt");
 #endif
 
             // パスをログに出力
@@ -236,13 +239,39 @@ namespace uDesktopMascot
                     string url = $"file:///{path.Replace("\\", "/")}";
                     // ファイルを開く
                     Application.OpenURL(url);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Log.Error($"README.txtを開くことができませんでした:\n{e}");
                 }
-            } else
+            }
+            else
             {
                 Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
+            }
+        }
+
+        /// <summary>
+        ///  WebUIを開く
+        /// </summary>
+        private void OpenWebUI()
+        {
+            SystemManager.Instance.InitializeWebServer();
+
+            string htmlPath;
+#if UNITY_EDITOR
+            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+#else
+            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+#endif
+
+            if (File.Exists(htmlPath))
+            {
+                Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
+            }
+            else
+            {
+                Log.Error($"WebUIファイルが見つかりません: {htmlPath}\nWebUIフォルダを確認してください");
             }
         }
 

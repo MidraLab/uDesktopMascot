@@ -4,6 +4,8 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
+using System.IO;
+using uDesktopMascot.Web.Cmd;
 
 namespace uDesktopMascot
 {
@@ -21,7 +23,7 @@ namespace uDesktopMascot
         ///   アップグレードダイアログを表示する
         /// </summary>
         [SerializeField] private ShowUpdateDialog showUpdateDialog;
-        
+
         /// <summary>
         /// キャンセルトークンソース
         /// </summary>
@@ -31,6 +33,12 @@ namespace uDesktopMascot
         /// バージョンチェッカー
         /// </summary>
         private CheckVersion _checkVersion;
+
+        /// <summary>
+        /// Webサーバーのホストクラス
+        /// </summary>
+        private WebServiceHost _webServiceHost;
+
 
         private protected override void Awake()
         {
@@ -52,7 +60,7 @@ namespace uDesktopMascot
         private void Start()
         {
             SetEvent();
-            
+
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
         }
@@ -85,7 +93,7 @@ namespace uDesktopMascot
         {
             // アップデートチェック
             var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
-            
+
             if (isUpdateAvailable)
             {
                 var displaySettings = ApplicationSettings.Instance.Display;
@@ -215,12 +223,37 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        ///    Webサーバーを初期化
+        /// </summary>
+        public void InitializeWebServer()
+        {
+            if (_webServiceHost != null)
+            {
+                Log.Warning("Webサーバーは既に実行中です。");
+                return;
+            }
+
+            _webServiceHost = new WebServiceHost();
+            _webServiceHost.Start();
+        }
+
+        /// <summary>
+        ///    Webサーバーを破棄
+        /// </summary>
+        public void DisposeWebServer()
+        {
+            _webServiceHost.Dispose();
+            _webServiceHost = null;
+        }
+
+        /// <summary>
         ///   破棄時の処理
         /// </summary>
         private void OnDestroy()
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
+            _webServiceHost?.Dispose();
         }
     }
 }
