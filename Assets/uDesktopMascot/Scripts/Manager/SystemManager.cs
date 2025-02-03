@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
 using System.IO;
-using uDesktopMascot.Web.Infrastructure.Framework;
-using uDesktopMascot.Web.Application;
+using uDesktopMascot.Web.Cmd;
 
 namespace uDesktopMascot
 {
@@ -36,9 +35,9 @@ namespace uDesktopMascot
         private CheckVersion _checkVersion;
 
         /// <summary>
-        /// Webサーバーのネットワークラッパー
+        /// Webサーバーのホストクラス
         /// </summary>
-        private NetWrapper _netWrapper;
+        private WebServiceHost _webServiceHost;
 
 
         private protected override void Awake()
@@ -218,28 +217,25 @@ namespace uDesktopMascot
         /// </summary>
         public void InitializeWebServer()
         {
-            // 既に実行中の場合
-            if (_netWrapper != null)
+            if (_webServiceHost != null)
             {
-                _netWrapper.Dispose();
-                _netWrapper = null;
-                Log.Info("Webサーバーを停止しました。再起動を開始します。");
+                Log.Warning("Webサーバーは既に実行中です。");
+                return;
             }
 
-            // ルーターの設定
-            _netWrapper = new NetWrapper();
+            _webServiceHost = new WebServiceHost();
+            _webServiceHost.Start();
+        }
 
-            // 依存関係の初期化
-            var playVoiceUseCase = new PlayVoiceUseCase();
-            var playVoiceHandler = new PlayVoiceHandler(playVoiceUseCase);
-            var shutdownUseCase = new ShutdownUseCase(_netWrapper);
-            var shutdownHandler = new ShutdownHandler(shutdownUseCase);
 
-            var router = new Router(_netWrapper, playVoiceHandler, shutdownHandler);
 
-            // サーバーの起動
-            _netWrapper.StartServer(8080);
-            Log.Info($"Webサーバーが起動しました。ポート: {8080}");
+        /// <summary>
+        ///    Webサーバーを破棄
+        /// </summary>
+        public void DisposeWebServer()
+        {
+            _webServiceHost.Dispose();
+            _webServiceHost = null;
         }
 
         /// <summary>
@@ -249,7 +245,7 @@ namespace uDesktopMascot
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
-            _netWrapper?.Dispose();
+            _webServiceHost?.Dispose();
         }
     }
 }

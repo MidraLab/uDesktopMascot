@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
+using uDesktopMascot;
 using uDesktopMascot.Web.Infrastructure.Framework;
 
 namespace uDesktopMascot.Web.Application
@@ -13,20 +14,6 @@ namespace uDesktopMascot.Web.Application
     public class ShutdownUseCase
     {
         /// <summary>
-        ///  ネットワークラッパー
-        /// </summary>
-        private readonly NetWrapper _netWrapper;
-
-        /// <summary>
-        ///  コンストラクタ
-        /// </summary>
-        /// <param name="netWrapper">ネットワークラッパー</param>
-        public ShutdownUseCase(NetWrapper netWrapper)
-        {
-            _netWrapper = netWrapper;
-        }
-
-        /// <summary>
         ///  シャットダウン
         /// </summary>
         /// <param name="context">コンテキスト</param>
@@ -34,11 +21,9 @@ namespace uDesktopMascot.Web.Application
         {
             try
             {
-
                 SendSuccessResponse(context, "サーバーを停止しました");
 
-                _netWrapper.Dispose();
-
+                SystemManager.Instance.DisposeWebServer();
             }
             catch (Exception e)
             {
