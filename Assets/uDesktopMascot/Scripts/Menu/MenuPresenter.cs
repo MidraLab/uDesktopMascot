@@ -256,22 +256,35 @@ namespace uDesktopMascot
         /// </summary>
         private void OpenWebUI()
         {
-            SystemManager.Instance.InitializeWebServer();
+            OpenWebUIAsync(_cancellationTokenSource.Token).Forget();
+        }
 
-            string htmlPath;
+        /// <summary>
+        ///  WebUIを開く
+        /// </summary>
+        private async UniTaskVoid OpenWebUIAsync(CancellationToken token)
+        {
+            SystemManager.Instance.InitializeWebServer();
+            var port = SystemManager.Instance.GetPort();
+
+            string templatePath;
 #if UNITY_EDITOR
-            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+            templatePath = Path.Combine(Application.dataPath, "WebUI/index.html.template");
 #else
-            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+            templatePath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html.template");
 #endif
 
-            if (File.Exists(htmlPath))
+            if (File.Exists(templatePath))
             {
+                var templateContent = await File.ReadAllTextAsync(templatePath, token);
+                var htmlContent = templateContent.Replace("{{PORT}}", $"{port}");
+                var htmlPath = templatePath.Replace(".template", "");
+                await File.WriteAllTextAsync(htmlPath, htmlContent, token);
                 Application.OpenURL("file://" + htmlPath.Replace("\\", "/"));
             }
             else
             {
-                Log.Error($"WebUIファイルが見つかりません: {htmlPath}\nWebUIフォルダを確認してください");
+                Log.Error($"WebUIファイルが見つかりません: {templatePath}\nWebUIフォルダを確認してください");
             }
         }
 
@@ -290,6 +303,25 @@ namespace uDesktopMascot
 
         private void OnDestroy()
         {
+            string htmlPath;
+#if UNITY_EDITOR
+            htmlPath = Path.Combine(Application.dataPath, "WebUI/index.html");
+#else
+            htmlPath = Path.Combine(Application.streamingAssetsPath, "WebUI/index.html");
+#endif
+            if (File.Exists(htmlPath))
+            {
+                File.Delete(htmlPath);
+            }
+
+#if UNITY_EDITOR
+            var metaPath = $"{htmlPath}.meta";
+            if (File.Exists(metaPath))
+            {
+                File.Delete(metaPath);
+            }
+#endif
+
             menuView.OnHelpAction = null;
             menuView.OnModelSettingAction = null;
             menuView.OnAppSettingAction = null;

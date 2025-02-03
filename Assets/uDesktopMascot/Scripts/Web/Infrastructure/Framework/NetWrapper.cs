@@ -1,8 +1,9 @@
 using System;
-using System.Net.Http;
-using System.Net;
-using System.Threading;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
 using Unity.Logging;
 
 namespace uDesktopMascot.Web.Infrastructure
@@ -26,6 +27,19 @@ namespace uDesktopMascot.Web.Infrastructure
         ///  ハンドラ
         /// </summary>
         private readonly Dictionary<HttpMethod, Dictionary<string, Action<HttpListenerContext>>> _handlers = new();
+
+        /// <summary>
+        ///  未使用ポートを取得する
+        /// </summary>
+        /// <returns>未使用ポート番号</returns>
+        public int GetAvailablePort()
+        {
+            var tcpListener = new TcpListener(IPAddress.Loopback, 0);
+            tcpListener.Start();
+            var port = ((IPEndPoint)tcpListener.LocalEndpoint).Port;
+            tcpListener.Stop();
+            return port;
+        }
 
         /// <summary>
         ///  サーバーを起動する
