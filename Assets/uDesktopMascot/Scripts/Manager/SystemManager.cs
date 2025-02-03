@@ -227,8 +227,6 @@ namespace uDesktopMascot
             _webServiceHost.Start();
         }
 
-
-
         /// <summary>
         ///    Webサーバーを破棄
         /// </summary>
