@@ -1,8 +1,8 @@
 using System;
 using System.Net;
 using Cysharp.Threading.Tasks;
-using uDesktopMascot.Web.Domain;
 using uDesktopMascot.Web.Application;
+using uDesktopMascot.Web.Domain;
 
 namespace uDesktopMascot.Web.Application
 {
@@ -39,13 +39,16 @@ namespace uDesktopMascot.Web.Application
         ///  ランダムボイス再生
         /// </summary>
         /// <param name="context">コンテキスト</param>
-        public Action<HttpListenerContext> PlayRandomVoice() => context =>
+        public Action<HttpListenerContext> PlayRandomVoice() => context => HandlePlayRandomVoiceRequest(context);
+
+        /// <summary>
+        ///  ランダムボイス再生リクエストを処理する
+        /// </summary>
+        /// <param name="context">コンテキスト</param>
+        private async void HandlePlayRandomVoiceRequest(HttpListenerContext context)
         {
-            UniTask.Void(async () =>
-            {
-                await UniTask.SwitchToMainThread();
-                _useCase.PlayRandom(context);
-            });
-        };
+            await UniTask.SwitchToMainThread();
+            _useCase.PlayRandom(context);
+        }
     }
 }

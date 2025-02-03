@@ -1,6 +1,6 @@
 using System.Net;
+using Cysharp.Threading.Tasks;
 using uDesktopMascot.Web.Application;
-using uDesktopMascot.Web.Domain;
 
 namespace uDesktopMascot.Web.Infrastructure
 {

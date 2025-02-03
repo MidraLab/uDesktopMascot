@@ -39,13 +39,16 @@ namespace uDesktopMascot.Web.Application
         ///  シャットダウンリクエストを処理する
         /// </summary>
         /// <param name="context">コンテキスト</param>
-        public Action<HttpListenerContext> Shutdown() => context =>
+        public Action<HttpListenerContext> Shutdown() => context => HandleShutdownRequest(context);
+
+        /// <summary>
+        ///  シャットダウンリクエストを処理する
+        /// </summary>
+        /// <param name="context">コンテキスト</param>
+        private async void HandleShutdownRequest(HttpListenerContext context)
         {
-            UniTask.Void(async () =>
-            {
-                await UniTask.SwitchToMainThread();
-                _useCase.Shutdown(context);
-            });
-        };
+            await UniTask.SwitchToMainThread();
+            _useCase.Shutdown(context);
+        }
     }
 }
