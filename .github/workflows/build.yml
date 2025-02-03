@@ -126,14 +126,18 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           
-          # ターゲットブランチの最新を取得
+          # ブランチ名を取得
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            TARGET_BRANCH="${{ github.base_ref#refs/heads/ }}"  # main
-            SOURCE_BRANCH="${{ github.head_ref#refs/heads/ }}"   # develop
+            TARGET_BRANCH="${{ github.base_ref }}"  # refs/heads/main
+            SOURCE_BRANCH="${{ github.head_ref }}"  # refs/heads/develop
           else
-            TARGET_BRANCH="${{ github.ref_name }}"
-            SOURCE_BRANCH="${{ github.ref#refs/heads/ }}"
+            TARGET_BRANCH="${{ github.ref }}"       # refs/heads/current-branch
+            SOURCE_BRANCH="${{ github.ref }}"
           fi
+
+          # refs/heads/プレフィックスを除去
+          TARGET_BRANCH=${TARGET_BRANCH#refs/heads/}
+          SOURCE_BRANCH=${SOURCE_BRANCH#refs/heads/}
 
           git fetch origin $TARGET_BRANCH
           git reset --hard origin/$TARGET_BRANCH
