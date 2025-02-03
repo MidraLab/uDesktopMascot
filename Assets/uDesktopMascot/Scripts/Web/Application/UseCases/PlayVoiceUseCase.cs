@@ -2,8 +2,6 @@ using System;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using UnityEngine;
-using uDesktopMascot;
 
 namespace uDesktopMascot.Web.Application
 {

@@ -1,8 +1,6 @@
 using System.Net;
-using System.Threading;
 using uDesktopMascot.Web.Application;
 using uDesktopMascot.Web.Domain;
-using uDesktopMascot;
 
 namespace uDesktopMascot.Web.Infrastructure
 {

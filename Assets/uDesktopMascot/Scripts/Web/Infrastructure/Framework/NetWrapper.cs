@@ -3,9 +3,7 @@ using System.Net.Http;
 using System.Net;
 using System.Threading;
 using System.Collections.Generic;
-using UnityEngine;
 using Unity.Logging;
-using uDesktopMascot.Web.Domain;
 
 namespace uDesktopMascot.Web.Infrastructure
 {

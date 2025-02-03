@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using uDesktopMascot.Web.Domain;
 using uDesktopMascot.Web.Application;
 
