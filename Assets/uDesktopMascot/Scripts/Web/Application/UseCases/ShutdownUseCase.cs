@@ -2,9 +2,7 @@ using System;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using UnityEngine;
 using uDesktopMascot;
-using uDesktopMascot.Web.Infrastructure.Framework;
 
 namespace uDesktopMascot.Web.Application
 {

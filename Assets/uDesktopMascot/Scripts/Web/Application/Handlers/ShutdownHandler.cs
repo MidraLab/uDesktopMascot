@@ -1,8 +1,8 @@
-using uDesktopMascot.Web.Domain.Interfaces;
-using uDesktopMascot.Web.Application;
 using System;
 using System.Net;
 using Cysharp.Threading.Tasks;
+using uDesktopMascot.Web.Domain;
+using uDesktopMascot.Web.Application;
 
 namespace uDesktopMascot.Web.Application
 {
