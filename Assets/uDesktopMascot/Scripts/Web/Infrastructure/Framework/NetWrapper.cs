@@ -72,7 +72,7 @@ namespace uDesktopMascot.Web.Infrastructure
             try
             {
                 _listener?.Stop();
-                _listenerThread?.Join(timeout); // 最大1秒待機
+                _listenerThread?.Join(timeout);
                 Log.Info("Listener stopped normally");
             }
             catch (ObjectDisposedException)
