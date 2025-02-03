@@ -1,7 +1,7 @@
 using Unity.Logging;
 using System;
-using uDesktopMascot.Web.Infrastructure;
 using uDesktopMascot.Web.Application;
+using uDesktopMascot.Web.Infrastructure;
 
 namespace uDesktopMascot.Web.Cmd
 {

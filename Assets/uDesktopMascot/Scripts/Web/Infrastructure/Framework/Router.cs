@@ -1,8 +1,8 @@
-using uDesktopMascot.Web.Domain;
-using uDesktopMascot.Web.Application;
 using System.Net;
-using uDesktopMascot;
 using System.Threading;
+using uDesktopMascot.Web.Application;
+using uDesktopMascot.Web.Domain;
+using uDesktopMascot;
 
 namespace uDesktopMascot.Web.Infrastructure
 {

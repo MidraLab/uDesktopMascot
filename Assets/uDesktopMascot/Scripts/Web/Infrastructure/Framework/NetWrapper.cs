@@ -1,11 +1,11 @@
+using System;
+using System.Net.Http;
 using System.Net;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Logging;
-using System;
 using uDesktopMascot.Web.Domain;
-using System.Net.Http;
 
 namespace uDesktopMascot.Web.Infrastructure
 {
