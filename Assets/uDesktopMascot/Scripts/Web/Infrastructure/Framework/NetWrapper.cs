@@ -69,12 +69,12 @@ namespace uDesktopMascot.Web.Infrastructure.Framework
         /// <summary>
         ///  サーバーを停止する
         /// </summary>
-        public void StopServer()
+        public void StopServer(int timeout = 1000)
         {
             try
             {
                 _listener?.Stop();
-                _listenerThread?.Join(1000); // 最大1秒待機
+                _listenerThread?.Join(timeout); // 最大1秒待機
                 Log.Info("Listener stopped normally");
             }
             catch (ObjectDisposedException)
