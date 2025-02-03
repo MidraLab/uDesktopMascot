@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
@@ -20,7 +22,67 @@ namespace uDesktopMascot
         /// アップグレードダイアログをスキップするかどうかのトグル
         /// </summary>
         [SerializeField] private Toggle skipShowUpgradeDialogToggle;
+        
+        
+        /// <summary>
+        /// アプリのリンクテキスト
+        /// </summary>
+        [SerializeField] private TextMeshProUGUI appLinkText;
 
+        /// <summary>
+        /// アプリのリンクボタン
+        /// </summary>
+        [SerializeField] private Button appLinkButton;
+
+        private protected override void Awake()
+        {
+            base.Awake();
+            SetButtonEvent();
+        }
+
+        /// <summary>
+        /// ボタンのイベントを設定する
+        /// </summary>
+        private void SetButtonEvent()
+        {
+            appLinkButton.onClick.AddListener(() =>
+            {
+                string text = appLinkText.text;
+                string url = ExtractUrlFromLinkTag(text);
+                if (!string.IsNullOrEmpty(url))
+                {
+                    Application.OpenURL(url);
+                }
+                else
+                {
+                    Debug.LogError("No valid URL found in the link tag.");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Extracts the URL from a TMP link tag in the format <link="URL">Text</link>.
+        /// </summary>
+        /// <param name="text">The TMP text containing the link tag.</param>
+        /// <returns>The extracted URL, or null if not found.</returns>
+        private string ExtractUrlFromLinkTag(string text)
+        {
+            const string linkTagStart = "<link=\"";
+            const string linkTagEnd = "\">";
+
+            int linkIndex = text.IndexOf(linkTagStart, StringComparison.Ordinal);
+            if (linkIndex >= 0)
+            {
+                int startQuote = linkIndex + linkTagStart.Length;
+                int endQuote = text.IndexOf(linkTagEnd, startQuote, StringComparison.Ordinal);
+                if (endQuote > startQuote)
+                {
+                    return text.Substring(startQuote, endQuote - startQuote);
+                }
+            }
+            return null;
+        }
+        
         /// <summary>
         /// アップグレードダイアログをスキップするかどうか
         /// </summary>
