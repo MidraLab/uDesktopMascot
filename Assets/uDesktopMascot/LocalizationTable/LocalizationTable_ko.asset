@@ -49,6 +49,10 @@ MonoBehaviour:
       \uD45C\uC2DC\uD558\uC9C0 \uC54A\uC74C"
     m_Metadata:
       m_Items: []
+  - m_Id: 3977592391348224
+    m_Localized: "\uC6F9 UI"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

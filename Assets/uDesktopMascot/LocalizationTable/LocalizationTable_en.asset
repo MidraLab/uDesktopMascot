@@ -48,6 +48,10 @@ MonoBehaviour:
     m_Localized: Do not display the dialog until the next version.
     m_Metadata:
       m_Items: []
+  - m_Id: 3977592391348224
+    m_Localized: WebUI
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

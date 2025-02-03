@@ -43,6 +43,10 @@ MonoBehaviour:
     m_Key: MSG_SKIP_UPDATE_DIALOG_TOGGLE_TEXT
     m_Metadata:
       m_Items: []
+  - m_Id: 3977592391348224
+    m_Key: WORD_MENU_WEB_UI
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
