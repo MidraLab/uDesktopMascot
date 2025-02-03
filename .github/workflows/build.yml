@@ -139,10 +139,16 @@ jobs:
           TARGET_BRANCH=${TARGET_BRANCH#refs/heads/}
           SOURCE_BRANCH=${SOURCE_BRANCH#refs/heads/}
 
+          # 現在の変更をスタッシュに保存
+          git stash push -u -m "temp setup.iss changes"
+
           git fetch origin $TARGET_BRANCH
           git reset --hard origin/$TARGET_BRANCH
           git checkout -B $SOURCE_BRANCH
           
+          # スタッシュから変更を復元
+          git stash pop
+
           git add setup.iss
           if ! git diff --cached --quiet; then
             git commit -m "Update setup.iss"
