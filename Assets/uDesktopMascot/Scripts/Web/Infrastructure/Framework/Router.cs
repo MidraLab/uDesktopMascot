@@ -1,5 +1,5 @@
 using uDesktopMascot.Web.Domain.Interfaces;
-using uDesktopMascot.Web.Application.Handlers;
+using uDesktopMascot.Web.Application;
 using System.Net;
 using uDesktopMascot;
 using System.Threading;

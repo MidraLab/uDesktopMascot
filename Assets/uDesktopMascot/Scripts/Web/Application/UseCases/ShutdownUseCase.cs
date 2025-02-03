@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using uDesktopMascot.Web.Infrastructure.Framework;
 
-namespace uDesktopMascot.Web.Application.UseCases
+namespace uDesktopMascot.Web.Application
 {
     /// <summary>
     ///  シャットダウンユースケース

@@ -6,8 +6,7 @@ using UnityEngine.Localization.Settings;
 using System.Threading;
 using System.IO;
 using uDesktopMascot.Web.Infrastructure.Framework;
-using uDesktopMascot.Web.Application.Handlers;
-using uDesktopMascot.Web.Application.UseCases;
+using uDesktopMascot.Web.Application;
 
 namespace uDesktopMascot
 {

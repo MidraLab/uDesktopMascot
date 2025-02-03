@@ -1,11 +1,12 @@
 using uDesktopMascot.Web.Domain.Interfaces;
-using uDesktopMascot.Web.Application.UseCases;
+using uDesktopMascot.Web.Application;
 using System;
 using System.Net;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace uDesktopMascot.Web.Application.Handlers
+
+namespace uDesktopMascot.Web.Application
 {
     /// <summary>
     ///  シャットダウンハンドラ

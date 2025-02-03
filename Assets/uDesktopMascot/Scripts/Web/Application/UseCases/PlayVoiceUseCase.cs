@@ -4,7 +4,7 @@ using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace uDesktopMascot.Web.Application.UseCases
+namespace uDesktopMascot.Web.Application
 {
     /// <summary>
     ///  ボイス再生ユースケース
