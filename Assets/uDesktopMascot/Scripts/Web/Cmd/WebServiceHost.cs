@@ -6,7 +6,7 @@ using uDesktopMascot.Web.Application;
 namespace uDesktopMascot.Web.Cmd
 {
     /// <summary>
-    ///  メインクラス
+    ///   Webサーバーのホストクラス
     /// </summary>
     public class WebServiceHost : IDisposable
     {
