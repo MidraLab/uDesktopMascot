@@ -3,8 +3,6 @@ using uDesktopMascot.Web.Application;
 using System;
 using System.Net;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
-
 
 namespace uDesktopMascot.Web.Application
 {
