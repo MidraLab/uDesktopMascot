@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Logging;
 using System;
-using uDesktopMascot.Web.Domain.Interfaces;
+using uDesktopMascot.Web.Domain;
 using System.Net.Http;
 
-namespace uDesktopMascot.Web.Infrastructure.Framework
+namespace uDesktopMascot.Web.Infrastructure
 {
     /// <summary>
     ///  ネットワークラッパー

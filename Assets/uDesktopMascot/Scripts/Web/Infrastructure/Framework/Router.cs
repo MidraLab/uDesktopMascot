@@ -1,10 +1,10 @@
-using uDesktopMascot.Web.Domain.Interfaces;
+using uDesktopMascot.Web.Domain;
 using uDesktopMascot.Web.Application;
 using System.Net;
 using uDesktopMascot;
 using System.Threading;
 
-namespace uDesktopMascot.Web.Infrastructure.Framework
+namespace uDesktopMascot.Web.Infrastructure
 {
     /// <summary>
     ///  ルーター

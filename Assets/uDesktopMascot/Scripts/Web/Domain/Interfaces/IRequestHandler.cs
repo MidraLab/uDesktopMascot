@@ -1,7 +1,7 @@
 using System.Net;
 using System;
 
-namespace uDesktopMascot.Web.Domain.Interfaces
+namespace uDesktopMascot.Web.Domain
 {
     /// <summary>
     ///  リクエストハンドラ

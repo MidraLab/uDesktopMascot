@@ -1,6 +1,6 @@
 using Unity.Logging;
 using System;
-using uDesktopMascot.Web.Infrastructure.Framework;
+using uDesktopMascot.Web.Infrastructure;
 using uDesktopMascot.Web.Application;
 
 namespace uDesktopMascot.Web.Cmd
@@ -43,7 +43,6 @@ namespace uDesktopMascot.Web.Cmd
 
             // ルーターの設定
             _netWrapper = new NetWrapper();
-
 
             // 依存関係の初期化
             var playVoiceUseCase = new PlayVoiceUseCase();
