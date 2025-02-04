@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Unity.Logging;
 using UnityEngine;
@@ -30,11 +29,6 @@ namespace uDesktopMascot
         ///     BGMのフォルダパス
         /// </summary>
         private const string BgmFolderPath = "BGM";
-
-        /// <summary>
-        ///     現在再生中のBGMのインデックス
-        /// </summary>
-        private int _currentBgmIndex = -1;
 
         /// <summary>
         ///     キャンセルトークンソース
