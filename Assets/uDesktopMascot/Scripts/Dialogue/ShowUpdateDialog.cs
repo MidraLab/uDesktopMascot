@@ -34,9 +34,9 @@ namespace uDesktopMascot
         /// </summary>
         [SerializeField] private Button appLinkButton;
 
-        private protected override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
             SetButtonEvent();
         }
 

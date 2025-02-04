@@ -26,7 +26,7 @@ namespace uDesktopMascot
         /// <summary>
         /// メニューのビュー
         /// </summary>
-        [SerializeField] private MenuPresenter _menuPresenter;
+        private MenuPresenter _menuPresenter;
 
         /// <summary>
         /// モデルのゲームオブジェクト

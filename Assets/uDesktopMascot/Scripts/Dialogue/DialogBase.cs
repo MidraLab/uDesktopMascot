@@ -24,6 +24,11 @@ namespace uDesktopMascot
         [SerializeField] private Button closeButton;
         
         /// <summary>
+        /// ダイアログのプレハブパス
+        /// </summary>
+        public string PrefabPath { get; set; }
+        
+        /// <summary>
         /// 閉じるボタンのクリックイベント
         /// </summary>
         public Action OnClose { get; set; }
@@ -51,6 +56,20 @@ namespace uDesktopMascot
         {
             closeButton.onClick.RemoveListener(CloseAction);
         }
+        
+        /// <summary>
+        /// ダイアログの初期化処理
+        /// </summary>
+        public virtual void Initialize()
+        {
+        }
+        
+        /// <summary>
+        /// ダイアログの状態をリセットする
+        /// </summary>
+        public virtual void Reset()
+        {
+        }
 
         /// <summary>
         /// 閉じるボタンのアクション
@@ -58,6 +77,7 @@ namespace uDesktopMascot
         private void CloseAction()
         {
             OnClose?.Invoke();
+            Hide();
         }
 
         /// <summary>

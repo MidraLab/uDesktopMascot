@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 7590325782756801922}
   - component: {fileID: 7852555740211157350}
   m_Layer: 5
-  m_Name: TabletMenu
+  m_Name: TabletMenuDialog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

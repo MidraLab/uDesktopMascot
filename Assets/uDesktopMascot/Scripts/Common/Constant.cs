@@ -5,7 +5,7 @@ namespace uDesktopMascot
     /// <summary>
     ///    定数
     /// </summary>
-    public class Constant
+    public partial class Constant
     {
         /// <summary>
         ///   UIアニメーション時間
