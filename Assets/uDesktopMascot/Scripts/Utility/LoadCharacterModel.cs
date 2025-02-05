@@ -76,14 +76,17 @@ namespace uDesktopMascot
                 }
             }
 
-            // シェーダーをlilToonに置き換える
-            bool shaderReplaceSuccess = ReplaceShadersWithLilToon(model);
-
-            if (!shaderReplaceSuccess)
+            if (characterSettings.UseLilToon)
             {
-                Log.Warning("シェーダーの置き換えに失敗したため、デフォルトのシェーダーを使用します。");
-            }
+                // シェーダーをlilToonに置き換える
+                bool shaderReplaceSuccess = ReplaceShadersWithLilToon(model);
 
+                if (!shaderReplaceSuccess)
+                {
+                    Log.Warning("シェーダーの置き換えに失敗したため、デフォルトのシェーダーを使用します。");
+                }
+            }
+            
             return model;
         }
 
