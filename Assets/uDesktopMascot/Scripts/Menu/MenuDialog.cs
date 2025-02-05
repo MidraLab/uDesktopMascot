@@ -11,7 +11,7 @@ namespace uDesktopMascot
     /// <summary>
     ///     メニューのビュー
     /// </summary>
-    public class MenuView : DialogBase
+    public class MenuDialog : DialogBase
     {
         /// <summary>
         ///    メニューのRectTransform

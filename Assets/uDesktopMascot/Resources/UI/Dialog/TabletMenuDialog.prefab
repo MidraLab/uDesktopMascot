@@ -169,7 +169,6 @@ GameObject:
   - component: {fileID: 1814601283165781319}
   - component: {fileID: 136621125454926284}
   - component: {fileID: 8997626080854039974}
-  - component: {fileID: 7590325782756801922}
   - component: {fileID: 7852555740211157350}
   m_Layer: 5
   m_Name: TabletMenuDialog
@@ -280,19 +279,6 @@ MonoBehaviour:
   helpButton: {fileID: 3975135025879450140}
   appSettingButton: {fileID: 7721927851968667442}
   quitButton: {fileID: 1753820868276724849}
---- !u!114 &7590325782756801922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1327219789864460332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6d8b21900104092ae5ebafd61ab07ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menuView: {fileID: 8997626080854039974}
 --- !u!225 &7852555740211157350
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1569,7 +1555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_fontSize
-      value: 3
+      value: 8.25
       objectReference: {fileID: 0}
     - target: {fileID: 1089995998360424670, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_StringReference.m_TableEntryReference.m_KeyId

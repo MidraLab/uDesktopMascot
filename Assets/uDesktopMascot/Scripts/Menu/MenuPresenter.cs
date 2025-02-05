@@ -11,12 +11,12 @@ namespace uDesktopMascot
     /// <summary>
     ///    メニューのプレゼンター
     /// </summary>
-    public partial class MenuPresenter : MonoBehaviour
+    public partial class MenuPresenter : IDisposable
     {
         /// <summary>
         ///    メニューのビュー
         /// </summary>
-        [SerializeField] private MenuView menuView;
+        private readonly MenuDialog _menuDialog;
 
         /// <summary>
         ///   メニューが開かれているかどうか
@@ -31,27 +31,29 @@ namespace uDesktopMascot
         /// <summary>
         /// キャンセルトークンソース
         /// </summary>
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
         ///  メニューの表示位置のオフセット
         /// </summary>
         private static readonly Vector3 MenuOffset = new Vector3(2.5f, 2, -1);
 
-        private void Awake()
+        public MenuPresenter(MenuDialog menuDialog)
         {
+            this._menuDialog = menuDialog;
+            
             IsOpened = false;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            menuView.OnHelpAction = OpenHelp;
-            menuView.OnModelSettingAction = () =>
+            menuDialog.OnHelpAction = OpenHelp;
+            menuDialog.OnModelSettingAction = () =>
             {
                 Log.Debug("Open Model Setting");
             };
-            menuView.OnAppSettingAction = OpenAppSetting;
-            menuView.OnWebUIAction = OpenWebUI;
-            menuView.OnCloseAction = CloseApp;
+            menuDialog.OnAppSettingAction = OpenAppSetting;
+            menuDialog.OnWebUIAction = OpenWebUI;
+            menuDialog.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
 
@@ -59,10 +61,6 @@ namespace uDesktopMascot
             InitDebugMenu();
 #endif
             
-        }
-
-        private void Start()
-        {
             Hide();
         }
 
@@ -73,7 +71,7 @@ namespace uDesktopMascot
         public void Show(Vector3 screenPosition)
         {
             IsOpened = true;
-            menuView.Show(screenPosition + MenuOffset, _cancellationTokenSource.Token).Forget();
+            _menuDialog.Show(screenPosition + MenuOffset, _cancellationTokenSource.Token).Forget();
         }
 
         /// <summary>
@@ -82,7 +80,7 @@ namespace uDesktopMascot
         public void Hide()
         {
             IsOpened = false;
-            menuView.Hide();
+            _menuDialog.Hide();
         }
 
         /// <summary>
@@ -97,7 +95,7 @@ namespace uDesktopMascot
             {
                 if (ColorUtility.TryParseHtmlString(menuUISettings.BackgroundColor, out Color color))
                 {
-                    menuView.SetBackgroundColor(color);
+                    _menuDialog.SetBackgroundColor(color);
                 }
                 else
                 {
@@ -204,7 +202,7 @@ namespace uDesktopMascot
             Sprite sprite = await ImageLoader.LoadSpriteAsync(fullPath, cancellationToken);
             if (sprite != null)
             {
-                menuView.SetBackgroundImage(sprite);
+                _menuDialog.SetBackgroundImage(sprite);
             }
             else
             {
@@ -288,12 +286,12 @@ namespace uDesktopMascot
 #endif
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            menuView.OnHelpAction = null;
-            menuView.OnModelSettingAction = null;
-            menuView.OnAppSettingAction = null;
-            menuView.OnCloseAction = null;
+            _menuDialog.OnHelpAction = null;
+            _menuDialog.OnModelSettingAction = null;
+            _menuDialog.OnAppSettingAction = null;
+            _menuDialog.OnCloseAction = null;
 
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
