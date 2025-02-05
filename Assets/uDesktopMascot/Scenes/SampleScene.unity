@@ -787,22 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c4c025aa874057b6d75aced08f797c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clickVoice:
-  - {fileID: 8300000, guid: 1dcdad14186b33c4199aa812d8903c3e, type: 3}
-  - {fileID: 8300000, guid: fe4fcef4dbbfb6c4bbd697e8fe8ad929, type: 3}
-  - {fileID: 8300000, guid: 3fb312cb3a5c7074dab389b17d5b4b0b, type: 3}
-  - {fileID: 8300000, guid: 20c1b88ea6bcff545950aedc973f9e20, type: 3}
-  dragVoice: []
-  startVoice:
-  - {fileID: 8300000, guid: 4e24fd4c4a409eb42b02e0e6d3a79e7b, type: 3}
-  - {fileID: 8300000, guid: f64e09d62b7bc47408265e5b8b5e81d2, type: 3}
-  - {fileID: 8300000, guid: 60b24ad2fee26414492310e15aecdb3f, type: 3}
-  - {fileID: 8300000, guid: 5a9f61cec9392564eb25bcbdf5d9e8e5, type: 3}
-  - {fileID: 8300000, guid: 0de757c49949b5941a179555ef3f4cc2, type: 3}
-  endVoice:
-  - {fileID: 8300000, guid: dfbdd7b192bda194bb596a8a23744ad8, type: 3}
-  - {fileID: 8300000, guid: 574b7e61b1e91c54987212371fdd2b6b, type: 3}
-  - {fileID: 8300000, guid: 90e66863c9f9c104d97f7da9e98b837f, type: 3}
+  voiceData: {fileID: 11400000, guid: 99f1ce8ea438c7847ac56c43eab74788, type: 2}
 --- !u!82 &661562632381841278
 AudioSource:
   m_ObjectHideFlags: 0
@@ -933,21 +918,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2842810455707731825
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5840474391714505034}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 3924508414423786074}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &3924508414423786074
 Transform:
   m_ObjectHideFlags: 0
@@ -963,7 +933,6 @@ Transform:
   m_Children:
   - {fileID: 6998454015470291223}
   - {fileID: 851643807220013508}
-  - {fileID: 2842810455707731825}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5093247799327879254
@@ -979,22 +948,6 @@ GameObject:
   - component: {fileID: 661562632381841278}
   m_Layer: 0
   m_Name: VoiceManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &5840474391714505034
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2842810455707731825}
-  m_Layer: 0
-  m_Name: SEManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1047,7 +1000,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowController: {fileID: 808887759}
-  showUpdateDialog: {fileID: 0}
 --- !u!114 &7907025634891702059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1061,7 +1013,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uniWindowMoveHandle: {fileID: 243030077}
-  _menuPresenter: {fileID: 0}
 --- !u!114 &7907025634891702060
 MonoBehaviour:
   m_ObjectHideFlags: 0
