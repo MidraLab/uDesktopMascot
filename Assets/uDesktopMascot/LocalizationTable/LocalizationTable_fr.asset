@@ -48,6 +48,18 @@ MonoBehaviour:
     m_Localized: "Ne pas afficher de dialogue jusqu'\xE0 la prochaine version"
     m_Metadata:
       m_Items: []
+  - m_Id: 4547369455259648
+    m_Localized: Envoi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Interface utilisateur web
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
