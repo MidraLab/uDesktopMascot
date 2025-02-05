@@ -4,8 +4,6 @@ using Unity.Logging;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
-using System.IO;
-using lilToon;
 using uDesktopMascot.Web.Cmd;
 
 namespace uDesktopMascot
@@ -46,9 +44,7 @@ namespace uDesktopMascot
 
             _cancellationTokenSource = new CancellationTokenSource();
             _checkVersion = new CheckVersion();
-
-            LoadSetting();
-
+            
             // ローカライゼーションを設定
             SetLocalizationAsync().Forget();
 
@@ -59,6 +55,8 @@ namespace uDesktopMascot
 
         private void Start()
         {
+            LoadSetting();
+            
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
         }
