@@ -22,6 +22,11 @@ namespace uDesktopMascot
         /// メニューの背景画像
         /// </summary>
         [SerializeField] private Image backgroundImage;
+        
+        /// <summary>
+        /// AIチャット機能を開くボタン
+        /// </summary>
+        [SerializeField] private Button aiChatButton;
 
         /// <summary>
         /// WebUIを開くボタン
@@ -92,6 +97,15 @@ namespace uDesktopMascot
             appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
             quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
             webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
+            aiChatButton.onClick.AddListener(OnAiChatAction);
+        }
+
+        /// <summary>
+        ///   AIチャット機能を開く
+        /// </summary>
+        private void OnAiChatAction()
+        {
+            UIManager.Instance.PushDialog<ChatDialog>(Constant.AIChatDialog);
         }
 
         /// <summary>
@@ -175,6 +189,16 @@ namespace uDesktopMascot
 
             // RectTransformの位置を設定
             _menuRectTransform.position = adjustedPosition;
+        }
+
+        private void OnDestroy()
+        {
+            helpButton.onClick.RemoveAllListeners();
+            modelSettingButton.onClick.RemoveAllListeners();
+            appSettingButton.onClick.RemoveAllListeners();
+            quitButton.onClick.RemoveAllListeners();
+            webUIButton.onClick.RemoveAllListeners();
+            aiChatButton.onClick.RemoveAllListeners();
         }
     }
 }

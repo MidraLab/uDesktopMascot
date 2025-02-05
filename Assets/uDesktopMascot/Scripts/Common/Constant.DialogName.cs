@@ -14,5 +14,10 @@
         /// メニューダイアログ
         /// </summary>
         public const string TabletMenuDialog = "TabletMenuDialog";
+        
+        /// <summary>
+        /// AIチャットダイアログ
+        /// </summary>
+        public const string AIChatDialog = "AIChatDialog";
     }
 }

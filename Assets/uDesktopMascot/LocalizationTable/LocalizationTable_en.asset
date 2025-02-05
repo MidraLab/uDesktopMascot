@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: Model addition/change
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -46,10 +46,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 3116588740579328
     m_Localized: Do not display the dialog until the next version.
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3977592391348224
-    m_Localized: WebUI
     m_Metadata:
       m_Items: []
   references:
