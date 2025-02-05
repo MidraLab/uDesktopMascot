@@ -220,6 +220,15 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        ///  サーバーのポート番号を取得
+        /// </summary>
+        /// <returns>ポート番号</returns>
+        public int GetPort()
+        {
+            return _webServiceHost?.GetPort() ?? 0;
+        }
+
+        /// <summary>
         ///    Webサーバーを破棄
         /// </summary>
         public void DisposeWebServer()

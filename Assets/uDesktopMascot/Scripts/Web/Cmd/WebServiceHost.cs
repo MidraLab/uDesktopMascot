@@ -16,18 +16,9 @@ namespace uDesktopMascot.Web.Cmd
         private NetWrapper _netWrapper;
 
         /// <summary>
-        ///  ポート
+        ///  ポート番号
         /// </summary>
-        private int _port = 8080;
-
-        /// <summary>
-        ///  コンストラクタ
-        /// </summary>
-        /// <param name="port">ポート</param>
-        public WebServiceHost(int port = 8080)
-        {
-            _port = port;
-        }
+        private int _port;
 
         /// <summary>
         ///  サーバー開始
@@ -53,8 +44,18 @@ namespace uDesktopMascot.Web.Cmd
             var router = new Router(_netWrapper, playVoiceHandler, shutdownHandler);
 
             // サーバーの起動
+            _port = _netWrapper.GetAvailablePort();
             _netWrapper.StartServer(_port);
             Log.Info($"Webサーバーが起動しました。ポート: {_port}");
+        }
+
+        /// <summary>
+        ///  サーバーのポート番号を取得
+        /// </summary>
+        /// <returns>ポート番号</returns>
+        public int GetPort()
+        {
+            return _port;
         }
 
         /// <summary>
