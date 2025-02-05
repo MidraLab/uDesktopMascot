@@ -240,6 +240,7 @@ namespace uDesktopMascot
         /// </summary>
         private void OnDestroy()
         {
+            ApplicationSettings.Instance.SaveSettings();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _webServiceHost?.Dispose();
