@@ -30,7 +30,7 @@
 
             async function sendGetRequest() {
                 try {
-                    const response = await fetch('http://localhost:8080/api/voice/random');
+                    const response = await fetch('http://localhost:{{PORT}}/api/voice/random');
                     if (!response.ok) {
                         throw new Error(`HTTPエラー! ステータス: ${response.status}`);
                     }
@@ -57,7 +57,7 @@
 
             async function shutdownAndClose() {
                 try {
-                    const shutdownUrl = 'http://localhost:8080/api/shutdown';
+                    const shutdownUrl = 'http://localhost:{{PORT}}/api/shutdown';
                     await fetch(shutdownUrl, {
                         method: 'GET',
                         keepalive: true
@@ -71,7 +71,7 @@
             }
 
             window.addEventListener('beforeunload', function(event) {
-                const shutdownUrl = 'http://localhost:8080/api/shutdown';
+                const shutdownUrl = 'http://localhost:{{PORT}}/api/shutdown';
                 
                 // GETリクエストで送信
                 navigator.sendBeacon(shutdownUrl);
