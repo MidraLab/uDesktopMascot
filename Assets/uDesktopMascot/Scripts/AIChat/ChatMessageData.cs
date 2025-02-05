@@ -5,7 +5,7 @@ namespace uDesktopMascot
     /// <summary>
     ///    AIチャットメッセージモデル
     /// </summary>
-    public class ChatMessage
+    public class ChatMessageData
     {
         public enum Sender
         {
@@ -28,7 +28,7 @@ namespace uDesktopMascot
         /// </summary>
         public DateTime Timestamp;
 
-        public ChatMessage(Sender senderInfo, string message, DateTime timestamp)
+        public ChatMessageData(Sender senderInfo, string message, DateTime timestamp)
         {
             this.SenderInfo = senderInfo;
             this.Message = message;
