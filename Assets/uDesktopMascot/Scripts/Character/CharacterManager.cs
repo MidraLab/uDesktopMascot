@@ -26,7 +26,7 @@ namespace uDesktopMascot
         /// <summary>
         /// メニューのビュー
         /// </summary>
-        [SerializeField] private MenuPresenter _menuPresenter;
+        private MenuPresenter _menuPresenter;
 
         /// <summary>
         /// モデルのゲームオブジェクト
@@ -350,13 +350,18 @@ namespace uDesktopMascot
         /// <param name="context"></param>
         private void OnRightClick(InputAction.CallbackContext context)
         {
+            if (_menuPresenter == null)
+            {
+                var menuDialog = UIManager.Instance.PushDialog<MenuDialog>(Constant.TabletMenuDialog);
+                _menuPresenter = new MenuPresenter(menuDialog);
+            }
+
             if(_menuPresenter.IsOpened)
             {
                 _menuPresenter.Hide();
             }
             else
             {
-                // メニューを表示. モデルよりも少し前方に表示
                 _menuPresenter.Show(_model.transform.position);
             }
         }
@@ -403,6 +408,7 @@ namespace uDesktopMascot
         /// </summary>
         private void OnDestroy()
         {
+            _menuPresenter?.Dispose();
             _characterAnimationController?.Dispose();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();

@@ -24,7 +24,7 @@ namespace uDesktopMascot
         /// <param name="cancellationToken">キャンセルトークン</param>
         public static async UniTask LoadSoundsAsync(
             string relativeFolderPath,
-            List<AudioClip> soundList,
+            IList<AudioClip> soundList,
             Action<int> onLoaded = null,
             Action onDirectoryNotFound = null,
             CancellationToken cancellationToken = default)

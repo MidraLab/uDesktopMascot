@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
 using System.IO;
+using lilToon;
 using uDesktopMascot.Web.Cmd;
 
 namespace uDesktopMascot
@@ -20,11 +21,6 @@ namespace uDesktopMascot
         [SerializeField] private UniWindowController windowController;
 
         /// <summary>
-        ///   アップグレードダイアログを表示する
-        /// </summary>
-        [SerializeField] private ShowUpdateDialog showUpdateDialog;
-
-        /// <summary>
         /// キャンセルトークンソース
         /// </summary>
         private CancellationTokenSource _cancellationTokenSource;
@@ -38,7 +34,11 @@ namespace uDesktopMascot
         /// Webサーバーのホストクラス
         /// </summary>
         private WebServiceHost _webServiceHost;
-
+        
+        /// <summary>
+        /// アップデートダイアログ
+        /// </summary>
+        private ShowUpdateDialog _showUpdateDialog;
 
         private protected override void Awake()
         {
@@ -59,19 +59,8 @@ namespace uDesktopMascot
 
         private void Start()
         {
-            SetEvent();
-
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
-        }
-        
-
-        /// <summary>
-        ///   イベントを設定
-        /// </summary>
-        private void SetEvent()
-        {
-            showUpdateDialog.OnClose = HideSkipUpdateDialog;
         }
 
         /// <summary>
@@ -100,6 +89,8 @@ namespace uDesktopMascot
 
                 // スキップしたバージョンを取得
                 var skippedVersion = displaySettings.SkippedVersion;
+                
+                _showUpdateDialog = UIManager.Instance.PushDialog<ShowUpdateDialog>(Constant.ShowUpdateDialog,null,SaveSkipUpdateDialog);
 
                 // スキップしたバージョンが設定されている場合
                 if (!string.IsNullOrEmpty(skippedVersion))
@@ -108,7 +99,7 @@ namespace uDesktopMascot
                     if (_checkVersion.IsNewerVersion(_checkVersion.LatestVersion, skippedVersion))
                     {
                         // 新しいバージョンがある場合、ダイアログを表示
-                        showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
+                        _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
                     }
                     else
                     {
@@ -119,18 +110,9 @@ namespace uDesktopMascot
                 else
                 {
                     // スキップしたバージョンがない場合、ダイアログを表示
-                    showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
+                    _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
                 }
             }
-        }
-        
-        /// <summary>
-        ///   アップグレードダイアログを非表示にする
-        /// </summary>
-        private void HideSkipUpdateDialog()
-        {
-            SaveSkipUpdateDialog();
-            showUpdateDialog.HideAsync().Forget();
         }
 
         /// <summary>
@@ -141,7 +123,7 @@ namespace uDesktopMascot
             var displaySettings = ApplicationSettings.Instance.Display;
 
             // ユーザーがスキップを選択した場合、現在の最新バージョンを保存
-            displaySettings.SkippedVersion = showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion :
+            displaySettings.SkippedVersion = _showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion :
                 string.Empty;
 
             ApplicationSettings.Instance.SaveSettings();
