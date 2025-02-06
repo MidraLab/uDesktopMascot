@@ -67,7 +67,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5075115772153856
-    m_Localized: "VRM\u30E2\u30C7\u30EB\u3092\u30C9\u30E9\u30C3\u30B0\u3067\u8FFD\u52A0"
+    m_Localized: "\u30C9\u30E9\u30C3\u30B0\u3067VRM\u30E2\u30C7\u30EB\u3092\u8FFD\u52A0"
     m_Metadata:
       m_Items: []
   references:
