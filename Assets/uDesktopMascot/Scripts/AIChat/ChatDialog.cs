@@ -16,17 +16,17 @@ namespace uDesktopMascot
         /// チャットダイアログの入力フィールド
         /// </summary>
         [SerializeField] private TMP_InputField inputField;
-        
+
         /// <summary>
         /// チャットダイアログの送信ボタン
         /// </summary>
         [SerializeField] private Button sendButton;
-        
+
         /// <summary>
         /// チャットダイアログのテキスト表示
         /// </summary>
         [SerializeField] private TextMeshProUGUI chatText;
-        
+
         /// <summary>
         /// LLMキャラクター
         /// </summary>
@@ -155,6 +155,9 @@ namespace uDesktopMascot
             _inputBlocked = false;
             sendButton.interactable = true;
             inputField.interactable = true;
+
+            // 入力フィールドにフォーカスをセット
+            inputField.ActivateInputField();
         }
 
         /// <summary>
