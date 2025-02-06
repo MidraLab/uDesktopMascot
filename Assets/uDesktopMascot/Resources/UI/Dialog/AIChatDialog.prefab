@@ -51,8 +51,8 @@ GameObject:
   - component: {fileID: 7178809285730366222}
   - component: {fileID: 836892343778475403}
   - component: {fileID: 1326064579903162146}
-  - component: {fileID: 2338698397157635594}
-  - component: {fileID: 7021250321357433491}
+  - component: {fileID: 6112206522812407479}
+  - component: {fileID: 5217478738680653781}
   m_Layer: 5
   m_Name: AIChatDialog
   m_TagString: Untagged
@@ -159,7 +159,7 @@ MonoBehaviour:
   inputField: {fileID: 9086674032288857436}
   sendButton: {fileID: 7546998507068762756}
   chatText: {fileID: 1344068280679628811}
-  llmCharacter: {fileID: 7021250321357433491}
+  llmCharacter: {fileID: 6112206522812407479}
 --- !u!225 &1326064579903162146
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -172,43 +172,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &2338698397157635594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 597809613186944653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a50e3140c3ecaaf1c848dbf141cc2074, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  advancedOptions: 0
-  remote: 0
-  port: 13333
-  numThreads: -1
-  numGPULayers: 0
-  debug: 0
-  parallelPrompts: -1
-  dontDestroyOnLoad: 1
-  contextSize: 8192
-  batchSize: 512
-  model: qwen2-0_5b-instruct-q4_k_m.gguf
-  chatTemplate: chatml
-  lora: 
-  loraWeights: 
-  flashAttention: 0
-  APIKey: 
-  SSLCert: 
-  SSLCertPath: 
-  SSLKey: 
-  SSLKeyPath: 
-  minContextLength: 0
-  maxContextLength: 32768
-  embeddingsOnly: 0
-  embeddingLength: 896
---- !u!114 &7021250321357433491
+--- !u!114 &6112206522812407479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,7 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   advancedOptions: 0
   remote: 0
-  _llm: {fileID: 0}
+  _llm: {fileID: 5217478738680653781}
   APIKey: 
   host: localhost
   port: 13333
@@ -262,6 +226,42 @@ MonoBehaviour:
   setNKeepToPrompt: 1
   chat: []
   grammarString: 
+--- !u!114 &5217478738680653781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597809613186944653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50e3140c3ecaaf1c848dbf141cc2074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  advancedOptions: 0
+  remote: 0
+  port: 13333
+  numThreads: -1
+  numGPULayers: 0
+  debug: 0
+  parallelPrompts: -1
+  dontDestroyOnLoad: 1
+  contextSize: 8192
+  batchSize: 512
+  model: qwen2-0_5b-instruct-q4_k_m.gguf
+  chatTemplate: chatml
+  lora: 
+  loraWeights: 
+  flashAttention: 0
+  APIKey: 
+  SSLCert: 
+  SSLCertPath: 
+  SSLKey: 
+  SSLKeyPath: 
+  minContextLength: 0
+  maxContextLength: 32768
+  embeddingsOnly: 0
+  embeddingLength: 896
 --- !u!1 &1191819277217825876
 GameObject:
   m_ObjectHideFlags: 0
