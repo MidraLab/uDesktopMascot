@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6c87a428fd5d0be9bbc686bdc8c3c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  advancedOptions: 0
+  advancedOptions: 1
   remote: 0
   _llm: {fileID: 5217478738680653781}
   APIKey: 
@@ -248,7 +248,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   contextSize: 8192
   batchSize: 512
-  model: tinyswallow-1.5b-instruct-q5_k_m.gguf
+  model: qwen2-0_5b-instruct-q4_k_m.gguf
   chatTemplate: chatml
   lora: 
   loraWeights: 
@@ -261,7 +261,7 @@ MonoBehaviour:
   minContextLength: 0
   maxContextLength: 32768
   embeddingsOnly: 0
-  embeddingLength: 1536
+  embeddingLength: 896
 --- !u!1 &1191819277217825876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1029,9 +1029,6 @@ MonoBehaviour:
   m_MultiSelect: 0
   m_Options:
     m_Options:
-    - m_Text: TinySwallow-1.5B
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Qwen2
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2143,7 +2140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TinySwallow-1.5B
+  m_text: Qwen2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a4ac5cd8892e24e4790c00e0ef00a927, type: 2}
   m_sharedMaterial: {fileID: 3991398196324383077, guid: a4ac5cd8892e24e4790c00e0ef00a927, type: 2}
@@ -2170,7 +2167,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7.35
+  m_fontSize: 8.25
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
