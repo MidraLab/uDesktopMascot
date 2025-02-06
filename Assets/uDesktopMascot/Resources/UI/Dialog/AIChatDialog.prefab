@@ -248,7 +248,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   contextSize: 8192
   batchSize: 512
-  model: qwen2-0_5b-instruct-q4_k_m.gguf
+  model: tinyswallow-1.5b-instruct-q5_k_m.gguf
   chatTemplate: chatml
   lora: 
   loraWeights: 
@@ -261,7 +261,7 @@ MonoBehaviour:
   minContextLength: 0
   maxContextLength: 32768
   embeddingsOnly: 0
-  embeddingLength: 896
+  embeddingLength: 1536
 --- !u!1 &1191819277217825876
 GameObject:
   m_ObjectHideFlags: 0
