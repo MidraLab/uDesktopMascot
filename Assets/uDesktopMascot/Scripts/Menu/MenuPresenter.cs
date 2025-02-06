@@ -31,11 +31,6 @@ namespace uDesktopMascot
         /// キャンセルトークンソース
         /// </summary>
         private readonly CancellationTokenSource _cancellationTokenSource;
-        
-        /// <summary>
-        /// AIチャットプレゼンター
-        /// </summary>
-        private AIChatPresenter _aiChatPresenter;
 
         /// <summary>
         ///  メニューの表示位置のオフセット

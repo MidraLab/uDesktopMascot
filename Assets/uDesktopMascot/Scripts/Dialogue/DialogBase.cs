@@ -44,7 +44,7 @@ namespace uDesktopMascot
         /// <summary>
         /// OnEnableイベント
         /// </summary>
-        private void OnEnable()
+        private protected virtual void OnEnable()
         {
             closeButton.onClick.AddListener(CloseAction);
         }
@@ -52,7 +52,7 @@ namespace uDesktopMascot
         /// <summary>
         /// OnDisableイベント
         /// </summary>
-        private void OnDisable()
+        private protected virtual void OnDisable()
         {
             closeButton.onClick.RemoveListener(CloseAction);
         }
