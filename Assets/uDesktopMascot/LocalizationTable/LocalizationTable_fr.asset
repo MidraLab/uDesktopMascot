@@ -60,6 +60,18 @@ MonoBehaviour:
     m_Localized: Interface utilisateur web
     m_Metadata:
       m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: Ajout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: "Chemin du mod\xE8le \xE0 ajouter"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: "Ajoutez un mod\xE8le VRM en faisant glisser."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

@@ -60,6 +60,18 @@ MonoBehaviour:
     m_Localized: Web UI
     m_Metadata:
       m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: Addition
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: Path to add the model
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: Add VRM model by dragging.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
