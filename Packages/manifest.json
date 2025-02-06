@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ai.undream.llm": "https://github.com/undreamai/LLMUnity.git",
     "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.ayutaz.uniwinc": "https://github.com/ayutaz/UniWindowController.git#upm",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",

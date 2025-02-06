@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "ai.undream.llm": {
+      "version": "https://github.com/undreamai/LLMUnity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e040c976794eb48fd9b05a1880a176824fe8ef06"
+    },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
       "depth": 0,
