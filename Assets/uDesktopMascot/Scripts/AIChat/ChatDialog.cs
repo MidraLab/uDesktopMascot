@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using LLMUnity;
 
 namespace uDesktopMascot
@@ -54,6 +55,34 @@ namespace uDesktopMascot
         private void Start()
         {
             SetEvents();
+        }
+
+        private void OnEnable()
+        {
+            // Submitアクションにリスナーを追加
+            InputController.Instance.UI.Submit.performed += OnSubmit;
+        }
+
+        private void OnDisable()
+        {
+            // Submitアクションのリスナーを削除
+            InputController.Instance.UI.Submit.performed -= OnSubmit;
+        }
+
+        /// <summary>
+        /// Submitアクションが実行されたときの処理（Enterキー）
+        /// </summary>
+        private void OnSubmit(InputAction.CallbackContext context)
+        {
+            // 入力フィールドが選択されている場合のみ処理
+            if (inputField.isFocused)
+            {
+                SendMessages();
+
+                // InputFieldが改行を追加しないようにする
+                inputField.DeactivateInputField();
+                inputField.ActivateInputField();
+            }
         }
 
         /// <summary>
@@ -139,6 +168,12 @@ namespace uDesktopMascot
         private void OnDestroy()
         {
             sendButton.onClick.RemoveAllListeners();
+
+            // リスナーの登録解除
+            if (InputController.Instance != null)
+            {
+                InputController.Instance.UI.Submit.performed -= OnSubmit;
+            }
         }
     }
 }
