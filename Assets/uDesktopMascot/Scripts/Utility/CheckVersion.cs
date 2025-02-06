@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Threading;
+using Console = System.Console;
 
 namespace uDesktopMascot
 {
@@ -20,7 +21,7 @@ namespace uDesktopMascot
         /// <summary>
         /// 最新バージョン
         /// </summary>
-        public string LatestVersion { get;private set; }
+        public string LatestVersion { get; private set; }
 
         /// <summary>
         /// アップデートがあるかどうかを判定します
@@ -30,7 +31,15 @@ namespace uDesktopMascot
         public async UniTask<bool> IsUpdateAvailable(CancellationToken cancellationToken)
         {
             // 最新バージョンを取得
-            LatestVersion = await GetLatestVersionAsync(cancellationToken);
+            try
+            {
+                LatestVersion = await GetLatestVersionAsync(cancellationToken);
+            } catch (Exception e)
+            {
+                Log.Error($"最新バージョンの取得に失敗しました。{e.Message}");
+                return false;
+            }
+
             if (string.IsNullOrEmpty(LatestVersion))
             {
                 Log.Error("最新バージョンの取得に失敗しました。");
@@ -76,8 +85,7 @@ namespace uDesktopMascot
             {
                 // タグ名から先頭の 'v' または 'V' を除去
                 return latestRelease.tag_name.TrimStart('v', 'V');
-            }
-            else
+            } else
             {
                 Log.Error("最新リリース情報の取得に失敗しました。");
                 return null;
@@ -95,8 +103,7 @@ namespace uDesktopMascot
                 var current = new Version(currentVersion);
 
                 return latest.CompareTo(current) > 0;
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 Log.Error($"バージョン比較のエラー: {ex.Message}");
                 return false;

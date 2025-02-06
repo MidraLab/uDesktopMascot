@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Kirurobo;
 using Unity.Logging;
 using UnityEngine;
@@ -32,7 +33,7 @@ namespace uDesktopMascot
         /// Webサーバーのホストクラス
         /// </summary>
         private WebServiceHost _webServiceHost;
-        
+
         /// <summary>
         /// アップデートダイアログ
         /// </summary>
@@ -44,19 +45,18 @@ namespace uDesktopMascot
 
             _cancellationTokenSource = new CancellationTokenSource();
             _checkVersion = new CheckVersion();
-            
+
             // ローカライゼーションを設定
             SetLocalizationAsync().Forget();
 
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
-
         }
 
         private void Start()
         {
             LoadSetting();
-            
+
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
         }
@@ -78,8 +78,15 @@ namespace uDesktopMascot
         /// </summary>
         private async UniTask CheckUpdateAsync()
         {
-            // アップデートチェック
-            var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
+            bool isUpdateAvailable = false;
+            try
+            {
+                isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
+            } catch (Exception e)
+            {
+                Log.Error($"アップデートチェック中にエラーが発生しました。{e}");
+                return;
+            }
 
             if (isUpdateAvailable)
             {
@@ -87,8 +94,10 @@ namespace uDesktopMascot
 
                 // スキップしたバージョンを取得
                 var skippedVersion = displaySettings.SkippedVersion;
-                
-                _showUpdateDialog = UIManager.Instance.PushDialog<ShowUpdateDialog>(Constant.ShowUpdateDialog,null,SaveSkipUpdateDialog);
+
+                _showUpdateDialog =
+                    UIManager.Instance.PushDialog<ShowUpdateDialog>(Constant.ShowUpdateDialog, null,
+                        SaveSkipUpdateDialog);
 
                 // スキップしたバージョンが設定されている場合
                 if (!string.IsNullOrEmpty(skippedVersion))
@@ -97,18 +106,17 @@ namespace uDesktopMascot
                     if (_checkVersion.IsNewerVersion(_checkVersion.LatestVersion, skippedVersion))
                     {
                         // 新しいバージョンがある場合、ダイアログを表示
-                        _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
-                    }
-                    else
+                        _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion, _cancellationTokenSource.Token)
+                            .Forget();
+                    } else
                     {
                         // スキップしたバージョンと同じかそれより古い場合、ダイアログを表示しない
                         Log.Info("ユーザーがスキップしたバージョンのため、アップデートダイアログを表示しません。");
                     }
-                }
-                else
+                } else
                 {
                     // スキップしたバージョンがない場合、ダイアログを表示
-                    _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
+                    _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion, _cancellationTokenSource.Token).Forget();
                 }
             }
         }
@@ -121,8 +129,8 @@ namespace uDesktopMascot
             var displaySettings = ApplicationSettings.Instance.Display;
 
             // ユーザーがスキップを選択した場合、現在の最新バージョンを保存
-            displaySettings.SkippedVersion = _showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion :
-                string.Empty;
+            displaySettings.SkippedVersion =
+                _showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion : string.Empty;
 
             ApplicationSettings.Instance.SaveSettings();
         }
@@ -150,8 +158,7 @@ namespace uDesktopMascot
                 // 設定ファイルを更新
                 ApplicationSettings.Instance.SaveSettings();
                 Log.Info("動的に調整した品質レベルを設定ファイルに保存しました。");
-            }
-            else
+            } else
             {
                 // 有効な場合、設定ファイルの値を使用
                 QualitySettings.SetQualityLevel(qualityLevel, true);
@@ -163,8 +170,7 @@ namespace uDesktopMascot
             {
                 Application.targetFrameRate = performanceSettings.TargetFrameRate;
                 Log.Info($"ターゲットフレームレートを {Application.targetFrameRate} に設定しました。");
-            }
-            else
+            } else
             {
                 // 無効な場合、デフォルト値を設定し、設定ファイルを更新
                 Application.targetFrameRate = 60; // デフォルト値
@@ -193,12 +199,12 @@ namespace uDesktopMascot
                 // 選択したロケールを設定
                 LocalizationSettings.SelectedLocale = selectedLocale;
                 Log.Info($"ロケールを '{selectedLocale.LocaleName}' に設定しました。");
-            }
-            else
+            } else
             {
                 // 対応するロケールがない場合はデフォルトロケール（英語）を設定
                 LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale("en");
-                Log.Warning($"システム言語 '{systemLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
+                Log.Warning(
+                    $"システム言語 '{systemLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
             }
         }
 
