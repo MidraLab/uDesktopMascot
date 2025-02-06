@@ -59,11 +59,6 @@ namespace uDesktopMascot
         public Action OnHelpAction { get; set; }
 
         /// <summary>
-        ///    モデル設定ボタンのクリックイベント
-        /// </summary>
-        public Action OnModelSettingAction { get; set; }
-
-        /// <summary>
         ///   アプリケーション設定ボタンのクリックイベント
         /// </summary>
         public Action OnAppSettingAction { get; set; }
@@ -93,11 +88,19 @@ namespace uDesktopMascot
         private void SetButtonEvent()
         {
             helpButton.onClick.AddListener(() => OnHelpAction?.Invoke());
-            modelSettingButton.onClick.AddListener(() => OnModelSettingAction?.Invoke());
-            appSettingButton.onClick.AddListener(() => OnAppSettingAction?.Invoke());
+            modelSettingButton.onClick.AddListener(OnSelectModelAction);
+            appSettingButton.onClick.AddListener( () => OnAppSettingAction?.Invoke());
             quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
             webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
             aiChatButton.onClick.AddListener(OnAiChatAction);
+        }
+        
+        /// <summary>
+        ///  モデル選択画面を開く
+        /// </summary>
+        private void OnSelectModelAction()
+        {
+            UIManager.Instance.PushDialog<SelectModelDialog>(Constant.SelectModelDialog);
         }
 
         /// <summary>

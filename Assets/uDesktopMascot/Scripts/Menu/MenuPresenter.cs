@@ -46,10 +46,6 @@ namespace uDesktopMascot
             _cancellationTokenSource = new CancellationTokenSource();
 
             menuDialog.OnHelpAction = OpenHelp;
-            menuDialog.OnModelSettingAction = () =>
-            {
-                Log.Debug("Open Model Setting");
-            };
             menuDialog.OnAppSettingAction = OpenAppSetting;
             menuDialog.OnWebUIAction = OpenWebUI;
             menuDialog.OnCloseAction = CloseApp;
@@ -320,7 +316,6 @@ namespace uDesktopMascot
 #endif
 
             _menuDialog.OnHelpAction = null;
-            _menuDialog.OnModelSettingAction = null;
             _menuDialog.OnAppSettingAction = null;
             _menuDialog.OnCloseAction = null;
 
