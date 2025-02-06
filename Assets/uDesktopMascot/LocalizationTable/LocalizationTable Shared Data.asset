@@ -55,6 +55,18 @@ MonoBehaviour:
     m_Key: WORD_WEB_UI_BUTTON
     m_Metadata:
       m_Items: []
+  - m_Id: 5073601682935808
+    m_Key: WORD_ADD_BUTTON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Key: WORD_ADD_MODEL_PATH_PLACEHOLDER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Key: WORD_ADD_DRAG_MODEL
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
