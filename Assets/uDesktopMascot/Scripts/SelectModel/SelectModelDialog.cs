@@ -2,6 +2,7 @@
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using Unity.Logging;
 
 namespace uDesktopMascot
 {
@@ -23,7 +24,7 @@ namespace uDesktopMascot
         /// <summary>
         /// 現在ロード中または表示中のモデル
         /// </summary>
-        private GameObject _currentModel;
+        private ModelInfo _currentModel;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -60,16 +61,21 @@ namespace uDesktopMascot
                 var item = Instantiate(modelInfoPrefab, contentTransform);
 
                 // モデル情報を初期化
-                item.Initialize(fileName, () => OnModelSelected(vrmFile).Forget());
+                item.Initialize(fileName, () => OnModelSelected(item,vrmFile).Forget());
             }
         }
 
         /// <summary>
         /// モデルが選択されたときの処理
         /// </summary>
+        /// <param name="modelInfo"></param>
         /// <param name="path">選択されたモデルのパス</param>
-        private async UniTaskVoid OnModelSelected(string path)
+        private async UniTaskVoid OnModelSelected(ModelInfo modelInfo,string path)
         {
+            modelInfo.SetSelected(true);
+            _currentModel?.SetSelected(false);
+            _currentModel = modelInfo;
+            return;
             // 既存のモデルがある場合は削除
             if (_currentModel != null)
             {
@@ -83,12 +89,9 @@ namespace uDesktopMascot
             {
                 // モデルをシーンに配置
                 model.transform.position = Vector3.zero;
-
-                // 現在のモデルとして保持
-                _currentModel = model;
             } else
             {
-                Debug.LogError($"Failed to load model: {path}");
+                Log.Error($"Failed to load Model:{path}");
             }
         }
 
