@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: "Ajout ou modification de mod\xE8le"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -48,8 +48,16 @@ MonoBehaviour:
     m_Localized: "Ne pas afficher de dialogue jusqu'\xE0 la prochaine version"
     m_Metadata:
       m_Items: []
-  - m_Id: 3977592391348224
-    m_Localized: Interface utilisateur Web
+  - m_Id: 4547369455259648
+    m_Localized: Envoi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Interface utilisateur web
     m_Metadata:
       m_Items: []
   references:

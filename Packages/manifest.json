@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ai.undream.llm": "https://github.com/undreamai/LLMUnity.git",
     "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.ayutaz.uniwinc": "https://github.com/ayutaz/UniWindowController.git#upm",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
@@ -7,7 +8,6 @@
     "com.frozenstorminteractive.assimp.macos": "4.1.0",
     "com.frozenstorminteractive.assimp.windows": "4.1.0",
     "com.unity.collab-proxy": "2.6.0",
-    "jp.setchi.fancyscrollview": "https://github.com/setchi/FancyScrollView.git#upm",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.formats.fbx": "5.1.2",
     "com.unity.ide.rider": "3.0.34",
@@ -19,6 +19,7 @@
     "com.unity.multiplayer.center": "1.0.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.playablegraph-visualizer": "0.2.1-preview.3",
+    "com.unity.recorder": "5.1.2",
     "com.unity.render-pipelines.universal": "17.0.3",
     "com.unity.test-framework": "1.4.5",
     "com.unity.timeline": "1.8.7",

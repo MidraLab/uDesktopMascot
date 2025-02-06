@@ -274,6 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   closeButton: {fileID: 8713622907998881195}
   backgroundImage: {fileID: 2286071587733755090}
+  aiChatButton: {fileID: 8205884556360410485}
   webUIButton: {fileID: 4294579427660593743}
   modelSettingButton: {fileID: 4623602444775744588}
   helpButton: {fileID: 3975135025879450140}
@@ -287,7 +288,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1327219789864460332}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -847,6 +848,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 55dd459865d2b184db79d5faca26c014, type: 3}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 648360911962570205, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_fontSize
+      value: 8.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089995998360424670, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 4599798494334976
+      objectReference: {fileID: 0}
     - target: {fileID: 3452299637799663405, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Name
       value: Chat
@@ -933,7 +946,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -945,6 +958,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4791987971422063645, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
   m_PrefabInstance: {fileID: 1428005503640770226}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8205884556360410485 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7075264929463694279, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
+  m_PrefabInstance: {fileID: 1428005503640770226}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2078149657885364290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1559,7 +1583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1089995998360424670, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
-      value: 3977592391348224
+      value: 4600571496173568
       objectReference: {fileID: 0}
     - target: {fileID: 3452299637799663405, guid: 70f01b9cfb37a80488367e9195bb3326, type: 3}
       propertyPath: m_Name

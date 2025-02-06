@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: Aggiunta o modifica del modello
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -48,8 +48,16 @@ MonoBehaviour:
     m_Localized: Non mostrare il dialogo fino alla prossima versione.
     m_Metadata:
       m_Items: []
-  - m_Id: 3977592391348224
-    m_Localized: Interfaccia utente Web
+  - m_Id: 4547369455259648
+    m_Localized: Invio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Interfaccia web
     m_Metadata:
       m_Items: []
   references:

@@ -4,7 +4,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Unity.Logging;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace uDesktopMascot
 {
@@ -32,6 +31,11 @@ namespace uDesktopMascot
         /// キャンセルトークンソース
         /// </summary>
         private readonly CancellationTokenSource _cancellationTokenSource;
+        
+        /// <summary>
+        /// AIチャットプレゼンター
+        /// </summary>
+        private AIChatPresenter _aiChatPresenter;
 
         /// <summary>
         ///  メニューの表示位置のオフセット
