@@ -57,14 +57,16 @@ namespace uDesktopMascot
             SetEvents();
         }
 
-        private void OnEnable()
+        private protected override void OnEnable()
         {
+            base.OnEnable();
             // Submitアクションにリスナーを追加
             InputController.Instance.UI.Submit.performed += OnSubmit;
         }
 
-        private void OnDisable()
+        private protected override void OnDisable()
         {
+            base.OnDisable();
             // Submitアクションのリスナーを削除
             InputController.Instance.UI.Submit.performed -= OnSubmit;
         }
