@@ -538,6 +538,13 @@
       },
       "hash": "2911cb72a905ab7d8b0f9e03397235d1c0293714"
     },
+    "io.github.gkngkc.unity-standalone-file-browser": {
+      "version": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2902246021d113c4ac1324f981e96d5b553d716b"
+    },
     "jp.amagamina.overwriter": {
       "version": "https://github.com/ina-amagami/unity-overwriter.git",
       "depth": 0,
