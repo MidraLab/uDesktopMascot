@@ -72,6 +72,10 @@ MonoBehaviour:
     m_Localized: Add VRM model by dragging.
     m_Metadata:
       m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: Select a model from the folder.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

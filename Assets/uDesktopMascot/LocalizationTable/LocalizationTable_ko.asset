@@ -73,6 +73,10 @@ MonoBehaviour:
     m_Localized: "\uB4DC\uB798\uADF8\uB85C VRM \uBAA8\uB378 \uCD94\uAC00"
     m_Metadata:
       m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: "\uD3F4\uB354\uC5D0\uC11C \uBAA8\uB378 \uC120\uD0DD\uD558\uAE30"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
