@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using LitMotion;
-using LitMotion.Extensions;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +16,12 @@ namespace uDesktopMascot
         ///    メニューのRectTransform
         /// </summary>
         private RectTransform _menuRectTransform;
+        
+        /// <summary>
+        /// 通知領域にしまうボタン
+        /// </summary>
+        /// <returns></returns>
+        [SerializeField] private Button inNotificationButton;
 
         /// <summary>
         /// メニューの背景画像
@@ -87,12 +92,23 @@ namespace uDesktopMascot
         /// </summary>
         private void SetButtonEvent()
         {
+            inNotificationButton.onClick.AddListener(OnInNotificationAction);
             helpButton.onClick.AddListener(() => OnHelpAction?.Invoke());
             modelSettingButton.onClick.AddListener(OnSelectModelAction);
             appSettingButton.onClick.AddListener( () => OnAppSettingAction?.Invoke());
             quitButton.onClick.AddListener(() => OnCloseAction?.Invoke());
             webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
             aiChatButton.onClick.AddListener(OnAiChatAction);
+        }
+        
+        /// <summary>
+        /// アプリを通知領域にしまう
+        /// </summary>
+        private void OnInNotificationAction()
+        {
+            Log.Debug("アプリを通知領域にしまう");
+            SystemManager.Instance.ForceStopUniWinControllerHitTestFlag(true);
+            NotifyIconUtility.ShowNotifyIcon(Application.productName);
         }
         
         /// <summary>
@@ -196,6 +212,7 @@ namespace uDesktopMascot
 
         private void OnDestroy()
         {
+            inNotificationButton.onClick.RemoveAllListeners();
             helpButton.onClick.RemoveAllListeners();
             modelSettingButton.onClick.RemoveAllListeners();
             appSettingButton.onClick.RemoveAllListeners();

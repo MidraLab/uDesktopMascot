@@ -74,6 +74,15 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        ///   ウィンドウコントローラーのHitTestフラグを強制的に更新
+        /// </summary>
+        /// <param name="isHitTest"></param>
+        public void ForceStopUniWinControllerHitTestFlag(bool isHitTest)
+        {
+            windowController.IsForceHitTestStop = isHitTest;
+        }
+
+        /// <summary>
         /// 新しいバージョンがあるかどうかをチェック
         /// </summary>
         private async UniTask CheckUpdateAsync()
