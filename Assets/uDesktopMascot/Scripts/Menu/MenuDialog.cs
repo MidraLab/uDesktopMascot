@@ -107,8 +107,10 @@ namespace uDesktopMascot
         private void OnInNotificationAction()
         {
             Log.Debug("アプリを通知領域にしまう");
+#if UNITY_STANDALONE_WIN
             SystemManager.Instance.ForceStopUniWinControllerHitTestFlag(true);
             NotifyIconUtility.ShowNotifyIcon(Application.productName);
+#endif
         }
         
         /// <summary>

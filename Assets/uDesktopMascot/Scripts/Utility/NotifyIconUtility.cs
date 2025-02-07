@@ -69,19 +69,6 @@ namespace uDesktopMascot
             SETVERSION  = 0x00000004,
         }
 
-        public enum NIIF : uint
-        {
-            NONE        = 0x00000000,
-            INFO        = 0x00000001,
-            WARNING     = 0x00000002,
-            ERROR       = 0x00000003,
-            USER        = 0x00000004,
-            ICON_MASK   = 0x0000000F,
-            NOSOUND     = 0x00000010,
-            LARGE_ICON  = 0x00000020,
-            NIIF_RESPECT_QUIET_TIME = 0x00000080,
-        }
-
         // Win32 API 関数の宣言
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
@@ -127,13 +114,18 @@ namespace uDesktopMascot
 
         private static IntPtr oldWndProcPtr = IntPtr.Zero;
         private static WndProcDelegate newWndProcDelegate;
-
-        // ウィンドウプロシージャ用のデリゲート
-        private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
+        
+        private const uint WM_USER = 0x0400;
+        private const uint WM_TRAYICON = WM_USER + 1; // 通知領域アイコン用のメッセージ識別子
 
         // マウスメッセージ定数
         private const uint WM_LBUTTONDOWN = 0x0201;
         private const uint WM_LBUTTONDBLCLK = 0x0203;
+        private const uint WM_RBUTTONDOWN = 0x0204;
+        private const uint WM_RBUTTONUP = 0x0205;
+
+        // ウィンドウプロシージャ用のデリゲート
+        private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// 通知領域にアイコンを表示し、ウィンドウを非表示にする
@@ -162,7 +154,7 @@ namespace uDesktopMascot
             notifyIconData.hWnd = hWnd;
             notifyIconData.uID = 1;
             notifyIconData.uFlags = (uint)(NIF.MESSAGE | NIF.ICON | NIF.TIP);
-            notifyIconData.uCallbackMessage = callbackMessage;
+            notifyIconData.uCallbackMessage = WM_TRAYICON;
 
             // アイコンの設定
             if (!string.IsNullOrEmpty(iconPath))
@@ -249,20 +241,23 @@ namespace uDesktopMascot
         [MonoPInvokeCallback(typeof(WndProcDelegate))]
         private static IntPtr WndProc(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
         {
-            if (msg == notifyIconData.uCallbackMessage)
+            if (msg == WM_TRAYICON)
             {
-                uint mouseMessage = wParam.ToUInt32();
-                if (mouseMessage == WM_LBUTTONDOWN || mouseMessage == WM_LBUTTONDBLCLK)
+                if (wParam.ToUInt32() == notifyIconData.uID)
                 {
-                    // 左クリックまたはダブルクリックでウィンドウを再表示
-                    ShowWindow(hWnd, SW_SHOW);
-                    Log.Debug("ウィンドウを再表示しました。");
+                    uint mouseMessage = (uint)lParam.ToInt64();
+                    if (mouseMessage == WM_LBUTTONDOWN || mouseMessage == WM_LBUTTONDBLCLK)
+                    {
+                        // 左クリックまたはダブルクリックでウィンドウを再表示
+                        ShowWindow(hWnd, SW_SHOW);
+                        Log.Debug("ウィンドウを再表示しました。");
 
-                    // 通知領域アイコンを削除
-                    HideNotifyIcon();
-                    
-                    // ヒットテストを再開
-                    SystemManager.Instance.ForceStopUniWinControllerHitTestFlag(false);
+                        // 通知領域アイコンを削除
+                        HideNotifyIcon();
+
+                        // 必要に応じて他の処理を追加
+                        SystemManager.Instance.ForceStopUniWinControllerHitTestFlag(false);
+                    }
                 }
             }
 
