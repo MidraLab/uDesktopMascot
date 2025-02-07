@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -63,6 +62,9 @@ namespace uDesktopMascot
             openModelPathButton.onClick.AddListener(OpenFileBrowser);
         }
         
+        /// <summary>
+        /// ファイルブラウザを開く
+        /// </summary>
         private void OpenFileBrowser()
         {
             // 拡張子フィルターを設定（VRM ファイルのみ）
@@ -168,6 +170,12 @@ namespace uDesktopMascot
         /// <param name="path">選択されたモデルのパス</param>
         private async UniTaskVoid OnModelSelected(ModelInfo modelInfo, string path = null)
         {
+            // 選択中のモデルの場合は、処理をスキップ
+            if (modelInfo == _currentModel)
+            {
+                return;
+            }
+            
             modelInfo.SetSelected(true);
             _currentModel?.SetSelected(false);
             _currentModel = modelInfo;
