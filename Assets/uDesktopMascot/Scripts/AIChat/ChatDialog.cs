@@ -1,9 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using LLMUnity;
+using Cysharp.Text;
+using Unity.Logging;
 
 namespace uDesktopMascot
 {
@@ -117,11 +120,31 @@ namespace uDesktopMascot
             _lastReplyLength = 0;
 
             // LLMにユーザーのメッセージを送信し、返信を処理
-            _ = llmCharacter.Chat(
-                userMessage,
-                HandleReply,
-                ReplyCompleted
-            );
+            _ = ReceiveAIResponse(userMessage);
+        }
+
+        /// <summary>
+        /// 非同期でAIの返信を受信
+        /// </summary>
+        private async System.Threading.Tasks.Task ReceiveAIResponse(string userMessage)
+        {
+            try
+            {
+                // llmCharacter.Chat を呼び出し、返信を受信
+                await llmCharacter.Chat(
+                    userMessage,
+                    HandleReply,
+                    ReplyCompleted
+                );
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"AIの返信の受信中にエラーが発生しました。{ex.Message}");
+                // エラーが発生した場合、入力をアンブロック
+                _inputBlocked = false;
+                sendButton.interactable = true;
+                inputField.interactable = true;
+            }
         }
 
         /// <summary>
@@ -138,7 +161,10 @@ namespace uDesktopMascot
             _replyTextBuilder.Append(newText);
 
             // 現在のチャット履歴と進行中のAI返信を表示
-            chatText.text = $"{_chatTextBuilder}AI: {_replyTextBuilder}";
+            using var sb = ZString.CreateStringBuilder();
+            sb.Append(_chatTextBuilder.ToString());
+            sb.Append($"AI: {_replyTextBuilder}");
+            chatText.text = sb.ToString();
         }
 
         /// <summary>
