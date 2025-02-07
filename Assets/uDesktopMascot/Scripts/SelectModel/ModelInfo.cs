@@ -23,14 +23,22 @@ namespace uDesktopMascot
         /// 背景イメージ
         /// </summary>
         [SerializeField] private Image backgroundFrameImage;
+        
+        /// <summary>
+        /// サムネイルイメージ
+        /// </summary>
+        [SerializeField] RawImage thumbnailImage;
 
         /// <summary>
         /// 初期化
         /// </summary>
-        public void Initialize(string modelName, UnityEngine.Events.UnityAction onClickAction)
+        public void Initialize(string modelName,Texture2D thumbnail, UnityEngine.Events.UnityAction onClickAction)
         {
             // モデル名を設定
             modelNameText.text = modelName;
+            
+            // サムネイルを設定
+            thumbnailImage.texture = thumbnail;
 
             // ボタンのクリックイベントを設定
             selectButton.onClick.AddListener(onClickAction);

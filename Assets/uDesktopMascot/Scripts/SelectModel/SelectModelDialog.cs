@@ -52,17 +52,16 @@ namespace uDesktopMascot
 
             foreach (string vrmFile in vrmFiles)
             {
-                // ファイル名のみを取得
-                string fileName = Path.GetFileName(vrmFile);
-
                 // メインスレッドでUIを更新
                 await UniTask.SwitchToMainThread();
 
                 // ModelInfoアイテムを生成
                 var item = Instantiate(modelInfoPrefab, contentTransform);
 
+                var (modelName, thumbnail) = await LoadVRM.LoadVrmMetaAsync(vrmFile);
+
                 // モデル情報を初期化
-                item.Initialize(fileName, () => OnModelSelected(item,vrmFile).Forget());
+                item.Initialize(modelName, thumbnail, () => OnModelSelected(item, vrmFile).Forget());
             }
         }
 
@@ -74,8 +73,9 @@ namespace uDesktopMascot
             // デフォルトのモデルリストを追加
             await UniTask.SwitchToMainThread();
             var item = Instantiate(modelInfoPrefab, contentTransform);
-            var defaultModelPath = Path.Combine(Application.dataPath, Constant.DefaultVrmFileName);
-            item.Initialize("Default", () => OnModelSelected(item, defaultModelPath).Forget());
+            item.Initialize(CharacterManager.Instance.CurrentVrmInfo.ModelName,
+                CharacterManager.Instance.CurrentVrmInfo.ThumbnailTexture,
+                () => OnModelSelected(item).Forget());
             _currentModel = item;
             _currentModel.SetSelected(true);
         }
@@ -85,7 +85,7 @@ namespace uDesktopMascot
         /// </summary>
         /// <param name="modelInfo"></param>
         /// <param name="path">選択されたモデルのパス</param>
-        private async UniTaskVoid OnModelSelected(ModelInfo modelInfo,string path)
+        private async UniTaskVoid OnModelSelected(ModelInfo modelInfo, string path = null)
         {
             modelInfo.SetSelected(true);
             _currentModel?.SetSelected(false);
@@ -96,15 +96,23 @@ namespace uDesktopMascot
                 Destroy(_currentModel);
             }
 
+            LoadedVRMInfo model;
             // 指定されたモデルをロード
-            GameObject model = await LoadVRM.LoadModelAsync(path, _cancellationTokenSource.Token);
+            if (path == null)
+            {
+                var defaultModel = await LoadVRM.LoadDefaultModel();
+                
+                model = new LoadedVRMInfo(defaultModel.gameObject, defaultModel.Vrm.Meta.Name, defaultModel.Vrm.Meta.Thumbnail);
+            } else
+            {
+                model = await LoadVRM.LoadModelAsync(path, _cancellationTokenSource.Token);
+            }
 
             if (model != null)
             {
                 // CharacterManagerにモデルを渡す
-                CharacterManager.Instance.OnModelLoaded(model,true);
-            }
-            else
+                CharacterManager.Instance.OnModelLoaded(model.Model, true);
+            } else
             {
                 Log.Error($"Failed to load Model: {path}");
             }

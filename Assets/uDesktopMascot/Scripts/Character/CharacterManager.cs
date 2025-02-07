@@ -14,11 +14,6 @@ namespace uDesktopMascot
     public partial class CharacterManager : SingletonMonoBehaviour<CharacterManager>
     {
         /// <summary>
-        /// モデルのアニメーター
-        /// </summary>
-        private Animator _modelAnimator;
-
-        /// <summary>
         /// ウィンドウ移動ハンドラ
         /// </summary>
         [SerializeField] private UniWindowMoveHandle _uniWindowMoveHandle;
@@ -29,9 +24,14 @@ namespace uDesktopMascot
         private MenuPresenter _menuPresenter;
 
         /// <summary>
-        /// モデルのゲームオブジェクト
+        /// キャラクターモデル
         /// </summary>
-        private GameObject _model;
+        private CharacterModel _characterModel;
+        
+        /// <summary>
+        ///   現在のVRM情報
+        /// </summary>
+        public LoadedVRMInfo CurrentVrmInfo => _characterModel.CurrentVrmInfo;
 
         /// <summary>
         /// メインカメラ
@@ -44,26 +44,10 @@ namespace uDesktopMascot
         private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
-        /// 初期化済みかどうか
-        /// </summary>
-        private bool _isInitialized = false;
-
-        /// <summary>
-        /// モデルがロード済みかどうか
-        /// </summary>
-        /// <returns></returns>
-        private bool _isModelLoaded = false;
-
-        /// <summary>
-        /// キャラクターのアニメーションコントローラ
-        /// </summary>
-        private CharacterAnimationController _characterAnimationController;
-
-        /// <summary>
         /// マウスがドラッグ中かどうか
         /// </summary>
         private bool _isDragging = false;
-        
+
         /// <summary>
         /// マウスがモデルをドラッグ中かどうか
         /// </summary>
@@ -89,6 +73,7 @@ namespace uDesktopMascot
             base.Awake();
             _mainCamera = Camera.main;
             _cancellationTokenSource = new CancellationTokenSource();
+            _characterModel = new CharacterModel();
         }
 
         private void OnEnable()
@@ -98,7 +83,7 @@ namespace uDesktopMascot
             InputController.Instance.UI.Click.canceled += OnClickCanceled;
 
             InputController.Instance.UI.Hold.performed += OnHoldPerformed;
-            
+
             InputController.Instance.UI.RightClick.started += OnRightClick;
 
             Application.wantsToQuit += OnWantsToQuit;
@@ -111,7 +96,7 @@ namespace uDesktopMascot
             InputController.Instance.UI.Click.canceled -= OnClickCanceled;
 
             InputController.Instance.UI.Hold.performed -= OnHoldPerformed;
-            
+
             InputController.Instance.UI.RightClick.started -= OnRightClick;
 
             Application.wantsToQuit -= OnWantsToQuit;
@@ -131,15 +116,14 @@ namespace uDesktopMascot
         {
             try
             {
-                _model = await LoadCharacterModel.LoadModel(_cancellationTokenSource.Token);
-                
+                _characterModel.CurrentVrmInfo = await LoadCharacterModel.LoadModel(_cancellationTokenSource.Token);
+
                 await UniTask.SwitchToMainThread();
-                
+
                 // モデルの初期調節
-                OnModelLoaded(_model);
-                
-                _isInitialized = true;
-                
+                OnModelLoaded(_characterModel.CurrentVrmInfo.Model);
+
+                _characterModel.IsInitialized = true;
             } catch (Exception e)
             {
                 Log.Error($"モデルの初期化中にエラーが発生しました: {e.Message}");
@@ -148,7 +132,7 @@ namespace uDesktopMascot
 
         private void Update()
         {
-            if (!_isInitialized || !_isModelLoaded)
+            if (!_characterModel.IsInitialized || !_characterModel.IsModelLoaded)
             {
                 return;
             }
@@ -156,7 +140,8 @@ namespace uDesktopMascot
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
             // モデルのスクリーン座標を取得
-            var modelScreenPos = ScreenUtility.GetModelScreenPosition(_mainCamera, _model.transform);
+            var modelScreenPos =
+                ScreenUtility.GetModelScreenPosition(_mainCamera, _characterModel.CurrentModelContainer.transform);
 
             // エクスプローラーウィンドウの位置を取得
             var explorerWindows = ExplorerWindowDetector.GetExplorerWindows();
@@ -188,13 +173,13 @@ namespace uDesktopMascot
                 }
             }
 #endif
-            
+
             // モーションを切り替える
             if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
             {
                 // ドラッグ中はハンギングモーション（ぶら下がりモーション）
-                _modelAnimator.SetBool(Const.IsSitting, false);
-                _modelAnimator.SetBool(Const.IsDragging, true);
+                _characterModel.ModelAnimator.SetBool(Const.IsSitting, false);
+                _characterModel.ModelAnimator.SetBool(Const.IsDragging, true);
 
                 if (!_isHolding)
                 {
@@ -204,12 +189,11 @@ namespace uDesktopMascot
                     // ホールド中のボイスを再生
                     VoiceController.Instance.PlayHoldVoice();
                 }
-
             } else
             {
-                _modelAnimator.SetBool(Const.IsDragging, false);
+                _characterModel.ModelAnimator.SetBool(Const.IsDragging, false);
                 // 座りモーションまたは立ちモーションに切り替え
-                _modelAnimator.SetBool(Const.IsSitting, false);
+                _characterModel.ModelAnimator.SetBool(Const.IsSitting, false);
 
                 if (_isHolding)
                 {
@@ -224,22 +208,22 @@ namespace uDesktopMascot
         /// </summary>
         /// <param name="model"></param>
         /// <param name="isReplaceModel"></param>
-        public void OnModelLoaded(GameObject model,bool isReplaceModel = false)
+        public void OnModelLoaded(GameObject model, bool isReplaceModel = false)
         {
-            _isModelLoaded = false;
-            
+            _characterModel.IsModelLoaded = false;
+
             // 既存のモデルがある場合は削除
-            if (_model != null && isReplaceModel)
+            if (_characterModel.CurrentModelContainer != null && isReplaceModel)
             {
-                Destroy(_model);
+                Destroy(_characterModel.CurrentModelContainer);
             }
-            
+
             // モデルを包む空のゲームオブジェクトを作成
             GameObject modelContainer = new GameObject("ModelContainer");
 
             // モデルを子オブジェクトに設定
             model.transform.SetParent(modelContainer.transform, false);
-            
+
             // モデルコンテナをカメラの前方に配置
             Vector3 cameraPosition = _mainCamera.transform.position;
             Vector3 cameraForward = _mainCamera.transform.forward;
@@ -248,50 +232,56 @@ namespace uDesktopMascot
 
             // モデルコンテナをカメラの方向に向ける
             modelContainer.transform.LookAt(cameraPosition, Vector3.up);
-            
+
             var characterApplicationSettings = ApplicationSettings.Instance.Character;
 
             // モデルのスケールを調整（必要に応じて変更）
             modelContainer.transform.localScale = Vector3.one * characterApplicationSettings.Scale;
 
             // モデルコンテナの相対位置を設定
-            modelContainer.transform.position += new Vector3(characterApplicationSettings.PositionX, characterApplicationSettings.PositionY, characterApplicationSettings.PositionZ);
-            
+            modelContainer.transform.position += new Vector3(characterApplicationSettings.PositionX,
+                characterApplicationSettings.PositionY, characterApplicationSettings.PositionZ);
+
             // モデルコンテナの相対回転を設定
             var currentRotation = modelContainer.transform.rotation.eulerAngles;
-            modelContainer.transform.rotation = Quaternion.Euler(currentRotation.x + characterApplicationSettings.RotationX, currentRotation.y + characterApplicationSettings.RotationY, currentRotation.z + characterApplicationSettings.RotationZ);
-            
-            Log.Info("キャラクター設定: スケール {0}, 位置 {1}, 回転 {2}", characterApplicationSettings.Scale, modelContainer.transform.position, modelContainer.transform.rotation.eulerAngles);
+            modelContainer.transform.rotation = Quaternion.Euler(
+                currentRotation.x + characterApplicationSettings.RotationX,
+                currentRotation.y + characterApplicationSettings.RotationY,
+                currentRotation.z + characterApplicationSettings.RotationZ);
+
+            Log.Info("キャラクター設定: スケール {0}, 位置 {1}, 回転 {2}", characterApplicationSettings.Scale,
+                modelContainer.transform.position, modelContainer.transform.rotation.eulerAngles);
 
             // モデルコンテナをフィールドに保持
-            _model = modelContainer;
+            _characterModel.CurrentModelContainer = modelContainer;
 
             // アニメータの取得と設定
-            _modelAnimator = _model.GetComponentInChildren<Animator>();
-            
-            if(_modelAnimator == null)
+            _characterModel.ModelAnimator = _characterModel.CurrentModelContainer.GetComponentInChildren<Animator>();
+
+            if (_characterModel.ModelAnimator == null)
             {
                 Log.Debug("Animatorが見つからなかったため、新しく追加します。");
-                _modelAnimator = model.AddComponent<Animator>();
+                _characterModel.ModelAnimator = model.AddComponent<Animator>();
             }
 
             // モデルからAvatarを取得して設定
             var avatar = CreateAvatarFromModel(model);
             if (avatar != null)
             {
-                _modelAnimator.avatar = avatar;
+                _characterModel.ModelAnimator.avatar = avatar;
                 Log.Info("モデルからAvatarを生成し、Animatorに設定しました。");
             } else
             {
                 Log.Warning("モデルからAvatarを生成できませんでした。アニメーションが正しく再生されない可能性があります。");
             }
-            
+
             // アニメーションコントローラーを設定
-            LoadVRM.UpdateAnimationController(_modelAnimator);
-            
-            _isModelLoaded = true;
+            LoadVRM.UpdateAnimationController(_characterModel.ModelAnimator);
+
+
+            _characterModel.IsModelLoaded = true;
         }
-        
+
         /// <summary>
         /// モデルからAvatarを生成します。
         /// </summary>
@@ -357,7 +347,7 @@ namespace uDesktopMascot
             _isDragging = false;
 
             // アニメーターのパラメータをリセット
-            _modelAnimator.SetBool(Const.IsDragging, false);
+            _characterModel.ModelAnimator.SetBool(Const.IsDragging, false);
         }
 
         /// <summary>
@@ -372,13 +362,12 @@ namespace uDesktopMascot
                 _menuPresenter = new MenuPresenter(menuDialog);
             }
 
-            if(_menuPresenter.IsOpened)
+            if (_menuPresenter.IsOpened)
             {
                 _menuPresenter.Hide();
-            }
-            else
+            } else
             {
-                _menuPresenter.Show(_model.transform.position);
+                _menuPresenter.Show(_characterModel.CurrentModelContainer.transform.position);
             }
         }
 
@@ -425,7 +414,6 @@ namespace uDesktopMascot
         private void OnDestroy()
         {
             _menuPresenter?.Dispose();
-            _characterAnimationController?.Dispose();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
         }
