@@ -9,3 +9,7 @@ Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
 "WORD_SEND_MESSAGE_BUTTON_TEXT",4547369455259648,"Send","Envoi","Invio","送信","전송"
 "WORD_AI_CHAT",4599798494334976,"Chat","Chat","Chat","チャット","챗봇"
 "WORD_WEB_UI_BUTTON",4600571496173568,"Web UI","Interface utilisateur web","Interfaccia web","ウェブUI","웹 UI"
+"WORD_ADD_BUTTON",5073601682935808,"Addition","Ajout","Aggiunta","追加","추가"
+"WORD_ADD_MODEL_PATH_PLACEHOLDER",5074280786890752,"Path to add the model","Chemin du modèle à ajouter","Percorso del modello da aggiungere","追加するモデルのパス","추가할 모델의 경로"
+"WORD_ADD_DRAG_MODEL",5075115772153856,"Add VRM model by dragging.","Ajoutez un modèle VRM en faisant glisser.","Aggiungi un modello VRM tramite drag and drop.","ドラッグでVRMモデルを追加","드래그로 VRM 모델 추가"
+"WORD_OPEN_MODEL",5282738060595200,"Select a model from the folder.","Sélectionnez un modèle dans le dossier.","Seleziona il modello dalla cartella","モデルをフォルダから選択","폴더에서 모델 선택하기"

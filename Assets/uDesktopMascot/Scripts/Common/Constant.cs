@@ -16,5 +16,10 @@ namespace uDesktopMascot
         ///  UI Animation デフォルトのイージング
         /// </summary>
         public const Ease UIAnimationDefaultEase = Ease.OutCubic;
+        
+        /// <summary>
+        /// デフォルトのVRMファイル名
+        /// </summary>
+        public const string DefaultVrmFileName = "DefaultModel/DefaultModel";
     }
 }

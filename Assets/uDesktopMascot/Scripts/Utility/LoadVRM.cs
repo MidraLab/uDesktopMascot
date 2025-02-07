@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -16,11 +15,6 @@ namespace uDesktopMascot
     /// </summary>
     public static class LoadVRM
     {
-        /// <summary>
-        /// デフォルトのVRMファイル名
-        /// </summary>
-        private const string DefaultVrmFileName = "DefaultModel/DefaultModel";
-
         /// <summary>
         /// アニメーションコントローラーを設定
         /// </summary>
@@ -52,12 +46,10 @@ namespace uDesktopMascot
         /// <summary>
         /// モデルをロードする
         /// </summary>
-        public static async UniTask<GameObject> LoadModelAsync(string modelPath,CancellationToken cancellationToken)
+        public static async UniTask<LoadedVRMInfo> LoadModelAsync(string modelPath, CancellationToken cancellationToken)
         {
             try
             {
-                GameObject model = null;
-
                 if (!string.IsNullOrEmpty(modelPath))
                 {
                     Log.Info($"指定されたモデルパス: {modelPath}");
@@ -70,7 +62,7 @@ namespace uDesktopMascot
                     {
                         Log.Info($"指定されたモデルファイルをロードします: {modelPath}");
                         // 指定されたモデルをロード
-                        model = await LoadAndDisplayModel(fullModelPath, cancellationToken);
+                        return await LoadAndDisplayModel(fullModelPath, cancellationToken);
                     } else
                     {
                         Log.Warning($"指定されたモデルファイルが見つかりませんでした: {modelPath}");
@@ -79,33 +71,45 @@ namespace uDesktopMascot
                 } else
                 {
                     Log.Info("モデルパスが指定されていません。");
+                    return null;
                 }
-
-                return model;
             } catch (Exception e)
             {
                 Log.Error($"モデルの読み込みまたは表示中にエラーが発生しました: {e.Message}");
                 return null;
             }
+
+            return null;
         }
 
         /// <summary>
         ///     デフォルトのVRMモデルをロードして表示する
         /// </summary>
-        public static GameObject LoadDefaultModel()
+        public static async UniTask<Vrm10Instance> LoadDefaultModel()
         {
             // ResourcesフォルダからPrefabをロード
-            var prefab = Resources.Load<GameObject>(DefaultVrmFileName);
-            if (prefab == null)
+            var request = Resources.LoadAsync<GameObject>(Constant.DefaultVrmFileName);
+            await request;
+
+            if (request.asset == null)
             {
-                Log.Error($"デフォルトのPrefabがResourcesフォルダに見つかりません: {DefaultVrmFileName}.prefab");
+                Log.Error($"デフォルトのPrefabがResourcesフォルダに見つかりません: {Constant.DefaultVrmFileName}.prefab");
                 return null;
             }
 
             // Prefabをインスタンス化
-            var model = Object.Instantiate(prefab);
+            var prefab = request.asset as GameObject;
+            var modelGameObject = GameObject.Instantiate(prefab);
 
-            Log.Debug("デフォルトモデルのロードと表示が完了しました: " + DefaultVrmFileName);
+            // Vrm10Instance コンポーネントを取得
+            var model = modelGameObject.GetComponent<Vrm10Instance>();
+            if (model == null)
+            {
+                Log.Warning(
+                    $"インスタンス化したGameObjectにVrm10Instanceコンポーネントがアタッチされていません: {Constant.DefaultVrmFileName}.prefab");
+            }
+
+            Log.Debug("デフォルトモデルのロードと表示が完了しました: " + Constant.DefaultVrmFileName);
 
             return model;
         }
@@ -115,7 +119,8 @@ namespace uDesktopMascot
         /// </summary>
         /// <param name="path">モデルファイルのパス</param>
         /// <param name="cancellationToken"></param>
-        private static async UniTask<GameObject> LoadAndDisplayModel(string path, CancellationToken cancellationToken)
+        private static async UniTask<LoadedVRMInfo> LoadAndDisplayModel(string path,
+            CancellationToken cancellationToken)
         {
             return await LoadAndDisplayModelFromPath(path, cancellationToken);
         }
@@ -126,18 +131,22 @@ namespace uDesktopMascot
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private static async UniTask<GameObject> LoadAndDisplayModelFromPath(string path,
+        private static async UniTask<LoadedVRMInfo> LoadAndDisplayModelFromPath(string path,
             CancellationToken cancellationToken)
         {
             // ファイルの拡張子を取得
             var extension = Path.GetExtension(path).ToLowerInvariant();
 
             GameObject model = null;
+            string title = string.Empty;
+            Texture2D thumbnailTexture = null;
 
             if (extension == ".vrm")
             {
                 // VRMファイルをロード（VRM 0.x および 1.x に対応）
                 Vrm10Instance instance = await Vrm10.LoadPathAsync(path, canLoadVrm0X: true, ct: cancellationToken);
+                title = instance.Vrm.Meta.Name;
+                thumbnailTexture = instance.Vrm.Meta.Thumbnail;
 
                 // モデルのGameObjectを取得
                 model = instance.gameObject;
@@ -159,7 +168,116 @@ namespace uDesktopMascot
 
             Log.Info("モデルのロードと表示が完了しました: " + path);
 
-            return model;
+            return new LoadedVRMInfo(model, title, thumbnailTexture);
+        }
+        
+        /// <summary>
+        /// VRMファイルのメタ情報を取得
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static async UniTask<(string title, Texture2D thumbnailTexture)> LoadVrmMetaAsync(string path)
+        {
+            // VRMファイルをバイト配列として読み込む
+            var bytes = await File.ReadAllBytesAsync(path);
+
+            // GLBデータとしてパース
+            var parser = new GlbLowLevelParser(path, bytes);
+            using (var gltfData = parser.Parse())
+            {
+                // VRM 1.0としてパースを試みる
+                var vrm10Data = Vrm10Data.Parse(gltfData);
+                if (vrm10Data != null)
+                {
+                    // VRM 1.0のメタ情報を取得
+                    var meta = vrm10Data.VrmExtension.Meta;
+                    string title = meta.Name;
+
+                    // サムネイル画像を取得
+                    Texture2D thumbnailTexture = null;
+                    if (meta.ThumbnailImage.HasValue)
+                    {
+                        var imageIndex = meta.ThumbnailImage.Value;
+                        thumbnailTexture = LoadTextureFromImageIndex(vrm10Data.Data, imageIndex);
+                    }
+
+                    return (title, thumbnailTexture);
+                } else
+                {
+                    // VRM 0.xの場合、マイグレーションを行う
+                    using var migratedGltfData = Vrm10Data.Migrate(gltfData, out var migratedVrm10Data, out var migrationData);
+                    if (migratedVrm10Data != null)
+                    {
+                        // VRM 0.xのメタ情報を取得
+                        var meta = migrationData?.OriginalMetaBeforeMigration;
+                        string title = meta?.title;
+
+                        // サムネイル画像を取得
+                        Texture2D thumbnailTexture = null;
+                        if (meta?.texture != null && meta.texture != -1)
+                        {
+                            var imageIndex = meta.texture;
+                            thumbnailTexture = LoadTextureFromImageIndex(gltfData, imageIndex);
+                        }
+
+                        return (title, thumbnailTexture);
+                    }
+                }
+            }
+
+            // メタ情報が取得できなかった場合
+            return (null, null);
+        }
+
+        /// <summary>
+        /// 画像インデックスからテクスチャをロード
+        /// </summary>
+        /// <param name="gltfData"></param>
+        /// <param name="imageIndex"></param>
+        /// <returns></returns>
+        private static Texture2D LoadTextureFromImageIndex(GltfData gltfData, int imageIndex)
+        {
+            var gltfImage = gltfData.GLTF.images[imageIndex];
+
+            byte[] imageBytes = null;
+
+            if (!string.IsNullOrEmpty(gltfImage.uri))
+            {
+                if (gltfImage.uri.StartsWith("data:", StringComparison.Ordinal))
+                {
+                    // Data URIから画像データを取得
+                    imageBytes = UriByteBuffer.ReadEmbedded(gltfImage.uri);
+                } else
+                {
+                    // 外部ファイルの場合は対応しない
+                    Log.Warning("External image files are not supported.");
+                    return null;
+                }
+            } else if (gltfImage.bufferView >= 0)
+            {
+                // バッファビューから画像データを取得
+                var segment = gltfData.GetBytesFromBufferView(gltfImage.bufferView);
+                imageBytes = segment.ToArray();
+            } else
+            {
+                Log.Warning("No image data found for the texture.");
+                return null;
+            }
+
+            if (imageBytes != null)
+            {
+                // Texture2Dを作成
+                var texture = new Texture2D(2, 2);
+                if (texture.LoadImage(imageBytes))
+                {
+                    return texture;
+                } else
+                {
+                    Log.Warning("Failed to load image into Texture2D.");
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -201,5 +319,39 @@ namespace uDesktopMascot
                 return null;
             }
         }
+    }
+
+    /// <summary>
+    /// ロードされたVRMの情報を保持するクラス
+    /// </summary>
+    public class LoadedVRMInfo
+    {
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="modelName"></param>
+        /// <param name="thumbnailTexture"></param>
+        public LoadedVRMInfo(GameObject model, string modelName, Texture2D thumbnailTexture)
+        {
+            Model = model;
+            ModelName = modelName;
+            ThumbnailTexture = thumbnailTexture;
+        }
+
+        /// <summary>
+        /// ロードされたモデルのGameObject
+        /// </summary>
+        public GameObject Model { get; private set; }
+
+        /// <summary>
+        /// モデルのタイトル
+        /// </summary>
+        public string ModelName { get; private set; }
+
+        /// <summary>
+        /// サムネイル画像
+        /// </summary>
+        public Texture2D ThumbnailTexture { get; private set; }
     }
 }

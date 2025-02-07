@@ -23,11 +23,11 @@ target_languages = {
 def translate_text(text, target_language):
     try:
         response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+            model="gpt-4o-mini",
             messages=[
-                        {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
-                    ]
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Translate the following Japanese text to {target_language}. Return only the translated text without any additional explanations or notes.\n\n{text}"}
+            ]
         )
         # 翻訳結果を取得
         translation = response.choices[0].message.content.strip()
@@ -36,11 +36,11 @@ def translate_text(text, target_language):
         print(f"翻訳中にエラーが発生しました：{e}")
         return None
 
-# 各行に対して翻訳を実行
-for idx, row in df.iterrows():
+# 各行に対して翻訳を実行（先頭行をスキップ）
+for idx, row in df.iloc[1:].iterrows():
     japanese_text = row.get('Japanese(ja)', '')
     key = row.get('Key', '')
-    
+
     # 日本語テキストが存在する場合のみ翻訳を実行
     if pd.notnull(japanese_text) and japanese_text.strip() != '':
         print(f"キー '{key}' の翻訳を実行します。")
@@ -87,7 +87,6 @@ def write_custom_csv(df, csv_path):
                     value = value.replace('"', '""')
                     data_row.append(f'"{value}"')
             csvfile.write(','.join(data_row) + '\n')
-
 
 # カスタム関数でCSVを保存
 write_custom_csv(df, csv_path)
