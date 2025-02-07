@@ -55,10 +55,11 @@ namespace uDesktopMascot
                 // メインスレッドでUIを更新
                 await UniTask.SwitchToMainThread();
 
+                // VRMファイルからモデル名とサムネイルを取得
+                var (modelName, thumbnail) = await LoadVRM.LoadVrmMetaAsync(vrmFile);
+
                 // ModelInfoアイテムを生成
                 var item = Instantiate(modelInfoPrefab, contentTransform);
-
-                var (modelName, thumbnail) = await LoadVRM.LoadVrmMetaAsync(vrmFile);
 
                 // モデル情報を初期化
                 item.Initialize(modelName, thumbnail, () => OnModelSelected(item, vrmFile).Forget());
