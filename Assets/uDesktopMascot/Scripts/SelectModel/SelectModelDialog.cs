@@ -34,8 +34,9 @@ namespace uDesktopMascot
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        private void Start()
+        private async void Start()
         {
+            await AddDefaultModelList();
             // モデルリストをロード
             LoadModelListAsync().Forget();
         }
@@ -63,6 +64,20 @@ namespace uDesktopMascot
                 // モデル情報を初期化
                 item.Initialize(fileName, () => OnModelSelected(item,vrmFile).Forget());
             }
+        }
+
+        /// <summary>
+        /// デフォルトのモデルリストを追加
+        /// </summary>
+        private async UniTask AddDefaultModelList()
+        {
+            // デフォルトのモデルリストを追加
+            await UniTask.SwitchToMainThread();
+            var item = Instantiate(modelInfoPrefab, contentTransform);
+            var defaultModelPath = Path.Combine(Application.dataPath, Constant.DefaultVrmFileName);
+            item.Initialize("Default", () => OnModelSelected(item, defaultModelPath).Forget());
+            _currentModel = item;
+            _currentModel.SetSelected(true);
         }
 
         /// <summary>

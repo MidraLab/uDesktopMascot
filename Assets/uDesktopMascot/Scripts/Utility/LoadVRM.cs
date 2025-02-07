@@ -17,11 +17,6 @@ namespace uDesktopMascot
     public static class LoadVRM
     {
         /// <summary>
-        /// デフォルトのVRMファイル名
-        /// </summary>
-        private const string DefaultVrmFileName = "DefaultModel/DefaultModel";
-
-        /// <summary>
         /// アニメーションコントローラーを設定
         /// </summary>
         /// <param name="animator"></param>
@@ -95,17 +90,17 @@ namespace uDesktopMascot
         public static GameObject LoadDefaultModel()
         {
             // ResourcesフォルダからPrefabをロード
-            var prefab = Resources.Load<GameObject>(DefaultVrmFileName);
+            var prefab = Resources.Load<GameObject>(Constant.DefaultVrmFileName);
             if (prefab == null)
             {
-                Log.Error($"デフォルトのPrefabがResourcesフォルダに見つかりません: {DefaultVrmFileName}.prefab");
+                Log.Error($"デフォルトのPrefabがResourcesフォルダに見つかりません: {Constant.DefaultVrmFileName}.prefab");
                 return null;
             }
 
             // Prefabをインスタンス化
             var model = Object.Instantiate(prefab);
 
-            Log.Debug("デフォルトモデルのロードと表示が完了しました: " + DefaultVrmFileName);
+            Log.Debug("デフォルトモデルのロードと表示が完了しました: " + Constant.DefaultVrmFileName);
 
             return model;
         }
