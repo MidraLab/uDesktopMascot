@@ -2,11 +2,14 @@
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using LLMUnity;
 using Cysharp.Text;
+using Cysharp.Threading.Tasks;
 using Unity.Logging;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 namespace uDesktopMascot
 {
@@ -24,6 +27,11 @@ namespace uDesktopMascot
         /// チャットダイアログの送信ボタン
         /// </summary>
         [SerializeField] private Button sendButton;
+        
+        /// <summary>
+        /// チャットダイアログのスクロールビュー
+        /// </summary>
+        [SerializeField] private ScrollRect scrollRect;
 
         /// <summary>
         /// チャットダイアログのテキスト表示
@@ -89,6 +97,19 @@ namespace uDesktopMascot
                 inputField.ActivateInputField();
             }
         }
+        
+        /// <summary>
+        /// チャットダイアログを表示する
+        /// </summary>
+        private void ScrollToBottom()
+        {
+            // レイアウトを強制的に更新
+            Canvas.ForceUpdateCanvases();
+            // ScrollRectのverticalNormalizedPositionを0に設定（0が一番下、1が一番上）
+            scrollRect.verticalNormalizedPosition = 0f;
+            // レイアウトを再度更新
+            Canvas.ForceUpdateCanvases();
+        }
 
         /// <summary>
         /// メッセージを送信する
@@ -110,6 +131,9 @@ namespace uDesktopMascot
             _chatTextBuilder.AppendLine($"あなた: {userMessage}");
             chatText.text = _chatTextBuilder.ToString();
 
+            // ScrollToBottomを呼び出して最新のメッセージを表示
+            ScrollToBottom();
+
             // 入力フィールドをクリア
             inputField.text = string.Empty;
 
@@ -126,7 +150,7 @@ namespace uDesktopMascot
         /// <summary>
         /// 非同期でAIの返信を受信
         /// </summary>
-        private async System.Threading.Tasks.Task ReceiveAIResponse(string userMessage)
+        private async UniTask ReceiveAIResponse(string userMessage)
         {
             try
             {
@@ -161,10 +185,15 @@ namespace uDesktopMascot
             _replyTextBuilder.Append(newText);
 
             // 現在のチャット履歴と進行中のAI返信を表示
-            using var sb = ZString.CreateStringBuilder();
-            sb.Append(_chatTextBuilder.ToString());
-            sb.Append($"AI: {_replyTextBuilder}");
-            chatText.text = sb.ToString();
+            using (var sb = ZString.CreateStringBuilder())
+            {
+                sb.Append(_chatTextBuilder.ToString());
+                sb.Append($"AI: {_replyTextBuilder}");
+                chatText.text = sb.ToString();
+            }
+
+            // ScrollToBottomを呼び出して最新のメッセージを表示
+            ScrollToBottom();
         }
 
         /// <summary>
@@ -175,6 +204,9 @@ namespace uDesktopMascot
             // 最終的なAIの返信をチャット履歴に追加
             _chatTextBuilder.AppendLine($"AI: {_replyTextBuilder}");
             chatText.text = _chatTextBuilder.ToString();
+
+            // ScrollToBottomを呼び出して最新のメッセージを表示
+            ScrollToBottom();
 
             // AIの返信用ビルダーをクリア
             _replyTextBuilder = null;
