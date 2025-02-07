@@ -6,6 +6,7 @@ using UnityEngine;
 using Unity.Logging;
 using UniGLTF;
 using UniVRM10;
+using Console = System.Console;
 using Object = UnityEngine.Object;
 
 namespace uDesktopMascot
@@ -178,8 +179,17 @@ namespace uDesktopMascot
         /// <returns></returns>
         public static async UniTask<(string title, Texture2D thumbnailTexture)> LoadVrmMetaAsync(string path)
         {
-            // VRMファイルをバイト配列として読み込む
-            var bytes = await File.ReadAllBytesAsync(path);
+            byte[] bytes = null;
+            try
+            {
+                // VRMファイルをバイト配列として読み込む
+                bytes = await File.ReadAllBytesAsync(path);
+
+            } catch (Exception e)
+            {
+                Log.Error($"ファイルの読み込み中にエラーが発生しました: {e.Message}");
+                return (null, null);
+            }
 
             // GLBデータとしてパース
             var parser = new GlbLowLevelParser(path, bytes);
