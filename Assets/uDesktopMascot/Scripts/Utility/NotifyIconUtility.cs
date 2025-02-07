@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Unity.Logging;
+using UnityEngine;
 
 namespace uDesktopMascot
 {
@@ -131,7 +132,7 @@ namespace uDesktopMascot
             if (notifyIconAdded)
             {
                 Log.Warning("通知領域アイコンは既に追加されています。");
-                return; // 既にアイコンが追加されている場合は無視
+                return;
             }
 
             IntPtr hWnd = GetCurrentWindowHandle();
@@ -140,7 +141,20 @@ namespace uDesktopMascot
                 Log.Error("ウィンドウハンドルの取得に失敗しました。");
                 return;
             }
-            
+
+            // アイコンパスを指定
+            if (string.IsNullOrEmpty(iconPath))
+            {
+                iconPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Icon", "icon.ico");
+                Log.Debug($"アイコンパス: {iconPath}");
+
+                // ファイルの存在を確認
+                if (!System.IO.File.Exists(iconPath))
+                {
+                    Log.Error($"アイコンファイルが見つかりません: {iconPath}");
+                }
+            }
+
             notifyIconData = new NOTIFYICONDATA();
             notifyIconData.cbSize = (uint)Marshal.SizeOf(notifyIconData);
             notifyIconData.hWnd = hWnd;
@@ -149,16 +163,7 @@ namespace uDesktopMascot
             notifyIconData.uCallbackMessage = WM_TRAYICON;
 
             // アイコンの設定
-            if (!string.IsNullOrEmpty(iconPath))
-            {
-                // カスタムアイコンをロード
-                notifyIconData.hIcon = LoadIconFromFile(iconPath);
-            }
-            else
-            {
-                // デフォルトのアプリケーションアイコンを使用
-                notifyIconData.hIcon = LoadIcon(IntPtr.Zero, IDI_APPLICATION);
-            }
+            notifyIconData.hIcon = LoadIconFromFile(iconPath);
 
             notifyIconData.szTip = tooltip;
 
