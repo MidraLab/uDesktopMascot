@@ -29,6 +29,7 @@
     "com.unity.visualscripting": "1.9.5",
     "com.vrmc.gltf": "https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v0.128.1",
     "com.vrmc.vrm": "https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM10#v0.128.1",
+    "io.github.gkngkc.unity-standalone-file-browser": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
     "jp.amagamina.overwriter": "https://github.com/ina-amagami/unity-overwriter.git",
     "jp.lilxyzw.liltoon": "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#master",
     "com.unity.modules.accessibility": "1.0.0",

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using SFB;
 using TMPro;
 using Unity.Logging;
 using UnityEngine.UI;
@@ -59,6 +60,30 @@ namespace uDesktopMascot
             LoadModelListAsync().Forget();
             
             addModelButton.onClick.AddListener(AddModelFromPath);
+            openModelPathButton.onClick.AddListener(OpenFileBrowser);
+        }
+        
+        private void OpenFileBrowser()
+        {
+            // 拡張子フィルターを設定（VRM ファイルのみ）
+            var extensions = new[]
+            {
+                new ExtensionFilter("VRM Files", "vrm"),
+                new ExtensionFilter("All Files", "*"),
+            };
+
+            // 非同期でファイル選択ダイアログを開く
+            StandaloneFileBrowser.OpenFilePanelAsync("Open VRM File", "", extensions, false, (string[] paths) =>
+            {
+                if (paths.Length > 0)
+                {
+                    string selectedPath = paths[0];
+                    Debug.Log("Selected file: " + selectedPath);
+
+                    // 選択したファイルパスを InputField に設定
+                    addModelPathInputField.text = selectedPath;
+                }
+            });
         }
         
         /// <summary>
@@ -176,6 +201,7 @@ namespace uDesktopMascot
 
         private void OnDestroy()
         {
+            openModelPathButton.onClick.RemoveAllListeners();
             addModelButton.onClick.RemoveAllListeners();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
