@@ -202,26 +202,25 @@ namespace uDesktopMascot
                     }
 
                     return (title, thumbnailTexture);
-                } else
+                }
+
+                // VRM 0.xの場合、マイグレーションを行う
+                using var migratedGltfData = Vrm10Data.Migrate(gltfData, out var migratedVrm10Data, out var migrationData);
+                if (migratedVrm10Data != null)
                 {
-                    // VRM 0.xの場合、マイグレーションを行う
-                    using var migratedGltfData = Vrm10Data.Migrate(gltfData, out var migratedVrm10Data, out var migrationData);
-                    if (migratedVrm10Data != null)
+                    // VRM 0.xのメタ情報を取得
+                    var meta = migrationData?.OriginalMetaBeforeMigration;
+                    string title = meta?.title;
+
+                    // サムネイル画像を取得
+                    Texture2D thumbnailTexture = null;
+                    if (meta?.texture != null && meta.texture != -1)
                     {
-                        // VRM 0.xのメタ情報を取得
-                        var meta = migrationData?.OriginalMetaBeforeMigration;
-                        string title = meta?.title;
-
-                        // サムネイル画像を取得
-                        Texture2D thumbnailTexture = null;
-                        if (meta?.texture != null && meta.texture != -1)
-                        {
-                            var imageIndex = meta.texture;
-                            thumbnailTexture = LoadTextureFromImageIndex(gltfData, imageIndex);
-                        }
-
-                        return (title, thumbnailTexture);
+                        var imageIndex = meta.texture;
+                        thumbnailTexture = LoadTextureFromImageIndex(gltfData, imageIndex);
                     }
+
+                    return (title, thumbnailTexture);
                 }
             }
 
