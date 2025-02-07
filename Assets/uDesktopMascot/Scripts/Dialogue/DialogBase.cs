@@ -62,6 +62,7 @@ namespace uDesktopMascot
         /// </summary>
         public virtual void Initialize()
         {
+            Show();
         }
         
         /// <summary>
@@ -78,6 +79,7 @@ namespace uDesktopMascot
         {
             OnClose?.Invoke();
             Hide();
+            UIManager.Instance.PopDialogAsync().Forget();
         }
 
         /// <summary>

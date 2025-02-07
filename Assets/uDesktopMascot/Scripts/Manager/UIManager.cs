@@ -21,7 +21,7 @@ namespace uDesktopMascot
         /// <summary>
         /// ダイアログのプール（ダイアログの種類ごとに ObjectPool で管理）
         /// </summary>
-        private readonly Dictionary<string, object> _dialogPool = new Dictionary<string, object>();
+        private readonly Dictionary<string, IDialogPool> _dialogPool = new Dictionary<string, IDialogPool>();
 
         /// <summary>
         /// ダイアログのプレハブパスを取得する
@@ -30,7 +30,7 @@ namespace uDesktopMascot
         /// <returns></returns>
         private string GetDialogPath(string dialogueName)
         {
-            return Path.Combine("UI/Dialog",dialogueName);
+            return Path.Combine("UI/Dialog", dialogueName);
         }
 
         /// <summary>
@@ -41,22 +41,23 @@ namespace uDesktopMascot
         /// <param name="setup">ダイアログのセットアップアクション</param>
         /// <param name="onClose"></param>
         /// <returns>表示したダイアログのインスタンス</returns>
-        public T PushDialog<T>(string dialogName, Action<T> setup = null,Action onClose = null) where T : DialogBase
+        public T PushDialog<T>(string dialogName, Action<T> setup = null, Action onClose = null) where T : DialogBase
         {
-            ObjectPool<T> pool;
+            IDialogPool pool;
 
             // ダイアログのプールを取得または作成
-            if (!_dialogPool.TryGetValue(GetDialogPath(dialogName), out var poolObj))
+            string prefabPath = GetDialogPath(dialogName);
+            if (!_dialogPool.TryGetValue(prefabPath, out pool))
             {
                 // 新しいプールを作成
-                pool = new ObjectPool<T>(
+                var objectPool = new ObjectPool<T>(
                     createFunc: () =>
                     {
                         // プレハブをロードしてダイアログを生成
-                        GameObject dialogPrefab = Resources.Load<GameObject>(GetDialogPath(dialogName));
+                        GameObject dialogPrefab = Resources.Load<GameObject>(prefabPath);
                         if (dialogPrefab == null)
                         {
-                            Log.Error($"ダイアログのプレハブが見つかりませんでした。パス: {GetDialogPath(dialogName)}");
+                            Log.Error($"ダイアログのプレハブが見つかりませんでした。パス: {prefabPath}");
                             return null;
                         }
 
@@ -70,7 +71,7 @@ namespace uDesktopMascot
                         }
 
                         // ダイアログのプレハブパスを設定
-                        dialogInstance.PrefabPath = GetDialogPath(dialogName);
+                        dialogInstance.PrefabPath = prefabPath;
 
                         // 非アクティブ化
                         dialogInstance.gameObject.SetActive(false);
@@ -98,21 +99,12 @@ namespace uDesktopMascot
                     maxSize: 100
                 );
 
-                _dialogPool.Add(GetDialogPath(dialogName), pool);
-            }
-            else
-            {
-                pool = poolObj as ObjectPool<T>;
+                pool = new DialogPool<T>(objectPool);
+                _dialogPool.Add(prefabPath, pool);
             }
 
             // ダイアログを取得
-            if(pool == null)
-            {
-                Log.Error($"ダイアログのプールが見つかりませんでした。パス: {dialogName}");
-                return null;
-            }
-            
-            T dialog = pool.Get();
+            T dialog = pool.Get() as T;
             if (dialog == null)
             {
                 Log.Error($"ダイアログの生成に失敗しました。パス: {dialogName}");
@@ -124,7 +116,7 @@ namespace uDesktopMascot
 
             // ダイアログのセットアップ
             setup?.Invoke(dialog);
-            
+
             // 閉じるボタンのクリックイベントを設定
             dialog.OnClose = onClose;
 
@@ -132,23 +124,6 @@ namespace uDesktopMascot
             _dialogStack.Push(dialog);
 
             return dialog;
-        }
-        
-        /// <summary>
-        /// ダイアログの型を取得する
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetDialogOfType<T>() where T : DialogBase
-        {
-            foreach (var dialog in _dialogStack)
-            {
-                if (dialog is T typedDialog)
-                {
-                    return typedDialog;
-                }
-            }
-            return null;
         }
 
         /// <summary>
@@ -167,24 +142,15 @@ namespace uDesktopMascot
                 string prefabPath = dialog.PrefabPath;
 
                 // ダイアログをプールに戻す
-                if (_dialogPool.TryGetValue(prefabPath, out var poolObj))
+                if (_dialogPool.TryGetValue(prefabPath, out var pool))
                 {
-                    var pool = poolObj as ObjectPool<DialogBase>;
-                    if (pool == null)
-                    {
-                        Log.Error($"ダイアログのプールが見つかりませんでした。パス: {prefabPath}");
-                        return;
-                    }
-                    
                     pool.Release(dialog);
-                }
-                else
+                } else
                 {
                     // プールがない場合は破棄
                     Destroy(dialog.gameObject);
                 }
-            }
-            else
+            } else
             {
                 Log.Warning("ダイアログスタックが空です。");
             }
