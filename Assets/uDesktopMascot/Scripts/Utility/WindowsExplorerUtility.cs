@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using AOT;
 
-// 追加
-
 namespace uDesktopMascot
 {
     /// <summary>
@@ -21,7 +19,7 @@ namespace uDesktopMascot
     /// <summary>
     /// エクスプローラーウィンドウを検出するクラス
     /// </summary>
-    public static class ExplorerWindowDetector
+    public static class WindowsExplorerUtility
     {
         [DllImport("user32.dll")]
         private static extern IntPtr GetDC(IntPtr hWnd);

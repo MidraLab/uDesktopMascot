@@ -5,7 +5,7 @@ namespace uDesktopMascot
     /// <summary>
     ///     品質レベルを調整するクラス
     /// </summary>
-    public static class QualityLevelAdjuster
+    public static class QualityLevelUtility
     {
         /// <summary>
         ///     品質レベルを調整
