@@ -291,7 +291,7 @@ namespace uDesktopMascot
             if (qualityLevel < 0 || qualityLevel >= QualitySettings.names.Length)
             {
                 // 無効な QualityLevel の場合、動的に調整
-                Performance.QualityLevel = QualityLevelAdjuster.AdjustQualityLevel();
+                Performance.QualityLevel = QualityLevelUtility.AdjustQualityLevel();
                 Log.Warning($"無効な QualityLevel が設定されていたため、{Performance.QualityLevel} に設定しました。");
                 settingsModified = true;
             }

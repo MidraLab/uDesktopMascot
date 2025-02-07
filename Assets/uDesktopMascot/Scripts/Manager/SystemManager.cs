@@ -148,7 +148,7 @@ namespace uDesktopMascot
             if (!isQualityLevelValid)
             {
                 // 無効な場合、品質レベルを動的に調整
-                qualityLevel = QualityLevelAdjuster.AdjustQualityLevel();
+                qualityLevel = QualityLevelUtility.AdjustQualityLevel();
                 QualitySettings.SetQualityLevel(qualityLevel, true);
                 Log.Info($"品質レベルをシステムスペックに基づき {QualitySettings.names[qualityLevel]} に設定しました。");
 

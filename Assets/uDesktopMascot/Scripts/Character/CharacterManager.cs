@@ -144,7 +144,7 @@ namespace uDesktopMascot
                 ScreenUtility.GetModelScreenPosition(_mainCamera, _characterModel.CurrentModelContainer.transform);
 
             // エクスプローラーウィンドウの位置を取得
-            var explorerWindows = ExplorerWindowDetector.GetExplorerWindows();
+            var explorerWindows = WindowsExplorerUtility.GetExplorerWindows();
 
             bool isNearExplorerTop = false;
 
@@ -154,7 +154,7 @@ namespace uDesktopMascot
                 var rect = window.rect;
 
                 // DPIスケールを取得
-                float dpiScale = ExplorerWindowDetector.GetDPIScale();
+                float dpiScale = WindowsExplorerUtility.GetDPIScale();
 
                 // ウィンドウの座標をDPIスケールで割る
                 rect.left = (int)(rect.left / dpiScale);
