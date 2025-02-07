@@ -1,8 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using Unity.Logging;
+using UnityEngine.UI;
 
 namespace uDesktopMascot
 {
@@ -20,6 +23,21 @@ namespace uDesktopMascot
         /// ScrollViewのContent
         /// </summary>
         [SerializeField] private Transform contentTransform;
+        
+        /// <summary>
+        /// モデル追加のInputField
+        /// </summary>
+        [SerializeField] private TMP_InputField addModelPathInputField;
+        
+        /// <summary>
+        /// モデル追加のButton
+        /// </summary>
+        [SerializeField] private Button addModelButton;
+        
+        /// <summary>
+        /// モデルのパスを開くButton
+        /// </summary>
+        [SerializeField] private Button openModelPathButton;
 
         /// <summary>
         /// 現在ロード中または表示中のモデル
@@ -39,6 +57,25 @@ namespace uDesktopMascot
             await AddDefaultModelList();
             // モデルリストをロード
             LoadModelListAsync().Forget();
+            
+            addModelButton.onClick.AddListener(AddModelFromPath);
+        }
+        
+        /// <summary>
+        /// 外部パスからモデルを追加する
+        /// </summary>
+        private async void AddModelFromPath()
+        {
+            string path = addModelPathInputField.text;
+            if (string.IsNullOrEmpty(path))
+            {
+                Log.Error("Path is empty.");
+                return;
+            }
+
+            await AddModel(path);
+            
+            addModelPathInputField.text = string.Empty;;
         }
 
         /// <summary>
@@ -52,32 +89,37 @@ namespace uDesktopMascot
 
             foreach (string vrmFile in vrmFiles)
             {
-                // ファイルパスをキャプチャ
-                string filePath = vrmFile;
-
-                // 非同期でメタデータを読み込むタスクを開始
-                var loadMetaTask = LoadVRM.LoadVrmMetaAsync(filePath);
-
-                // メインスレッドでModelInfoアイテムを生成
-                await UniTask.SwitchToMainThread();
-
-                var item = Instantiate(modelInfoPrefab, contentTransform);
-
-                item.Initialize("モデル情報を取得中...", null, () => OnModelSelected(item, vrmFile).Forget());
-
-                // 他の処理を続行し、メタデータの読み込みを待つ
-                var (modelName, thumbnail) = await loadMetaTask;
-
-                // メインスレッドでUIを更新
-                await UniTask.SwitchToMainThread();
-
-                // モデル情報を更新
-                item.UpdateModelInfo(modelName, thumbnail);
-
-                // 各ファイルの処理間で待機して、他の処理を行えるようにする
-                await UniTask.Yield();
+                await AddModel(vrmFile);
             }
         }
+
+        /// <summary>
+        /// モデルを追加する
+        /// </summary>
+        private async UniTask AddModel(string filePath)
+        {
+            // 非同期でメタデータを読み込むタスクを開始
+            var loadMetaTask = LoadVRM.LoadVrmMetaAsync(filePath);
+
+            // メインスレッドでModelInfoアイテムを生成
+            await UniTask.SwitchToMainThread();
+
+            var item = Instantiate(modelInfoPrefab, contentTransform);
+
+            item.Initialize("モデル情報を取得中...", null, () => OnModelSelected(item, filePath).Forget());
+
+            // 他の処理を続行し、メタデータの読み込みを待つ
+            var (modelName, thumbnail) = await loadMetaTask;
+
+            // メインスレッドでUIを更新
+            await UniTask.SwitchToMainThread();
+
+            // モデル情報を更新
+            item.UpdateModelInfo(modelName, thumbnail);
+
+            // 各ファイルの処理間で待機して、他の処理を行えるようにする
+            await UniTask.Yield();
+        } 
 
         /// <summary>
         /// デフォルトのモデルリストを追加
@@ -134,6 +176,7 @@ namespace uDesktopMascot
 
         private void OnDestroy()
         {
+            addModelButton.onClick.RemoveAllListeners();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
         }

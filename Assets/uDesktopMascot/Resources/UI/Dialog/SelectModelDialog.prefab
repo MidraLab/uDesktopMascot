@@ -208,6 +208,9 @@ MonoBehaviour:
   closeButton: {fileID: 5849125722573429082}
   modelInfoPrefab: {fileID: 5956748693450340186, guid: 562b5df59b5e16c45b3b2f1a6bf62482, type: 3}
   contentTransform: {fileID: 7219237691741173517}
+  addModelPathInputField: {fileID: 6472723346624349732}
+  addModelButton: {fileID: 8354992549510832687}
+  openModelPathButton: {fileID: 1795318823252908065}
 --- !u!1 &989239730487369372
 GameObject:
   m_ObjectHideFlags: 0
