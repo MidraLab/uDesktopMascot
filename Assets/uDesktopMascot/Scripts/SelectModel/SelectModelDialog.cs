@@ -90,7 +90,6 @@ namespace uDesktopMascot
             modelInfo.SetSelected(true);
             _currentModel?.SetSelected(false);
             _currentModel = modelInfo;
-            return;
             // 既存のモデルがある場合は削除
             if (_currentModel != null)
             {
@@ -102,11 +101,12 @@ namespace uDesktopMascot
 
             if (model != null)
             {
-                // モデルをシーンに配置
-                model.transform.position = Vector3.zero;
-            } else
+                // CharacterManagerにモデルを渡す
+                CharacterManager.Instance.OnModelLoaded(model,true);
+            }
+            else
             {
-                Log.Error($"Failed to load Model:{path}");
+                Log.Error($"Failed to load Model: {path}");
             }
         }
 

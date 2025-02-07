@@ -11,7 +11,7 @@ namespace uDesktopMascot
     /// <summary>
     /// モデルのモーションを制御するクラス
     /// </summary>
-    public partial class CharacterManager : MonoBehaviour
+    public partial class CharacterManager : SingletonMonoBehaviour<CharacterManager>
     {
         /// <summary>
         /// モデルのアニメーター
@@ -49,6 +49,12 @@ namespace uDesktopMascot
         private bool _isInitialized = false;
 
         /// <summary>
+        /// モデルがロード済みかどうか
+        /// </summary>
+        /// <returns></returns>
+        private bool _isModelLoaded = false;
+
+        /// <summary>
         /// キャラクターのアニメーションコントローラ
         /// </summary>
         private CharacterAnimationController _characterAnimationController;
@@ -78,8 +84,9 @@ namespace uDesktopMascot
         /// </summary>
         private Vector2 _startDragPosition;
 
-        private void Awake()
+        private protected override void Awake()
         {
+            base.Awake();
             _mainCamera = Camera.main;
             _cancellationTokenSource = new CancellationTokenSource();
         }
@@ -131,6 +138,8 @@ namespace uDesktopMascot
                 // モデルの初期調節
                 OnModelLoaded(_model);
                 
+                _isInitialized = true;
+                
             } catch (Exception e)
             {
                 Log.Error($"モデルの初期化中にエラーが発生しました: {e.Message}");
@@ -139,7 +148,7 @@ namespace uDesktopMascot
 
         private void Update()
         {
-            if (!_isInitialized)
+            if (!_isInitialized || !_isModelLoaded)
             {
                 return;
             }
@@ -179,8 +188,6 @@ namespace uDesktopMascot
                 }
             }
 #endif
-
-            // _characterAnimationController.Update();
             
             // モーションを切り替える
             if (_isDragging && (_uniWindowMoveHandle.IsDragging || _isDraggingModel))
@@ -216,8 +223,17 @@ namespace uDesktopMascot
         /// 初期ロードのモデルの表示後の調節
         /// </summary>
         /// <param name="model"></param>
-        private void OnModelLoaded(GameObject model)
+        /// <param name="isReplaceModel"></param>
+        public void OnModelLoaded(GameObject model,bool isReplaceModel = false)
         {
+            _isModelLoaded = false;
+            
+            // 既存のモデルがある場合は削除
+            if (_model != null && isReplaceModel)
+            {
+                Destroy(_model);
+            }
+            
             // モデルを包む空のゲームオブジェクトを作成
             GameObject modelContainer = new GameObject("ModelContainer");
 
@@ -272,8 +288,8 @@ namespace uDesktopMascot
             
             // アニメーションコントローラーを設定
             LoadVRM.UpdateAnimationController(_modelAnimator);
-
-            _isInitialized = true;
+            
+            _isModelLoaded = true;
         }
         
         /// <summary>
