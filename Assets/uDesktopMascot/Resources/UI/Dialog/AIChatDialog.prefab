@@ -158,6 +158,7 @@ MonoBehaviour:
   closeButton: {fileID: 5639995492224611350}
   inputField: {fileID: 9086674032288857436}
   sendButton: {fileID: 7546998507068762756}
+  scrollRect: {fileID: 8779691265405822760}
   chatText: {fileID: 1344068280679628811}
   llmCharacter: {fileID: 6112206522812407479}
 --- !u!225 &1326064579903162146
