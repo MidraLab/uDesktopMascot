@@ -23,7 +23,7 @@ namespace uDesktopMascot
         /// 背景イメージ
         /// </summary>
         [SerializeField] private Image backgroundFrameImage;
-        
+
         /// <summary>
         /// サムネイルイメージ
         /// </summary>
@@ -32,11 +32,11 @@ namespace uDesktopMascot
         /// <summary>
         /// 初期化
         /// </summary>
-        public void Initialize(string modelName,Texture2D thumbnail, UnityEngine.Events.UnityAction onClickAction)
+        public void Initialize(string modelName, Texture2D thumbnail, UnityEngine.Events.UnityAction onClickAction)
         {
             // モデル名を設定
             modelNameText.text = modelName;
-            
+
             // サムネイルを設定
             thumbnailImage.texture = thumbnail;
 
@@ -52,6 +52,13 @@ namespace uDesktopMascot
         {
             // 背景色を変更
             backgroundFrameImage.enabled = isSelected;
+        }
+
+        // モデル情報を更新するメソッドを追加
+        public void UpdateModelInfo(string modelName, Texture2D thumbnail)
+        {
+            modelNameText.text = modelName;
+            thumbnailImage.texture = thumbnail;
         }
 
         private void OnDestroy()

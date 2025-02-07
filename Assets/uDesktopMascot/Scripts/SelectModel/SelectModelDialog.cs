@@ -52,17 +52,30 @@ namespace uDesktopMascot
 
             foreach (string vrmFile in vrmFiles)
             {
+                // ファイルパスをキャプチャ
+                string filePath = vrmFile;
+
+                // 非同期でメタデータを読み込むタスクを開始
+                var loadMetaTask = LoadVRM.LoadVrmMetaAsync(filePath);
+
+                // メインスレッドでModelInfoアイテムを生成
+                await UniTask.SwitchToMainThread();
+
+                var item = Instantiate(modelInfoPrefab, contentTransform);
+
+                item.Initialize("モデル情報を取得中...", null, () => OnModelSelected(item, vrmFile).Forget());
+
+                // 他の処理を続行し、メタデータの読み込みを待つ
+                var (modelName, thumbnail) = await loadMetaTask;
+
                 // メインスレッドでUIを更新
                 await UniTask.SwitchToMainThread();
 
-                // VRMファイルからモデル名とサムネイルを取得
-                var (modelName, thumbnail) = await LoadVRM.LoadVrmMetaAsync(vrmFile);
+                // モデル情報を更新
+                item.UpdateModelInfo(modelName, thumbnail);
 
-                // ModelInfoアイテムを生成
-                var item = Instantiate(modelInfoPrefab, contentTransform);
-
-                // モデル情報を初期化
-                item.Initialize(modelName, thumbnail, () => OnModelSelected(item, vrmFile).Forget());
+                // 各ファイルの処理間で待機して、他の処理を行えるようにする
+                await UniTask.Yield();
             }
         }
 
