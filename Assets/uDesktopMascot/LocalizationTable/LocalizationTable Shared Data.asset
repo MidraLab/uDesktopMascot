@@ -67,6 +67,10 @@ MonoBehaviour:
     m_Key: WORD_ADD_DRAG_MODEL
     m_Metadata:
       m_Items: []
+  - m_Id: 5282738060595200
+    m_Key: WORD_OPEN_MODEL
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
