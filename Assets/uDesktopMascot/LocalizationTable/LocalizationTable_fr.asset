@@ -80,6 +80,10 @@ MonoBehaviour:
     m_Localized: "T\xE9l\xE9chargement du mod\xE8le..."
     m_Metadata:
       m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: "\xC9chec du t\xE9l\xE9chargement du mod\xE8le."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

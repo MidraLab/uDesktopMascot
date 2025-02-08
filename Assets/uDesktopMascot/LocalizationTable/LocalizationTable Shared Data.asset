@@ -75,6 +75,10 @@ MonoBehaviour:
     m_Key: MSG_WAIT_DOWNLOAD_MODEL
     m_Metadata:
       m_Items: []
+  - m_Id: 5824753848487936
+    m_Key: MSG_FAILED_DOWNLOAD_MODEL
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

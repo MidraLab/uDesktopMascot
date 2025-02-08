@@ -80,6 +80,10 @@ MonoBehaviour:
     m_Localized: Downloading the model...
     m_Metadata:
       m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: Failed to download the model.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
