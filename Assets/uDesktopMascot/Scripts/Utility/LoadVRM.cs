@@ -179,6 +179,15 @@ namespace uDesktopMascot
         /// <returns></returns>
         public static async UniTask<(string title, Texture2D thumbnailTexture)> LoadVrmMetaAsync(string path)
         {
+            // キャッシュの有効性をチェック
+            if (ModelCacheUtility.IsCacheValid(path))
+            {
+                // キャッシュからデータを読み込む
+                var (cachedTitle, cachedThumbnail) = ModelCacheUtility.LoadFromCache(path);
+                Log.Info($"キャッシュからメタ情報を読み込みました: {cachedTitle}");
+                return (cachedTitle, cachedThumbnail);
+            }
+
             try
             {
                 // VRMファイルをロード（VRM 0.x および 1.x に対応）
@@ -228,6 +237,10 @@ namespace uDesktopMascot
                 {
                     Object.Destroy(instance.gameObject);
                 }
+
+                // キャッシュに保存
+                ModelCacheUtility.SaveToCache(path, title, thumbnailTexture);
+                Log.Info($"メタ情報をキャッシュに保存しました: {title}");
 
                 return (title, thumbnailTexture);
             } catch (Exception e)
