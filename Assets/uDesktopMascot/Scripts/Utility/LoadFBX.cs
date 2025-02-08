@@ -6,8 +6,6 @@ using Assimp;
 using UnityEngine;
 using Unity.Logging;
 using Cysharp.Threading.Tasks;
-
-// 名前空間エイリアスを追加
 using AssimpMaterial = Assimp.Material;
 using AssimpMesh = Assimp.Mesh;
 using UnityEngineMaterial = UnityEngine.Material;
