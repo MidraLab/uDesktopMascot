@@ -71,6 +71,10 @@ MonoBehaviour:
     m_Key: WORD_OPEN_MODEL
     m_Metadata:
       m_Items: []
+  - m_Id: 5814746641797120
+    m_Key: MSG_WAIT_DOWNLOAD_MODEL
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

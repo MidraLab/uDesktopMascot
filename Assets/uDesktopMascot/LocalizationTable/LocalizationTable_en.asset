@@ -76,6 +76,10 @@ MonoBehaviour:
     m_Localized: Select a model from the folder.
     m_Metadata:
       m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Downloading the model...
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
