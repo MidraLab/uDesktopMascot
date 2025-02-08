@@ -171,7 +171,7 @@ namespace uDesktopMascot
 
             return new LoadedVRMInfo(model, title, thumbnailTexture);
         }
-        
+
         /// <summary>
         /// VRMファイルのメタ情報を取得
         /// </summary>
@@ -179,114 +179,113 @@ namespace uDesktopMascot
         /// <returns></returns>
         public static async UniTask<(string title, Texture2D thumbnailTexture)> LoadVrmMetaAsync(string path)
         {
-            byte[] bytes = null;
+            // キャッシュの有効性をチェック
+            if (ModelCacheUtility.IsCacheValid(path))
+            {
+                // キャッシュからデータを読み込む
+                var (cachedTitle, cachedThumbnail) = ModelCacheUtility.LoadFromCache(path);
+                Log.Info($"キャッシュからメタ情報を読み込みました: {cachedTitle}");
+                return (cachedTitle, cachedThumbnail);
+            }
+
             try
             {
-                // VRMファイルをバイト配列として読み込む
-                bytes = await File.ReadAllBytesAsync(path);
+                // VRMファイルをロード（VRM 0.x および 1.x に対応）
+                Vrm10Instance instance = await Vrm10.LoadPathAsync(path, canLoadVrm0X: true);
 
+                // Meta情報からタイトルとサムネイルを取得
+                var meta = instance.Vrm.Meta;
+                string title = meta.Name;
+                Texture2D originalThumbnail = meta.Thumbnail;
+
+                Texture2D thumbnailTexture = null;
+                if (originalThumbnail != null)
+                {
+                    // サムネイルの最大サイズ（ピクセル単位）
+                    int maxThumbnailSize = 100;
+
+                    // オリジナルのテクスチャサイズを取得
+                    int originalWidth = originalThumbnail.width;
+                    int originalHeight = originalThumbnail.height;
+
+                    // アスペクト比を維持しながら、リサイズ後の幅と高さを計算
+                    int targetWidth = originalWidth;
+                    int targetHeight = originalHeight;
+
+                    if (originalWidth > originalHeight)
+                    {
+                        if (originalWidth > maxThumbnailSize)
+                        {
+                            targetWidth = maxThumbnailSize;
+                            targetHeight = Mathf.RoundToInt((float)originalHeight * maxThumbnailSize / originalWidth);
+                        }
+                    } else
+                    {
+                        if (originalHeight > maxThumbnailSize)
+                        {
+                            targetHeight = maxThumbnailSize;
+                            targetWidth = Mathf.RoundToInt((float)originalWidth * maxThumbnailSize / originalHeight);
+                        }
+                    }
+
+                    // リサイズしたテクスチャを作成
+                    thumbnailTexture = ResizeTexture(originalThumbnail, targetWidth, targetHeight);
+                }
+
+                // メタ情報のみ取得したので、インスタンスを破棄
+                if (instance != null && instance.gameObject != null)
+                {
+                    Object.Destroy(instance.gameObject);
+                }
+
+                // キャッシュに保存
+                ModelCacheUtility.SaveToCache(path, title, thumbnailTexture);
+                Log.Info($"メタ情報をキャッシュに保存しました: {title}");
+
+                return (title, thumbnailTexture);
             } catch (Exception e)
             {
-                Log.Error($"ファイルの読み込み中にエラーが発生しました: {e.Message}");
+                Log.Error($"VRMメタ情報の読み込み中にエラーが発生しました: {e.Message}");
                 return (null, null);
             }
-
-            // GLBデータとしてパース
-            var parser = new GlbLowLevelParser(path, bytes);
-            using (var gltfData = parser.Parse())
-            {
-                // VRM 1.0としてパースを試みる
-                var vrm10Data = Vrm10Data.Parse(gltfData);
-                if (vrm10Data != null)
-                {
-                    // VRM 1.0のメタ情報を取得
-                    var meta = vrm10Data.VrmExtension.Meta;
-                    string title = meta.Name;
-
-                    // サムネイル画像を取得
-                    Texture2D thumbnailTexture = null;
-                    if (meta.ThumbnailImage.HasValue)
-                    {
-                        var imageIndex = meta.ThumbnailImage.Value;
-                        thumbnailTexture = LoadTextureFromImageIndex(vrm10Data.Data, imageIndex);
-                    }
-
-                    return (title, thumbnailTexture);
-                }
-
-                // VRM 0.xの場合、マイグレーションを行う
-                using var migratedGltfData = Vrm10Data.Migrate(gltfData, out var migratedVrm10Data, out var migrationData);
-                if (migratedVrm10Data != null)
-                {
-                    // VRM 0.xのメタ情報を取得
-                    var meta = migrationData?.OriginalMetaBeforeMigration;
-                    string title = meta?.title;
-
-                    // サムネイル画像を取得
-                    Texture2D thumbnailTexture = null;
-                    if (meta?.texture != null && meta.texture != -1)
-                    {
-                        var imageIndex = meta.texture;
-                        thumbnailTexture = LoadTextureFromImageIndex(gltfData, imageIndex);
-                    }
-
-                    return (title, thumbnailTexture);
-                }
-            }
-
-            // メタ情報が取得できなかった場合
-            return (null, null);
         }
 
         /// <summary>
-        /// 画像インデックスからテクスチャをロード
+        /// テクスチャをリサイズ
         /// </summary>
-        /// <param name="gltfData"></param>
-        /// <param name="imageIndex"></param>
+        /// <param name="source"></param>
+        /// <param name="targetWidth"></param>
+        /// <param name="targetHeight"></param>
         /// <returns></returns>
-        private static Texture2D LoadTextureFromImageIndex(GltfData gltfData, int imageIndex)
+        private static Texture2D ResizeTexture(Texture2D source, int targetWidth, int targetHeight)
         {
-            var gltfImage = gltfData.GLTF.images[imageIndex];
+            // RenderTextureを使用して、テクスチャをリサイズします
+            RenderTexture rt = RenderTexture.GetTemporary(targetWidth, targetHeight);
+            rt.filterMode = FilterMode.Bilinear;
 
-            byte[] imageBytes = null;
+            // 元のアクティブなRenderTextureを保存
+            RenderTexture previous = RenderTexture.active;
 
-            if (!string.IsNullOrEmpty(gltfImage.uri))
-            {
-                if (gltfImage.uri.StartsWith("data:", StringComparison.Ordinal))
-                {
-                    // Data URIから画像データを取得
-                    imageBytes = UriByteBuffer.ReadEmbedded(gltfImage.uri);
-                } else
-                {
-                    // 外部ファイルの場合は対応しない
-                    Log.Warning("External image files are not supported.");
-                    return null;
-                }
-            } else if (gltfImage.bufferView >= 0)
-            {
-                // バッファビューから画像データを取得
-                var segment = gltfData.GetBytesFromBufferView(gltfImage.bufferView);
-                imageBytes = segment.ToArray();
-            } else
-            {
-                Log.Warning("No image data found for the texture.");
-                return null;
-            }
+            // RenderTextureをアクティブに設定
+            RenderTexture.active = rt;
 
-            if (imageBytes != null)
-            {
-                // Texture2Dを作成
-                var texture = new Texture2D(2, 2);
-                if (texture.LoadImage(imageBytes))
-                {
-                    return texture;
-                } else
-                {
-                    Log.Warning("Failed to load image into Texture2D.");
-                }
-            }
+            // ソーステクスチャをRenderTextureにコピー
+            Graphics.Blit(source, rt);
 
-            return null;
+            // 新しいテクスチャを作成
+            Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
+
+            // RenderTextureからピクセルを読み込む
+            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
+            result.Apply();
+
+            // RenderTextureを解放
+            RenderTexture.ReleaseTemporary(rt);
+
+            // アクティブなRenderTextureを元に戻す
+            RenderTexture.active = previous;
+
+            return result;
         }
 
         /// <summary>
