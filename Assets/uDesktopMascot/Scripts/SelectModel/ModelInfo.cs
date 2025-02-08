@@ -1,4 +1,5 @@
 ﻿using TMPro;
+using Unity.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,7 +59,15 @@ namespace uDesktopMascot
         public void UpdateModelInfo(string modelName, Texture2D thumbnail)
         {
             modelNameText.text = modelName;
-            thumbnailImage.texture = thumbnail;
+
+            if (thumbnail != null)
+            {
+                Log.Debug($"サムネイル画像[{thumbnail.width}×{thumbnail.height}]を取得");
+                thumbnailImage.texture = thumbnail;
+            } else
+            {
+                Log.Warning("サムネイル画像が取得できませんでした");
+            }
         }
 
         private void OnDestroy()
