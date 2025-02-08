@@ -7,6 +7,7 @@ using LLMUnity;
 using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using Unity.Logging;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
@@ -51,6 +52,21 @@ namespace uDesktopMascot
         /// AIの返信を蓄積するビルダー
         /// </summary>
         private StringBuilder _replyTextBuilder;
+        
+        /// <summary>
+        /// チャットダイアログのオーバーレイ通知イメージ
+        /// </summary>
+        [SerializeField] private Image overNoticeImage;
+        
+        /// <summary>
+        /// チャットダイアログのオーバーレイ通知ローカライズされた文字列イベント
+        /// </summary>
+        [SerializeField] private LocalizeStringEvent overNoticeLocalizedStringEvent;
+        
+        /// <summary>
+        /// チャットダイアログのオーバーレイ通知テキスト
+        /// </summary>
+        [SerializeField] private TextMeshProUGUI overNoticeText;
 
         /// <summary>
         /// 入力をブロックするフラグ
@@ -79,6 +95,35 @@ namespace uDesktopMascot
             base.OnDisable();
             // Submitアクションのリスナーを削除
             InputController.Instance.UI.Submit.performed -= OnSubmit;
+        }
+        
+        /// <summary>
+        /// ダイアログを表示する
+        /// </summary>
+        public override void Show()
+        {
+            base.Show();
+            SwitchModelDownloadState();
+        }
+        
+        /// <summary>
+        /// モデルのダウンロード状況によって表示を切り替える
+        /// </summary>
+        private void SwitchModelDownloadState()
+        {
+            switch (ModelDownloader.ModelDownloadProgressEnum)
+            {
+                case ModelDownloadProgressEnum.ProgressChanged: 
+                    ShowOverNotice("モデルのダウンロード中...");
+                    break;
+                case ModelDownloadProgressEnum.DownloadCompleted: 
+                    HideOverNotice();
+                    break;
+                case ModelDownloadProgressEnum.DownloadFailed: 
+                    ShowOverNotice("モデルのダウンロードに失敗しました。");
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <summary>
@@ -225,6 +270,27 @@ namespace uDesktopMascot
         private void SetEvents()
         {
             sendButton.onClick.AddListener(SendMessages);
+        }
+        
+        /// <summary>
+        /// オーバーレイ通知を表示する
+        /// </summary>
+        /// <param name="notice"></param>
+        public void ShowOverNotice(string notice)
+        {
+            overNoticeLocalizedStringEvent.StringReference.Arguments = new object[] {notice};
+            overNoticeLocalizedStringEvent.StringReference.RefreshString();
+            overNoticeImage.enabled = true;
+            overNoticeText.enabled = true;
+        }
+        
+        /// <summary>
+        /// オーバーレイ通知を非表示にする
+        /// </summary>
+        public void HideOverNotice()
+        {
+            overNoticeText.enabled = false;
+            overNoticeImage.enabled = false;
         }
 
         private void OnDestroy()

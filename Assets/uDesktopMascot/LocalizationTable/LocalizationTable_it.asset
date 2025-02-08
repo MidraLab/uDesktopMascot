@@ -76,6 +76,14 @@ MonoBehaviour:
     m_Localized: Seleziona il modello dalla cartella
     m_Metadata:
       m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Download del modello in corso...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: Download del modello\nnon riuscito.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

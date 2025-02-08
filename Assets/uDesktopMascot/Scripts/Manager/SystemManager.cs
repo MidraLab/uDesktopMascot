@@ -105,6 +105,7 @@ namespace uDesktopMascot
         {
             if (File.Exists(modelSavePath))
             {
+                ModelDownloader.ModelDownloadProgressEnum = ModelDownloadProgressEnum.DownloadCompleted;
                 Log.Info("モデルは既にダウンロードされています。");
                 return;
             }
@@ -113,7 +114,6 @@ namespace uDesktopMascot
             _modelDownloader.OnProgressChanged += progress =>
             {
                 Log.Info($"モデルのダウンロード進捗: {progress * 100:F2}%");
-                // 必要に応じて UI などで進捗を表示
             };
             _modelDownloader.OnDownloadCompleted += () =>
             {
