@@ -1,4 +1,4 @@
-﻿Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
+Key,Id,English(en),French(fr),Italian(it),Japanese(ja),Korean(ko)
 "WORD_MENU_APPLICATON_CLOSE",552562152116224,"App exit","Application terminée","Chiusura dell'app.","アプリ終了","앱 종료"
 "WORD_MENU_SELECT_MODEL",557971768283136,"Model addition/change","Ajout ou modification de modèle","Aggiunta o modifica del modello","モデル追加・変更","모델 추가・변경"
 "WORD_MENU_HELP",557971768283134,"Help","Aide","Aiuto","ヘルプ","도움"
@@ -14,4 +14,4 @@
 "WORD_ADD_DRAG_MODEL",5075115772153856,"Add VRM model by dragging.","Ajoutez un modèle VRM en faisant glisser.","Aggiungi un modello VRM tramite drag and drop.","ドラッグでVRMモデルを追加","드래그로 VRM 모델 추가"
 "WORD_OPEN_MODEL",5282738060595200,"Select a model from the folder.","Sélectionnez un modèle dans le dossier.","Seleziona il modello dalla cartella","モデルをフォルダから選択","폴더에서 모델 선택하기"
 "MSG_WAIT_DOWNLOAD_MODEL",5814746641797120,"Downloading the model...","Téléchargement du modèle...","Download del modello in corso...","モデルの\nダウンロード中...","모델의\n다운로드 중..."
-"MSG_FAILED_DOWNLOAD_MODEL",5824753848487936,"","","","モデルのダウンロードに\n失敗しました。",""
+"MSG_FAILED_DOWNLOAD_MODEL",5824753848487936,"Failed to download the model.","Échec du téléchargement du modèle.","Download del modello\nnon riuscito.","モデルのダウンロードに\n失敗しました。","모델 다운로드에\n실패했습니다."
