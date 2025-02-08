@@ -30,6 +30,11 @@ namespace uDesktopMascot
         /// ダウンロードがエラーで失敗したときに呼び出されるイベント
         /// </summary>
         public event Action<Exception> OnDownloadFailed;
+        
+        /// <summary>
+        /// ダウンロードの進行状況を表す列挙型
+        /// </summary>
+        public static ModelDownloadProgressEnum ModelDownloadProgressEnum { get; set; }
 
         /// <summary>
         /// モデルを非同期でダウンロードします
@@ -63,6 +68,7 @@ namespace uDesktopMascot
         /// <exception cref="Exception"></exception>
         private async UniTask DownloadFileAsync(string url, string savePath, CancellationToken cancellationToken)
         {
+            ModelDownloadProgressEnum = ModelDownloadProgressEnum.ProgressChanged;
             using UnityWebRequest uwr = UnityWebRequest.Get(url);
             uwr.downloadHandler = new DownloadHandlerFile(savePath);
             var asyncOperation = uwr.SendWebRequest();
@@ -76,12 +82,24 @@ namespace uDesktopMascot
 
             if (uwr.result != UnityWebRequest.Result.Success)
             {
+                ModelDownloadProgressEnum = ModelDownloadProgressEnum.DownloadFailed;
                 throw new Exception($"モデルのダウンロードに失敗しました: {uwr.error}");
             }
             else
             {
+                ModelDownloadProgressEnum = ModelDownloadProgressEnum.DownloadCompleted;
                 OnProgressChanged?.Invoke(1.0f);
             }
         }
+    }
+    
+    /// <summary>
+    /// ダウンロードの進行状況を表す列挙型
+    /// </summary>
+    public enum ModelDownloadProgressEnum
+    {
+        ProgressChanged,
+        DownloadCompleted,
+        DownloadFailed
     }
 }
