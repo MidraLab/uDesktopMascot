@@ -8,6 +8,10 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR_OSX
+using System.Runtime.InteropServices;
+#endif
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
