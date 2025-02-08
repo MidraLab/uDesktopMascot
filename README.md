@@ -141,6 +141,32 @@ xattr -r -c uDesktopMascot.app
 * デフォルトボイスは、[COEIROINK:つくよみちゃん](https://coeiroink.com/character/audio-character/tsukuyomi-chan)の音声を使用しています。使用方法については、COEIROINK側に事前に確認済みです
 * ボタンアイコンは、[MingCute](https://github.com/MidraLab/MingCute)を使用しています。
 
+## インストーラー作成方法
+### Windows
+* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+
+* [Inno Setup](https://www.jrsoftware.org/isdl.php) をインストールする。
+  
+* 開いたら、`More files`をクリックして、プロジェクト配下にある`setup.iss`を選択する。
+  
+![](Docs/Image/SetupIss-1.png)
+* 選択したら、再生ボタンをクリックする。
+  
+![](Docs/Image/SetupIss-2.png)
+* ビルドが完了したら、プロジェクトのRootにインストーラーが生成されます。
+
+### macOS
+macOSのPCでのみインストーラーを作成できます。
+
+* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+
+* 以下のコマンドを実行する。
+```sh
+cd build
+productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer.pkg
+```
+* ビルドが完了したら、`build`フォルダに`uDesktopMascot_mac_installer.pkg`が生成されます。
+
 ## 制作者クレジット
 * モデル: 「アオゾラ」様
 * BGM: MidraLab(eisuke)
