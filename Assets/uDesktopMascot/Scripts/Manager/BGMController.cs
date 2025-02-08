@@ -88,7 +88,7 @@ namespace uDesktopMascot
                 },
                 () =>
                 {
-                    Log.Debug("BGMフォルダが存在しません。BGMは再生されません。");
+                    Log.Debug("StreamingAseetsにBGMフォルダが存在しません。BGMは再生されません。");
                     _bgmLoaded = true;
                 },
                 cancellationToken
