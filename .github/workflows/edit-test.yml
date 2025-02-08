@@ -5,6 +5,11 @@ on:
   pull_request:
     branches:
       - develop
+  push:
+    branches:
+      - develop
+    paths:
+      - 'Assets/uDesktopMascot/Scripts/**/*.cs'
 
 jobs:
   test:
