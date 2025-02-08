@@ -75,9 +75,6 @@ namespace uDesktopMascot
         private static extern bool Shell_NotifyIcon(NIM dwMessage, ref NOTIFYICONDATA lpData);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
-
-        [DllImport("user32.dll")]
         private static extern bool DestroyIcon(IntPtr hIcon);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
@@ -103,8 +100,6 @@ namespace uDesktopMascot
         private const int GWL_WNDPROC = -4;
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
-
-        private static readonly IntPtr IDI_APPLICATION = (IntPtr)0x7F00; // デフォルトアイコン
 
         private static NOTIFYICONDATA notifyIconData;
         private static bool notifyIconAdded = false;
