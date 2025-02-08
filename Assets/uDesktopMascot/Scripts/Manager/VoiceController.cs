@@ -276,7 +276,25 @@ namespace uDesktopMascot
             _audioSource.clip = clip;
             _audioSource.Play();
         }
-
+        
+        /// <summary>
+        ///    アプリ起動時のボイスがロードされているかどうか
+        /// </summary>
+        /// <returns></returns>
+        private bool IsStartVoicesLoaded()
+        {
+            return _startVoicesLoaded;
+        }
+        
+        /// <summary>
+        ///   アプリ終了時のボイスがロードされているかどうか
+        /// </summary>
+        /// <returns></returns>
+        private bool IsEndVoicesLoaded()
+        {
+            return _endVoicesLoaded;
+        }
+        
         /// <summary>
         ///     アプリ起動時のボイスを再生する
         /// </summary>
@@ -284,9 +302,11 @@ namespace uDesktopMascot
         {
             if (!_startVoicesLoaded)
             {
-                // ロードが完了していない場合は待機
-                await UniTask.WaitUntil(() => _startVoicesLoaded, cancellationToken: cancellationToken);
+                // クロージャを作成せずにロード完了を待機
+                await UniTask.WaitUntil(IsStartVoicesLoaded, cancellationToken: cancellationToken);
             }
+            
+            Log.Debug("アプリ起動時のボイスをロード待ち完了。");
 
             if (voiceData.StartVoice == null || voiceData.StartVoice.Count == 0)
             {
@@ -315,7 +335,7 @@ namespace uDesktopMascot
             if (!_endVoicesLoaded)
             {
                 // ロードが完了していない場合は待機
-                await UniTask.WaitUntil(() => _endVoicesLoaded, cancellationToken: cancellationToken);
+                await UniTask.WaitUntil(IsEndVoicesLoaded, cancellationToken: cancellationToken);
             }
 
             if (voiceData.EndVoice == null || voiceData.EndVoice.Count == 0)
