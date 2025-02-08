@@ -179,11 +179,6 @@ namespace uDesktopMascot
             modelInfo.SetSelected(true);
             _currentModel?.SetSelected(false);
             _currentModel = modelInfo;
-            // 既存のモデルがある場合は削除
-            if (_currentModel != null)
-            {
-                Destroy(_currentModel);
-            }
 
             LoadedVRMInfo model;
             // 指定されたモデルをロード
@@ -200,6 +195,7 @@ namespace uDesktopMascot
             if (model != null)
             {
                 // CharacterManagerにモデルを渡す
+                Log.Debug("Model loaded: " + model.Model.name);
                 CharacterManager.Instance.OnModelLoaded(model.Model, true);
             } else
             {
