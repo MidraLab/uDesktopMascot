@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Cysharp.Threading.Tasks;
 using Kirurobo;
 using Unity.Logging;
@@ -33,6 +34,16 @@ namespace uDesktopMascot
         /// Webサーバーのホストクラス
         /// </summary>
         private WebServiceHost _webServiceHost;
+        
+        /// <summary>
+        /// モデルのダウンローダー
+        /// </summary>
+        private ModelDownloader _modelDownloader;
+        
+        /// <summary>
+        /// モデルを保存するパス
+        /// </summary>
+        private string _modelSavePath;
 
         /// <summary>
         /// アップデートダイアログ
@@ -51,6 +62,10 @@ namespace uDesktopMascot
 
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
+            
+            // モデルのダウンロードを開始
+            _modelSavePath = Path.Combine(Application.streamingAssetsPath, Constant.ModelFileName);
+            StartModelDownloadAsync(_modelSavePath).Forget();
         }
 
         private void Start()
@@ -80,6 +95,36 @@ namespace uDesktopMascot
         public void ForceStopUniWinControllerHitTestFlag(bool isHitTest)
         {
             windowController.IsForceHitTestStop = isHitTest;
+        }
+
+        /// <summary>
+        ///   モデルのダウンロードを開始
+        /// </summary>
+        /// <param name="modelSavePath"></param>
+        private async UniTaskVoid StartModelDownloadAsync(string modelSavePath)
+        {
+            if (File.Exists(modelSavePath))
+            {
+                Log.Info("モデルは既にダウンロードされています。");
+                return;
+            }
+
+            _modelDownloader = new ModelDownloader();
+            _modelDownloader.OnProgressChanged += progress =>
+            {
+                Log.Info($"モデルのダウンロード進捗: {progress * 100:F2}%");
+                // 必要に応じて UI などで進捗を表示
+            };
+            _modelDownloader.OnDownloadCompleted += () =>
+            {
+                Log.Info("モデルのダウンロードが完了しました。");
+            };
+            _modelDownloader.OnDownloadFailed += ex =>
+            {
+                Log.Error($"モデルのダウンロードに失敗しました: {ex.Message}");
+            };
+
+            await _modelDownloader.DownloadModelAsync(Constant.ModelDownloadUrl, modelSavePath,_cancellationTokenSource.Token);
         }
 
         /// <summary>

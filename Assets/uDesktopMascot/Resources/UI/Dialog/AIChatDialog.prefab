@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6c87a428fd5d0be9bbc686bdc8c3c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  advancedOptions: 1
+  advancedOptions: 0
   remote: 0
   _llm: {fileID: 5217478738680653781}
   APIKey: 
