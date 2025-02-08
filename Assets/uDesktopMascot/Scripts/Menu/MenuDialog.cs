@@ -100,7 +100,7 @@ namespace uDesktopMascot
             webUIButton.onClick.AddListener(() => OnWebUIAction?.Invoke());
             aiChatButton.onClick.AddListener(OnAiChatAction);
         }
-        
+
         /// <summary>
         /// アプリを通知領域にしまう
         /// </summary>

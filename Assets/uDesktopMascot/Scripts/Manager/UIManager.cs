@@ -43,11 +43,9 @@ namespace uDesktopMascot
         /// <returns>表示したダイアログのインスタンス</returns>
         public T PushDialog<T>(string dialogName, Action<T> setup = null, Action onClose = null) where T : DialogBase
         {
-            IDialogPool pool;
-
             // ダイアログのプールを取得または作成
             string prefabPath = GetDialogPath(dialogName);
-            if (!_dialogPool.TryGetValue(prefabPath, out pool))
+            if (!_dialogPool.TryGetValue(prefabPath, out var pool))
             {
                 // 新しいプールを作成
                 var objectPool = new ObjectPool<T>(

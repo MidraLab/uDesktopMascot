@@ -27,7 +27,7 @@ namespace uDesktopMascot
         /// キャラクターモデル
         /// </summary>
         private CharacterModel _characterModel;
-        
+
         /// <summary>
         ///   現在のVRM情報
         /// </summary>
@@ -358,8 +358,15 @@ namespace uDesktopMascot
         {
             if (_menuPresenter == null)
             {
-                var menuDialog = UIManager.Instance.PushDialog<MenuDialog>(Constant.TabletMenuDialog);
-                _menuPresenter = new MenuPresenter(menuDialog);
+                UIManager.Instance.PushDialog<MenuDialog>(Constant.TabletMenuDialog, dialog =>
+                    {
+                        _menuPresenter = new MenuPresenter(dialog);
+                    },
+                    () =>
+                    {
+                        _menuPresenter.Dispose();
+                        _menuPresenter = null;
+                    });
             }
 
             if (_menuPresenter.IsOpened)

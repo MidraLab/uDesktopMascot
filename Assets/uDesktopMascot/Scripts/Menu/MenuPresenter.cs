@@ -51,10 +51,6 @@ namespace uDesktopMascot
             menuDialog.OnCloseAction = CloseApp;
 
             ApplyMenuUISettings();
-
-#if UNITY_EDITOR
-            InitDebugMenu();
-#endif
             
             Hide();
         }
@@ -321,10 +317,6 @@ namespace uDesktopMascot
 
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
-
-#if UNITY_EDITOR
-            OnDestroyEditor();
-#endif
         }
     }
 }
