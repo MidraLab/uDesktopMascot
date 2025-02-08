@@ -5,7 +5,14 @@ on:
     branches:
       - develop
     paths:
-      - README.md
+      - 'README.md'
+  push:
+    branches:
+      - develop
+    paths:
+      - 'README.md'
+    paths-ignore:
+      - 'README_*.md'
 
 permissions:
   contents: write
@@ -17,28 +24,48 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Confirm current branch
+      - name: Check if README.md was changed
+        id: readme_changed
         run: |
-          echo "Current branch: $(git branch --show-current)"
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED_FILES=$(git diff --name-only HEAD origin/${{ github.base_ref }})
+          echo "Changed files: $CHANGED_FILES"
+          if echo "$CHANGED_FILES" | grep -q "^README\.md$"; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+
+      - name: Skip job if no README.md changes
+        if: steps.readme_changed.outputs.changed != 'true'
+        run: echo "No changes in README.md. Skipping translation."
+
+      - name: Continue with translation
+        if: steps.readme_changed.outputs.changed == 'true'
+        run: echo "README.md changed. Proceeding with translation."
 
       - name: Set up Python
+        if: steps.readme_changed.outputs.changed == 'true'
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.11'
 
       - name: Install OpenAI library
+        if: steps.readme_changed.outputs.changed == 'true'
         run: pip install openai
 
       - name: Run translation script
+        if: steps.readme_changed.outputs.changed == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python .github/scripts/translate_readme.py
 
       - name: Commit and push changes
+        if: steps.readme_changed.outputs.changed == 'true'
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -49,5 +76,5 @@ jobs:
           else
             git commit -m "Update translations"
             echo "Changes committed successfully."
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+            git push https://$PERSONAL_ACCESS_TOKEN@github.com/${{ github.repository }} HEAD:${{ github.ref }}
           fi
