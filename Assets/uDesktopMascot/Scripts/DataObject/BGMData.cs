@@ -17,6 +17,6 @@ namespace uDesktopMascot
         /// <summary>
         ///    BGMのリスト
         /// </summary>
-        public List<AudioClip> BgmClips => bgmClips;
+        public IList<AudioClip> BgmClips => bgmClips;
     }
 }

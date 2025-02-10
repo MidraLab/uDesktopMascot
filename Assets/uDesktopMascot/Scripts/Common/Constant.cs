@@ -5,7 +5,7 @@ namespace uDesktopMascot
     /// <summary>
     ///    定数
     /// </summary>
-    public class Constant
+    public partial class Constant
     {
         /// <summary>
         ///   UIアニメーション時間
@@ -16,5 +16,10 @@ namespace uDesktopMascot
         ///  UI Animation デフォルトのイージング
         /// </summary>
         public const Ease UIAnimationDefaultEase = Ease.OutCubic;
+        
+        /// <summary>
+        /// デフォルトのVRMファイル名
+        /// </summary>
+        public const string DefaultVrmFileName = "DefaultModel/DefaultModel";
     }
 }

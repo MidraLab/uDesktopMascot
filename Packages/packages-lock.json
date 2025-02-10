@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "ai.undream.llm": {
+      "version": "https://github.com/undreamai/LLMUnity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e040c976794eb48fd9b05a1880a176824fe8ef06"
+    },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
       "depth": 0,
@@ -23,7 +30,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "e33baf14536c5d8d6c0187375487d2ffa35f0fdd"
+      "hash": "fb01d997caacda8fda86d306c236211cceb2cd5e"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
@@ -31,6 +38,13 @@
       "source": "git",
       "dependencies": {},
       "hash": "8042b29ff87dd5506d7aad72bd6d8d7405985f27"
+    },
+    "com.cysharp.zstring": {
+      "version": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f4b39aad95edd3350f8f06567c9d07168ac941ec"
     },
     "com.dbrizov.naughtyattributes": {
       "version": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
@@ -168,6 +182,15 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.scriptablebuildpipeline": "2.1.4",
         "com.unity.modules.unitywebrequestassetbundle": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.bindings.openimageio": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.collections": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -342,6 +365,17 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.recorder": {
+      "version": "5.1.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.timeline": "1.8.7",
+        "com.unity.collections": "1.2.4",
+        "com.unity.bindings.openimageio": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.render-pipelines.core": {
       "version": "17.0.3",
       "depth": 1,
@@ -503,6 +537,13 @@
         "com.vrmc.gltf": "0.128.1"
       },
       "hash": "2911cb72a905ab7d8b0f9e03397235d1c0293714"
+    },
+    "io.github.gkngkc.unity-standalone-file-browser": {
+      "version": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2902246021d113c4ac1324f981e96d5b553d716b"
     },
     "jp.amagamina.overwriter": {
       "version": "https://github.com/ina-amagami/unity-overwriter.git",

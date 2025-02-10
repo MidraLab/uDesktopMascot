@@ -29,12 +29,12 @@ namespace uDesktopMascot
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async UniTask<GameObject> LoadModel(CancellationToken cancellationToken)
+        public static async UniTask<LoadedVRMInfo> LoadModel(CancellationToken cancellationToken)
         {
             // 設定ファイルからキャラクター情報の取得
             var characterSettings = ApplicationSettings.Instance.Character;
 
-            GameObject model = null;
+            LoadedVRMInfo loadedVrmInfo = null;
 
             // モデルの種類を判定
             var modelType = GetModelType(characterSettings.ModelPath);
@@ -45,13 +45,14 @@ namespace uDesktopMascot
                 {
                     case ModelType.FBX:
                         // FBXモデルの読み込み
-                        model = await LoadFBX.LoadModelAsync(characterSettings.ModelPath, cancellationToken);
+                        var model = await LoadFBX.LoadModelAsync(characterSettings.ModelPath, cancellationToken);
+                        loadedVrmInfo = new LoadedVRMInfo(model, null, null);
                         break;
                     case ModelType.VRM:
                     case ModelType.GLB:
                     case ModelType.GLTF:
                         // VRM、GLB、GLTFモデルの読み込み
-                        model = await LoadVRM.LoadModelAsync(characterSettings.ModelPath, cancellationToken);
+                        loadedVrmInfo = await LoadVRM.LoadModelAsync(characterSettings.ModelPath, cancellationToken);
                         break;
                     default:
                         Log.Error("サポートされていないモデル形式です: {0}", characterSettings.ModelPath);
@@ -64,27 +65,32 @@ namespace uDesktopMascot
             }
 
             // モデルのロードが失敗した場合、デフォルトモデルをロードする
-            if (model == null)
+            if (loadedVrmInfo == null || loadedVrmInfo.Model == null)
             {
                 Log.Warning("指定されたモデルのロードに失敗したため、デフォルトモデルをロードします。");
-                model = LoadVRM.LoadDefaultModel();
+                var defaultModel = await LoadVRM.LoadDefaultModel();
+                
+                loadedVrmInfo = new LoadedVRMInfo(defaultModel.gameObject, defaultModel.Vrm.Meta.Name, defaultModel.Vrm.Meta.Thumbnail);
 
-                if (model == null)
+                if (loadedVrmInfo.Model == null)
                 {
                     Log.Error("デフォルトモデルのロードにも失敗しました。");
                     return null;
                 }
             }
 
-            // シェーダーをlilToonに置き換える
-            bool shaderReplaceSuccess = ReplaceShadersWithLilToon(model);
-
-            if (!shaderReplaceSuccess)
+            if (characterSettings.UseLilToon)
             {
-                Log.Warning("シェーダーの置き換えに失敗したため、デフォルトのシェーダーを使用します。");
-            }
+                // シェーダーをlilToonに置き換える
+                bool shaderReplaceSuccess = ReplaceShadersWithLilToon(loadedVrmInfo.Model);
 
-            return model;
+                if (!shaderReplaceSuccess)
+                {
+                    Log.Warning("シェーダーの置き換えに失敗したため、デフォルトのシェーダーを使用します。");
+                }
+            }
+            
+            return loadedVrmInfo;
         }
 
         /// <summary>

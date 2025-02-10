@@ -160,3 +160,5 @@ uDesktopMascotBuild/*
 .vscode/*
 installer-setup.txt
 uDesktopMascot_win64_installer_*.exe
+Assets/WebUI/index.html
+Assets/WebUI/index.html.meta

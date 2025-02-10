@@ -16,6 +16,9 @@
   * [requirements](#requirements)
   * [license](#license)
   * [素材について](#素材について)
+  * [インストーラー作成方法](#インストーラー作成方法)
+    * [Windows](#windows)
+    * [macOS](#macos)
   * [制作者クレジット](#制作者クレジット)
   * [3rd Party Notices](#3rd-party-notices)
   * [sponsor](#sponsor)
@@ -48,6 +51,9 @@
   * GLB/GLTF形式のモデルをサポートしています。(アニメーションは対応していません)
   * FBX形式のモデルをサポートしています。(ただし一部のモデルではテクスチャーがロードができません。またアニメーションは対応していません)
     * テクスチャーは StreamingAssets/textures/ に配置することで読み込むことができます。
+* モデル選択・追加画面からVRMモデルの追加
+  * パスを指定して追加
+  * ファイル選択ダイアログから追加
 
 </details>
 
@@ -114,6 +120,14 @@ QualityLevel=2
     * TGA
     * TIFF
   * 背景色は、カラーコードを指定することができます。
+* メニュー画面から以下の機能にアクセス可能
+  * モデル選択・追加画面
+  * AIチャット機能
+  * LocalWeb機能
+  * アプリケーション設定
+  * アプリケーション終了
+* メニュー画面の収納ボタンを押すことで、Windowsのみ通知領域にアプリケーションを収納できます。
+  * 収納したアプリケーションは、通知領域のアイコンをクリックすることで、再度表示できます。
 
 </details>
 
@@ -140,6 +154,32 @@ xattr -r -c uDesktopMascot.app
 * フォントは[Noto Sans Japanese](https://fonts.google.com/noto/specimen/Noto+Sans+JP?lang=ja_Jpan)です。[SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/noto/specimen/Noto+Sans+JP/license?lang=ja_Jpan)に基づきNoto Sans JPフォントを再配布するものです。フォントの著作権は元の作者（Google）にあります。
 * デフォルトボイスは、[COEIROINK:つくよみちゃん](https://coeiroink.com/character/audio-character/tsukuyomi-chan)の音声を使用しています。使用方法については、COEIROINK側に事前に確認済みです
 * ボタンアイコンは、[MingCute](https://github.com/MidraLab/MingCute)を使用しています。
+
+## インストーラー作成方法
+### Windows
+* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+
+* [Inno Setup](https://www.jrsoftware.org/isdl.php) をインストールする。
+  
+* 開いたら、`More files`をクリックして、プロジェクト配下にある`setup.iss`を選択する。
+  
+![](Docs/Image/SetupIss-1.png)
+* 選択したら、再生ボタンをクリックする。
+  
+![](Docs/Image/SetupIss-2.png)
+* ビルドが完了したら、プロジェクトのRootにインストーラーが生成されます。
+
+### macOS
+macOSのPCでのみインストーラーを作成できます。
+
+* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+
+* 以下のコマンドを実行する。
+```sh
+cd build
+productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer.pkg
+```
+* ビルドが完了したら、`build`フォルダに`uDesktopMascot_mac_installer.pkg`が生成されます。
 
 ## 制作者クレジット
 * モデル: 「アオゾラ」様

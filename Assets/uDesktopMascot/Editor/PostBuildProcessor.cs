@@ -7,8 +7,11 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
+
+#if UNITY_EDITOR_OSX
+using System.Runtime.InteropServices;
+#endif
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace uDesktopMascot.Editor
@@ -19,7 +22,7 @@ namespace uDesktopMascot.Editor
     public sealed class PostBuildProcessor : IPostprocessBuildWithReport
     {
         // コールバックの順序を指定
-        public int callbackOrder => 0;
+        public int callbackOrder => 1000;
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -55,7 +58,7 @@ namespace uDesktopMascot.Editor
                 Log.Debug("このプラットフォームはサポートされていません: " + target);
                 return;
             }
-            
+
             // READMEファイルをビルドフォルダにコピー
             CopyReadmeToBuildFolder(buildDirectory);
 
@@ -141,7 +144,7 @@ namespace uDesktopMascot.Editor
                 Directory.CreateDirectory(bgmPath);
                 Log.Debug($"BGM フォルダを作成しました: {bgmPath}");
             }
-            
+
             // Menu フォルダを作成
             var menuPath = Path.Combine(streamingAssetsPath, "Menu");
             if (!Directory.Exists(menuPath))
@@ -184,10 +187,10 @@ namespace uDesktopMascot.Editor
                         break; // 最初に見つかった行だけ置換して抜ける
                     }
                 }
+
                 // 上書き保存
                 File.WriteAllLines(issFilePath, lines);
-            }
-            else
+            } else
             {
                 Log.Warning($"setup.iss が見つかりません: {issFilePath}");
             }
@@ -202,15 +205,8 @@ namespace uDesktopMascot.Editor
         {
             try
             {
-                // ビルドフォルダの親ディレクトリのパス（ZIP ファイルの保存先）
-                var parentInfo = Directory.GetParent(buildDirectory);
-                if (parentInfo == null)
-                {
-                    Log.Error("ビルドフォルダの親ディレクトリが取得できませんでした。");
-                    return;
-                }
-
-                var parentDirectory = parentInfo.FullName;
+                // ビルド出力ディレクトリ（exeファイルとYourApp_Dataフォルダを含むディレクトリ）
+                var buildOutputDirectory = buildDirectory;
 
                 // Player Settings からバージョンを取得
                 var projectVersion = PlayerSettings.bundleVersion;
@@ -223,9 +219,9 @@ namespace uDesktopMascot.Editor
                 // バージョン文字列をファイル名に使用できる形式に変換
                 var sanitizedVersion = Regex.Replace(projectVersion, @"[^\d\.]", "").Replace(".", "_");
 
-                // ZIP ファイルの保存先（親ディレクトリに {appName}_v{sanitizedVersion}.zip として保存）
+                // ZIP ファイルの保存先（ビルドディレクトリの一つ上のディレクトリに保存）
                 var zipFileName = $"{appName}_v{sanitizedVersion}.zip";
-                var zipFilePath = Path.Combine(parentDirectory, zipFileName);
+                var zipFilePath = Path.Combine(buildOutputDirectory, "..", zipFileName);
 
                 // 既存の ZIP ファイルを削除
                 if (File.Exists(zipFilePath))
@@ -235,11 +231,10 @@ namespace uDesktopMascot.Editor
                 }
 
                 // ビルドディレクトリを最大圧縮で ZIP 圧縮
-                CompressDirectory(buildDirectory, zipFilePath, CompressionLevel.Optimal);
+                CompressDirectory(buildOutputDirectory, zipFilePath, CompressionLevel.Optimal);
 
                 Log.Debug($"ビルドフォルダを最大圧縮で ZIP 圧縮しました: {zipFilePath}");
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 Log.Error($"ビルドフォルダの ZIP 圧縮中にエラーが発生しました: {ex.Message}");
             }
@@ -253,25 +248,38 @@ namespace uDesktopMascot.Editor
         /// <param name="compressionLevel">圧縮レベル</param>
         private static void CompressDirectory(string sourceDir, string zipFilePath, CompressionLevel compressionLevel)
         {
-            // ZIP 圧縮を開始
-            using var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create);
-            var files = Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories);
-            foreach (var file in files)
+            Log.Debug($"ディレクトリを圧縮中: {sourceDir}");
+            try
             {
-                // ファイルの相対パスを取得
-                var relativePath = GetRelativePath(sourceDir, file);
-
-                // ZIP エントリとして追加
-                var entry = zipArchive.CreateEntryFromFile(file, relativePath, compressionLevel);
-                var fi = new FileInfo(file);
-                entry.LastWriteTime = fi.LastWriteTime;
-                if (TryGetUnixMode(file, out var mode))
+                using (var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create))
                 {
-                    entry.ExternalAttributes = (mode & 0xFFF) << 16;
+                    var files = Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories);
+                    Log.Debug($"ファイル数: {files.Length}");
+                    foreach (var file in files)
+                    {
+                        var relativePath = GetRelativePath(sourceDir, file);
+
+                        // エントリを作成
+                        var entry = zipArchive.CreateEntry(relativePath, compressionLevel);
+
+                        // エントリのプロパティを設定
+                        var fi = new FileInfo(file);
+                        entry.LastWriteTime = fi.LastWriteTime;
+
+                        // ファイル内容をエントリに書き込む
+                        using var entryStream = entry.Open();
+                        using var fileStream = File.OpenRead(file);
+                        fileStream.CopyTo(entryStream);
+                    }
                 }
+
+                Log.Debug($"ビルドフォルダを最大圧縮で ZIP 圧縮しました: {zipFilePath}");
+            } catch (Exception ex)
+            {
+                Log.Error($"ZIP 圧縮中にエラーが発生しました: {ex.Message}");
             }
         }
-        
+
         /// <summary>
         ///    README ファイルをビルドフォルダにコピーする
         /// </summary>
@@ -287,7 +295,7 @@ namespace uDesktopMascot.Editor
                 Debug.LogWarning($"READMEファイルが見つかりません: {sourceReadmePath}");
                 return;
             }
-            
+
             // ビルドフォルダにコピー
             var destReadmePath = Path.Combine(buildDirectory, "README.txt");
             File.Copy(sourceReadmePath, destReadmePath, true);
@@ -340,7 +348,7 @@ namespace uDesktopMascot.Editor
         [DllImport("libc", EntryPoint = "stat", SetLastError = true)]
         private static extern int sys_stat(string path, out Stat buf);
 #endif
-        
+
         private static bool TryGetUnixMode(string path, out UInt16 mode)
         {
 #if UNITY_EDITOR_OSX
@@ -410,7 +418,7 @@ namespace uDesktopMascot.Editor
         {
             var sourceWebUIPath = Path.Combine(Application.dataPath, "WebUI");
             var destWebUIPath = Path.Combine(streamingAssetsPath, "WebUI");
-            
+
             if (Directory.Exists(sourceWebUIPath))
             {
                 foreach (var file in Directory.GetFiles(sourceWebUIPath, "*", SearchOption.AllDirectories))
@@ -420,6 +428,7 @@ namespace uDesktopMascot.Editor
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
                     File.Copy(file, destFile, true);
                 }
+
                 Log.Debug($"WebUIファイルをコピーしました: {destWebUIPath}");
             }
         }

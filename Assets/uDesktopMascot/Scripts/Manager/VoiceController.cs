@@ -14,24 +14,9 @@ namespace uDesktopMascot
     public class VoiceController : SingletonMonoBehaviour<VoiceController>
     {
         /// <summary>
-        ///     クリックボイス
+        ///    ボイスデータ
         /// </summary>
-        [SerializeField] private List<AudioClip> clickVoice;
-
-        /// <summary>
-        ///     ドラッグボイス
-        /// </summary>
-        [SerializeField] private List<AudioClip> dragVoice;
-
-        /// <summary>
-        ///     アプリ起動時のボイス
-        /// </summary>
-        [SerializeField] private List<AudioClip> startVoice;
-
-        /// <summary>
-        ///     アプリ終了時のボイス
-        /// </summary>
-        [SerializeField] private List<AudioClip> endVoice;
+        [SerializeField] private VoiceData voiceData;
 
         /// <summary>
         ///     オーディオソース
@@ -125,7 +110,7 @@ namespace uDesktopMascot
         {
             await SoundUtility.LoadSoundsAsync(
                 StartVoiceFolderPath,
-                startVoice,
+                voiceData.StartVoice,
                 count =>
                 {
                     _startVoicesLoaded = true;
@@ -156,7 +141,7 @@ namespace uDesktopMascot
         {
             await SoundUtility.LoadSoundsAsync(
                 EndVoiceFolderPath,
-                endVoice,
+                voiceData.EndVoice,
                 count =>
                 {
                     _endVoicesLoaded = true;
@@ -185,7 +170,7 @@ namespace uDesktopMascot
         {
             await SoundUtility.LoadSoundsAsync(
                 ClickVoiceFolderPath,
-                clickVoice,
+                voiceData.ClickVoice,
                 count =>
                 {
                     _clickVoicesLoaded = true;
@@ -214,7 +199,7 @@ namespace uDesktopMascot
         {
             await SoundUtility.LoadSoundsAsync(
                 DragVoiceFolderPath,
-                dragVoice,
+                voiceData.DragVoice,
                 count =>
                 {
                     _dragVoicesLoaded = true;
@@ -247,7 +232,7 @@ namespace uDesktopMascot
                 return;
             }
 
-            if (clickVoice == null || clickVoice.Count == 0)
+            if (voiceData.ClickVoice == null || voiceData.ClickVoice.Count == 0)
             {
                 return;
             }
@@ -259,7 +244,7 @@ namespace uDesktopMascot
             }
 
             // 新しい音声を再生
-            var clip = clickVoice[Random.Range(0, clickVoice.Count)];
+            var clip = voiceData.ClickVoice[Random.Range(0, voiceData.ClickVoice.Count)];
             _audioSource.clip = clip;
             _audioSource.Play();
         }
@@ -275,7 +260,7 @@ namespace uDesktopMascot
                 return;
             }
 
-            if (dragVoice == null || dragVoice.Count == 0)
+            if (voiceData.DragVoice == null || voiceData.DragVoice.Count == 0)
             {
                 return;
             }
@@ -287,11 +272,29 @@ namespace uDesktopMascot
             }
 
             // 新しい音声を再生
-            var clip = dragVoice[Random.Range(0, dragVoice.Count)];
+            var clip = voiceData.DragVoice[Random.Range(0, voiceData.DragVoice.Count)];
             _audioSource.clip = clip;
             _audioSource.Play();
         }
-
+        
+        /// <summary>
+        ///    アプリ起動時のボイスがロードされているかどうか
+        /// </summary>
+        /// <returns></returns>
+        private bool IsStartVoicesLoaded()
+        {
+            return _startVoicesLoaded;
+        }
+        
+        /// <summary>
+        ///   アプリ終了時のボイスがロードされているかどうか
+        /// </summary>
+        /// <returns></returns>
+        private bool IsEndVoicesLoaded()
+        {
+            return _endVoicesLoaded;
+        }
+        
         /// <summary>
         ///     アプリ起動時のボイスを再生する
         /// </summary>
@@ -299,11 +302,13 @@ namespace uDesktopMascot
         {
             if (!_startVoicesLoaded)
             {
-                // ロードが完了していない場合は待機
-                await UniTask.WaitUntil(() => _startVoicesLoaded, cancellationToken: cancellationToken);
+                // クロージャを作成せずにロード完了を待機
+                await UniTask.WaitUntil(IsStartVoicesLoaded, cancellationToken: cancellationToken);
             }
+            
+            Log.Debug("アプリ起動時のボイスをロード待ち完了。");
 
-            if (startVoice == null || startVoice.Count == 0)
+            if (voiceData.StartVoice == null || voiceData.StartVoice.Count == 0)
             {
                 return;
             }
@@ -314,7 +319,7 @@ namespace uDesktopMascot
                 _audioSource.Stop();
             }
 
-            var clip = startVoice[Random.Range(0, startVoice.Count)];
+            var clip = voiceData.StartVoice[Random.Range(0, voiceData.StartVoice.Count)];
             _audioSource.clip = clip;
             _audioSource.Play();
 
@@ -330,10 +335,10 @@ namespace uDesktopMascot
             if (!_endVoicesLoaded)
             {
                 // ロードが完了していない場合は待機
-                await UniTask.WaitUntil(() => _endVoicesLoaded, cancellationToken: cancellationToken);
+                await UniTask.WaitUntil(IsEndVoicesLoaded, cancellationToken: cancellationToken);
             }
 
-            if (endVoice == null || endVoice.Count == 0)
+            if (voiceData.EndVoice == null || voiceData.EndVoice.Count == 0)
             {
                 return;
             }
@@ -344,7 +349,7 @@ namespace uDesktopMascot
                 _audioSource.Stop();
             }
 
-            var clip = endVoice[Random.Range(0, endVoice.Count)];
+            var clip = voiceData.EndVoice[Random.Range(0, voiceData.EndVoice.Count)];
             _audioSource.clip = clip;
             _audioSource.Play();
 

@@ -1,10 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.IO;
+using Cysharp.Threading.Tasks;
 using Kirurobo;
 using Unity.Logging;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using System.Threading;
-using System.IO;
 using uDesktopMascot.Web.Cmd;
 
 namespace uDesktopMascot
@@ -20,11 +21,6 @@ namespace uDesktopMascot
         [SerializeField] private UniWindowController windowController;
 
         /// <summary>
-        ///   アップグレードダイアログを表示する
-        /// </summary>
-        [SerializeField] private ShowUpdateDialog showUpdateDialog;
-
-        /// <summary>
         /// キャンセルトークンソース
         /// </summary>
         private CancellationTokenSource _cancellationTokenSource;
@@ -38,7 +34,21 @@ namespace uDesktopMascot
         /// Webサーバーのホストクラス
         /// </summary>
         private WebServiceHost _webServiceHost;
+        
+        /// <summary>
+        /// モデルのダウンローダー
+        /// </summary>
+        private ModelDownloader _modelDownloader;
+        
+        /// <summary>
+        /// モデルを保存するパス
+        /// </summary>
+        private string _modelSavePath;
 
+        /// <summary>
+        /// アップデートダイアログ
+        /// </summary>
+        private ShowUpdateDialog _showUpdateDialog;
 
         private protected override void Awake()
         {
@@ -47,31 +57,23 @@ namespace uDesktopMascot
             _cancellationTokenSource = new CancellationTokenSource();
             _checkVersion = new CheckVersion();
 
-            LoadSetting();
-
             // ローカライゼーションを設定
             SetLocalizationAsync().Forget();
 
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
-
+            
+            // モデルのダウンロードを開始
+            _modelSavePath = Path.Combine(Application.streamingAssetsPath, Constant.ModelFileName);
+            StartModelDownloadAsync(_modelSavePath).Forget();
         }
 
         private void Start()
         {
-            SetEvent();
+            LoadSetting();
 
             // アップデートチェックを非同期に開始
             CheckUpdateAsync().Forget();
-        }
-        
-
-        /// <summary>
-        ///   イベントを設定
-        /// </summary>
-        private void SetEvent()
-        {
-            showUpdateDialog.OnClose = HideSkipUpdateDialog;
         }
 
         /// <summary>
@@ -87,12 +89,58 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        ///   ウィンドウコントローラーのHitTestフラグを強制的に更新
+        /// </summary>
+        /// <param name="isHitTest"></param>
+        public void ForceStopUniWinControllerHitTestFlag(bool isHitTest)
+        {
+            windowController.IsForceHitTestStop = isHitTest;
+        }
+
+        /// <summary>
+        ///   モデルのダウンロードを開始
+        /// </summary>
+        /// <param name="modelSavePath"></param>
+        private async UniTaskVoid StartModelDownloadAsync(string modelSavePath)
+        {
+            if (File.Exists(modelSavePath))
+            {
+                ModelDownloader.ModelDownloadProgressEnum = ModelDownloadProgressEnum.DownloadCompleted;
+                Log.Info("モデルは既にダウンロードされています。");
+                return;
+            }
+
+            _modelDownloader = new ModelDownloader();
+            _modelDownloader.OnProgressChanged += progress =>
+            {
+                Log.Info($"モデルのダウンロード進捗: {progress * 100:F2}%");
+            };
+            _modelDownloader.OnDownloadCompleted += () =>
+            {
+                Log.Info("モデルのダウンロードが完了しました。");
+            };
+            _modelDownloader.OnDownloadFailed += ex =>
+            {
+                Log.Error($"モデルのダウンロードに失敗しました: {ex.Message}");
+            };
+
+            await _modelDownloader.DownloadModelAsync(Constant.ModelDownloadUrl, modelSavePath,_cancellationTokenSource.Token);
+        }
+
+        /// <summary>
         /// 新しいバージョンがあるかどうかをチェック
         /// </summary>
         private async UniTask CheckUpdateAsync()
         {
-            // アップデートチェック
-            var isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
+            bool isUpdateAvailable = false;
+            try
+            {
+                isUpdateAvailable = await _checkVersion.IsUpdateAvailable(_cancellationTokenSource.Token);
+            } catch (Exception e)
+            {
+                Log.Error($"アップデートチェック中にエラーが発生しました。{e}");
+                return;
+            }
 
             if (isUpdateAvailable)
             {
@@ -101,6 +149,10 @@ namespace uDesktopMascot
                 // スキップしたバージョンを取得
                 var skippedVersion = displaySettings.SkippedVersion;
 
+                _showUpdateDialog =
+                    UIManager.Instance.PushDialog<ShowUpdateDialog>(Constant.ShowUpdateDialog, null,
+                        SaveSkipUpdateDialog);
+
                 // スキップしたバージョンが設定されている場合
                 if (!string.IsNullOrEmpty(skippedVersion))
                 {
@@ -108,29 +160,19 @@ namespace uDesktopMascot
                     if (_checkVersion.IsNewerVersion(_checkVersion.LatestVersion, skippedVersion))
                     {
                         // 新しいバージョンがある場合、ダイアログを表示
-                        showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
-                    }
-                    else
+                        _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion, _cancellationTokenSource.Token)
+                            .Forget();
+                    } else
                     {
                         // スキップしたバージョンと同じかそれより古い場合、ダイアログを表示しない
                         Log.Info("ユーザーがスキップしたバージョンのため、アップデートダイアログを表示しません。");
                     }
-                }
-                else
+                } else
                 {
                     // スキップしたバージョンがない場合、ダイアログを表示
-                    showUpdateDialog.ShowAsync(_checkVersion.LatestVersion,_cancellationTokenSource.Token).Forget();
+                    _showUpdateDialog.ShowAsync(_checkVersion.LatestVersion, _cancellationTokenSource.Token).Forget();
                 }
             }
-        }
-        
-        /// <summary>
-        ///   アップグレードダイアログを非表示にする
-        /// </summary>
-        private void HideSkipUpdateDialog()
-        {
-            SaveSkipUpdateDialog();
-            showUpdateDialog.HideAsync().Forget();
         }
 
         /// <summary>
@@ -141,8 +183,8 @@ namespace uDesktopMascot
             var displaySettings = ApplicationSettings.Instance.Display;
 
             // ユーザーがスキップを選択した場合、現在の最新バージョンを保存
-            displaySettings.SkippedVersion = showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion :
-                string.Empty;
+            displaySettings.SkippedVersion =
+                _showUpdateDialog.SkipShowUpgradeDialog ? _checkVersion.LatestVersion : string.Empty;
 
             ApplicationSettings.Instance.SaveSettings();
         }
@@ -160,7 +202,7 @@ namespace uDesktopMascot
             if (!isQualityLevelValid)
             {
                 // 無効な場合、品質レベルを動的に調整
-                qualityLevel = QualityLevelAdjuster.AdjustQualityLevel();
+                qualityLevel = QualityLevelUtility.AdjustQualityLevel();
                 QualitySettings.SetQualityLevel(qualityLevel, true);
                 Log.Info($"品質レベルをシステムスペックに基づき {QualitySettings.names[qualityLevel]} に設定しました。");
 
@@ -170,8 +212,7 @@ namespace uDesktopMascot
                 // 設定ファイルを更新
                 ApplicationSettings.Instance.SaveSettings();
                 Log.Info("動的に調整した品質レベルを設定ファイルに保存しました。");
-            }
-            else
+            } else
             {
                 // 有効な場合、設定ファイルの値を使用
                 QualitySettings.SetQualityLevel(qualityLevel, true);
@@ -183,8 +224,7 @@ namespace uDesktopMascot
             {
                 Application.targetFrameRate = performanceSettings.TargetFrameRate;
                 Log.Info($"ターゲットフレームレートを {Application.targetFrameRate} に設定しました。");
-            }
-            else
+            } else
             {
                 // 無効な場合、デフォルト値を設定し、設定ファイルを更新
                 Application.targetFrameRate = 60; // デフォルト値
@@ -213,12 +253,12 @@ namespace uDesktopMascot
                 // 選択したロケールを設定
                 LocalizationSettings.SelectedLocale = selectedLocale;
                 Log.Info($"ロケールを '{selectedLocale.LocaleName}' に設定しました。");
-            }
-            else
+            } else
             {
                 // 対応するロケールがない場合はデフォルトロケール（英語）を設定
                 LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale("en");
-                Log.Warning($"システム言語 '{systemLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
+                Log.Warning(
+                    $"システム言語 '{systemLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
             }
         }
 
@@ -238,6 +278,15 @@ namespace uDesktopMascot
         }
 
         /// <summary>
+        ///  サーバーのポート番号を取得
+        /// </summary>
+        /// <returns>ポート番号</returns>
+        public int GetPort()
+        {
+            return _webServiceHost?.GetPort() ?? 0;
+        }
+
+        /// <summary>
         ///    Webサーバーを破棄
         /// </summary>
         public void DisposeWebServer()
@@ -251,6 +300,7 @@ namespace uDesktopMascot
         /// </summary>
         private void OnDestroy()
         {
+            ApplicationSettings.Instance.SaveSettings();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _webServiceHost?.Dispose();

@@ -14,24 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_prefab: {fileID: -1728013695380148634, guid: 0643c491492f7ff44af830bb4c19e61e, type: 3}
   Meta:
-    Name: A
+    Name: "\u30C7\u30D5\u30A9"
     Version: 0.0.1
     Authors:
-    - kou
+    - "\u30A2\u30AA\u30BE\u30E9"
     CopyrightInformation: 
     ContactInformation: 
     References: []
     ThirdPartyLicenses: 
     Thumbnail: {fileID: 2800000, guid: 130855968e3d6724eafaad1f2648911c, type: 3}
-    AvatarPermission: 0
-    ViolentUsage: 0
-    SexualUsage: 0
-    CommercialUsage: 0
-    PoliticalOrReligiousUsage: 0
-    AntisocialOrHateUsage: 0
+    AvatarPermission: 2
+    ViolentUsage: 1
+    SexualUsage: 1
+    CommercialUsage: 2
+    PoliticalOrReligiousUsage: 1
+    AntisocialOrHateUsage: 1
     CreditNotation: 0
-    Redistribution: 0
-    Modification: 0
+    Redistribution: 1
+    Modification: 2
     OtherLicenseUrl: 
   Expression:
     Happy: {fileID: 11400000, guid: 0e29414f73491944a842b84aa3d6dec3, type: 2}

@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "ai.undream.llm": "https://github.com/undreamai/LLMUnity.git",
     "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.ayutaz.uniwinc": "https://github.com/ayutaz/UniWindowController.git#upm",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.cysharp.zstring": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
     "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
     "com.frozenstorminteractive.assimp.macos": "4.1.0",
     "com.frozenstorminteractive.assimp.windows": "4.1.0",
@@ -18,6 +20,7 @@
     "com.unity.multiplayer.center": "1.0.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.playablegraph-visualizer": "0.2.1-preview.3",
+    "com.unity.recorder": "5.1.2",
     "com.unity.render-pipelines.universal": "17.0.3",
     "com.unity.test-framework": "1.4.5",
     "com.unity.timeline": "1.8.7",
@@ -26,6 +29,7 @@
     "com.unity.visualscripting": "1.9.5",
     "com.vrmc.gltf": "https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v0.128.1",
     "com.vrmc.vrm": "https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM10#v0.128.1",
+    "io.github.gkngkc.unity-standalone-file-browser": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
     "jp.amagamina.overwriter": "https://github.com/ina-amagami/unity-overwriter.git",
     "jp.lilxyzw.liltoon": "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#master",
     "com.unity.modules.accessibility": "1.0.0",

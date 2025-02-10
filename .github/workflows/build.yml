@@ -121,6 +121,7 @@ jobs:
           version: ${{ needs.check-branch.outputs.current_version }}
 
       - name: Update setup.iss
+        if: ${{ github.event_name != 'pull_request' && github.ref != 'refs/heads/develop' }}
         shell: bash
         run: |
           git config --global user.name "github-actions"

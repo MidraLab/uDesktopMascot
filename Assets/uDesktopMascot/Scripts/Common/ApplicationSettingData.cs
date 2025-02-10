@@ -112,6 +112,11 @@ namespace uDesktopMascot
                 if (_rotationZ < 0) _rotationZ += 360.0f;
             }
         }
+
+        /// <summary>
+        /// キャラクターのShaderにLilToonを使用するかどうか
+        /// </summary>
+        public bool UseLilToon { get; set; } = false;
     }
 
     /// <summary>

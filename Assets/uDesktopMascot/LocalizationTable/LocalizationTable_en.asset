@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: Model addition/change
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
@@ -48,8 +48,40 @@ MonoBehaviour:
     m_Localized: Do not display the dialog until the next version.
     m_Metadata:
       m_Items: []
-  - m_Id: 3977592391348224
-    m_Localized: WebUI
+  - m_Id: 4547369455259648
+    m_Localized: Send
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Web UI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: Addition
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: Path to add the model
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: Add VRM model by dragging.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: Select a model from the folder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Downloading the model...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: Failed to download the model.
     m_Metadata:
       m_Items: []
   references:
