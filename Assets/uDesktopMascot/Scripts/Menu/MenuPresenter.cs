@@ -213,7 +213,12 @@ namespace uDesktopMascot
             path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
 #else
             // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
-            string rootPath = Directory.GetParent(Application.dataPath).FullName;
+            string rootPath = Application.platform switch
+            {
+                // macOSの場合、Application.dataPath は AppName.app/Contents なので2つ上の親ディレクトリを取得
+                RuntimePlatform.OSXPlayer => Directory.GetParent(Application.dataPath).Parent.FullName,
+                _ => Directory.GetParent(Application.dataPath).FullName
+            };
             path = Path.Combine(rootPath, "README.txt");
 #endif
 
