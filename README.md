@@ -9,19 +9,19 @@
 **注意**: 上記の言語（English、中文、Español、Français）は、GPT-4o-miniによる自動翻訳で生成されています。翻訳の精度やニュアンスに関しては、原文（日本語）をご参照ください。
 
 <!-- TOC -->
-* [uDesktopMascot](#udesktopmascot)
-  * [概要](#概要)
-  * [機能一覧](#機能一覧)
-  * [macOSでの実行について](#macosでの実行について)
-  * [requirements](#requirements)
-  * [license](#license)
-  * [素材について](#素材について)
-  * [インストーラー作成方法](#インストーラー作成方法)
-    * [Windows](#windows)
-    * [macOS](#macos)
-  * [制作者クレジット](#制作者クレジット)
-  * [3rd Party Notices](#3rd-party-notices)
-  * [sponsor](#sponsor)
+- [uDesktopMascot](#udesktopmascot)
+  - [概要](#概要)
+  - [機能一覧](#機能一覧)
+  - [macOSでの実行について](#macosでの実行について)
+  - [requirements](#requirements)
+  - [license](#license)
+  - [素材について](#素材について)
+  - [インストーラー作成方法](#インストーラー作成方法)
+    - [Windows](#windows)
+    - [macOS](#macos)
+  - [制作者クレジット](#制作者クレジット)
+  - [3rd Party Notices](#3rd-party-notices)
+  - [sponsor](#sponsor)
 <!-- TOC -->
 
 ## 概要
@@ -158,6 +158,14 @@ xattr -r -c uDesktopMascot.app
 ## インストーラー作成方法
 ### Windows
 * Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+```
+uDesktopMasscot
+└── build
+    └── uDesktopMasscot
+        ├── uDesktopMascot.exe
+        └── README.txt
+        ...
+```
 
 * [Inno Setup](https://www.jrsoftware.org/isdl.php) をインストールする。
   
@@ -172,7 +180,14 @@ xattr -r -c uDesktopMascot.app
 ### macOS
 macOSのPCでのみインストーラーを作成できます。
 
-* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+* Unityで`build/uDesktopMascot`フォルダに`uDesktopMascot`という名前でビルドする。
+```
+uDesktopMasscot
+└── build
+    └── uDesktopMasscot
+        ├── uDesktopMascot.app
+        └── README.txt
+```
 
 * 以下のコマンドを実行する。
 ```sh
