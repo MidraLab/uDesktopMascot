@@ -35,10 +35,6 @@ namespace uDesktopMascot
         /// </summary>
         private WebServiceHost _webServiceHost;
 
-        private JetsUtility _jetsUtility;
-
-        public JetsUtility JetsUtility => _jetsUtility;
-
         /// <summary>
         /// モデルのダウンローダー
         /// </summary>
@@ -66,8 +62,6 @@ namespace uDesktopMascot
 
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
-
-            _jetsUtility = new JetsUtility();
 
             // モデルのダウンロードを開始
             _modelSavePath = Path.Combine(Application.streamingAssetsPath, Constant.ModelFileName);
