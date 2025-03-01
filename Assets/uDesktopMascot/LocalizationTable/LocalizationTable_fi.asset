@@ -19,67 +19,67 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 552562152116224
-    m_Localized: 
+    m_Localized: Sovelluksen sulkeminen
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: "Malli lis\xE4ys/muutos"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
-    m_Localized: 
+    m_Localized: Apua
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283131
-    m_Localized: 
+    m_Localized: Asetus
     m_Metadata:
       m_Items: []
   - m_Id: 2499933916303360
-    m_Localized: 
+    m_Localized: Uusi versio v{0} on julkaistu.
     m_Metadata:
       m_Items: []
   - m_Id: 3116372423544832
-    m_Localized: 
+    m_Localized: Sulje
     m_Metadata:
       m_Items: []
   - m_Id: 3116588740579328
-    m_Localized: 
+    m_Localized: "\xC4l\xE4 n\xE4yt\xE4 dialogia seuraavaan versioon asti."
     m_Metadata:
       m_Items: []
   - m_Id: 4547369455259648
-    m_Localized: 
+    m_Localized: "L\xE4het\xE4"
     m_Metadata:
       m_Items: []
   - m_Id: 4599798494334976
-    m_Localized: 
+    m_Localized: Keskustelu
     m_Metadata:
       m_Items: []
   - m_Id: 4600571496173568
-    m_Localized: 
+    m_Localized: "Verkkosivun k\xE4ytt\xF6liittym\xE4"
     m_Metadata:
       m_Items: []
   - m_Id: 5073601682935808
-    m_Localized: 
+    m_Localized: "Lis\xE4ys"
     m_Metadata:
       m_Items: []
   - m_Id: 5074280786890752
-    m_Localized: 
+    m_Localized: "Lis\xE4tt\xE4v\xE4n mallin polku"
     m_Metadata:
       m_Items: []
   - m_Id: 5075115772153856
-    m_Localized: 
+    m_Localized: "Lis\xE4\xE4 VRM-malli raahaamalla."
     m_Metadata:
       m_Items: []
   - m_Id: 5282738060595200
-    m_Localized: 
+    m_Localized: Valitse malli kansiosta
     m_Metadata:
       m_Items: []
   - m_Id: 5814746641797120
-    m_Localized: 
+    m_Localized: Lataus malli...
     m_Metadata:
       m_Items: []
   - m_Id: 5824753848487936
-    m_Localized: 
+    m_Localized: "Mallin lataus ep\xE4onnistui."
     m_Metadata:
       m_Items: []
   references:

@@ -19,67 +19,67 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 552562152116224
-    m_Localized: 
+    m_Localized: "Uygulama kapand\u0131."
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283136
-    m_Localized: 
+    m_Localized: "Model ekleme/de\u011Fi\u015Ftirme"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283134
-    m_Localized: 
+    m_Localized: "Yard\u0131m"
     m_Metadata:
       m_Items: []
   - m_Id: 557971768283131
-    m_Localized: 
+    m_Localized: Ayarlar
     m_Metadata:
       m_Items: []
   - m_Id: 2499933916303360
-    m_Localized: 
+    m_Localized: "Yeni v{0} versiyonu yay\u0131nland\u0131."
     m_Metadata:
       m_Items: []
   - m_Id: 3116372423544832
-    m_Localized: 
+    m_Localized: Kapatmak
     m_Metadata:
       m_Items: []
   - m_Id: 3116588740579328
-    m_Localized: 
+    m_Localized: "Sonraki s\xFCr\xFCme kadar diyalog g\xF6sterme."
     m_Metadata:
       m_Items: []
   - m_Id: 4547369455259648
-    m_Localized: 
+    m_Localized: "G\xF6nderim"
     m_Metadata:
       m_Items: []
   - m_Id: 4599798494334976
-    m_Localized: 
+    m_Localized: sohbet
     m_Metadata:
       m_Items: []
   - m_Id: 4600571496173568
-    m_Localized: 
+    m_Localized: "Web Aray\xFCz\xFC"
     m_Metadata:
       m_Items: []
   - m_Id: 5073601682935808
-    m_Localized: 
+    m_Localized: Eklemek
     m_Metadata:
       m_Items: []
   - m_Id: 5074280786890752
-    m_Localized: 
+    m_Localized: "Eklemek i\xE7in modelin yolu"
     m_Metadata:
       m_Items: []
   - m_Id: 5075115772153856
-    m_Localized: 
+    m_Localized: "VRM modelini s\xFCr\xFCkleyerek ekle."
     m_Metadata:
       m_Items: []
   - m_Id: 5282738060595200
-    m_Localized: 
+    m_Localized: "Klas\xF6rden model se\xE7in."
     m_Metadata:
       m_Items: []
   - m_Id: 5814746641797120
-    m_Localized: 
+    m_Localized: Model indiriliyor...
     m_Metadata:
       m_Items: []
   - m_Id: 5824753848487936
-    m_Localized: 
+    m_Localized: "Modelin indirilmesi\\nba\u015Far\u0131s\u0131z oldu."
     m_Metadata:
       m_Items: []
   references:
