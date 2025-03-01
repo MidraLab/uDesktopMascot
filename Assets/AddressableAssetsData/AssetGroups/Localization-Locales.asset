@@ -27,6 +27,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e3414cef4998b94887f4922611dd42f
+    m_Address: Chinese (Traditional) (zh-TW)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2466dae8c78f5f44dab9ebf4e8fde911
+    m_Address: Chinese (Simplified) (zh-CN)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 262b2cbd020367447bb61a17371f51fe
     m_Address: Japanese (ja)
     m_ReadOnly: 1
@@ -45,14 +57,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b72312d6922d264aab36f6522ab3fae
+    m_Address: Turkish (tr)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 390146c362a7d564990655143e2464e0
     m_Address: Italian (it)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 50db5db47800c9f4687b9509adf61215
-    m_Address: Dutch (Netherlands) (nl-NL)
+  - m_GUID: 7531d8e3a4676a9459f1c9d842375c7d
+    m_Address: Hindi (hi)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
@@ -63,14 +81,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a1edff2f8765dbc4fa19cf561cee337c
-    m_Address: Polish (Poland) (pl-PL)
+  - m_GUID: 98e6e19c39f16094ca53a02429dd7540
+    m_Address: Swedish (sv)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e7c84b9a3a59fa144a7d2c40f4e9609c
-    m_Address: Korean (South Korea) (ko-KR)
+  - m_GUID: db10a78a8e76e664b9a1839c1c2c7e21
+    m_Address: Dutch (nl)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de4cff44d0711544a92631f1dba0d50a
+    m_Address: Russian (ru)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
@@ -81,14 +105,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: efc5a76855770514a9938e6187271a34
-    m_Address: Japanese (Japan) (ja-JP)
+  - m_GUID: f5276f87b47a475439281037e69c6c4b
+    m_Address: Korean (ko)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f5276f87b47a475439281037e69c6c4b
-    m_Address: Korean (ko)
+  - m_GUID: fdfd0f075e38066429e7b064002ec926
+    m_Address: Portuguese (Brazil) (pt-BR)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
