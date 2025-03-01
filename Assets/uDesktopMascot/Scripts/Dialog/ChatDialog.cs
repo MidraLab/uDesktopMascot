@@ -47,6 +47,11 @@ namespace uDesktopMascot
         /// チャット履歴テキストビルダー
         /// </summary>
         private readonly StringBuilder _chatTextBuilder = new StringBuilder();
+        
+        /// <summary>
+        /// TTSのAudioSource
+        /// </summary>
+        [SerializeField] private AudioSource ttsAudioSource;
 
         /// <summary>
         /// AIの返信を蓄積するビルダー

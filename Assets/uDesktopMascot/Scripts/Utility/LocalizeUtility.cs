@@ -57,5 +57,41 @@ namespace uDesktopMascot
                 _ => null
             };
         }
+        
+        /// <summary>
+        /// 言語コードから対応する SystemLanguage を取得する
+        /// </summary>
+        /// <param name="languageCode">言語コード（例："en", "ja"）</param>
+        /// <returns>対応する SystemLanguage</returns>
+        public static SystemLanguage GetSystemLanguageFromCode(string languageCode)
+        {
+            return languageCode switch
+            {
+                "en" => SystemLanguage.English,
+                "fr" => SystemLanguage.French,
+                "it" => SystemLanguage.Italian,
+                "ja" => SystemLanguage.Japanese,
+                "ko" => SystemLanguage.Korean,
+                _ => SystemLanguage.English
+            };
+        }
+        
+        /// <summary>
+        /// SystemLanguage から対応する言語コード（国の文字）を取得する
+        /// </summary>
+        /// <param name="language">SystemLanguage</param>
+        /// <returns>対応する言語コード（例："en", "ja"）</returns>
+        public static string GetLanguageCodeFromSystemLanguage(SystemLanguage language)
+        {
+            return language switch
+            {
+                SystemLanguage.English => "en",
+                SystemLanguage.French => "fr",
+                SystemLanguage.Italian => "it",
+                SystemLanguage.Japanese => "ja",
+                SystemLanguage.Korean => "ko",
+                _ => "en"
+            };
+        }
     }
 }
