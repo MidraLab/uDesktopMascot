@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: LocalizationTable_es
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 552562152116224
+    m_Localized: "Cerrar aplicaci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283136
+    m_Localized: "A\xF1adir o cambiar el modelo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283134
+    m_Localized: ayuda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283131
+    m_Localized: "Configuraci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "Se ha lanzado la nueva versi\xF3n de v{0}."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116372423544832
+    m_Localized: cerrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: "No mostrar di\xE1logos hasta la pr\xF3xima versi\xF3n."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4547369455259648
+    m_Localized: Enviar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Interfaz web
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: Agregar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: "Ruta del modelo a a\xF1adir"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: Agregar un modelo VRM arrastrando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: Seleccionar modelo desde la carpeta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Modelo\nDescargando...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: "La descarga del modelo\\nfall\xF3."
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

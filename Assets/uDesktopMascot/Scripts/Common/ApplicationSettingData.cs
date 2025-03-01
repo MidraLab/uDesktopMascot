@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace uDesktopMascot
 {
@@ -183,6 +184,11 @@ namespace uDesktopMascot
         /// アップデータダイアログでスキップするかversion
         /// </summary>
         public string SkippedVersion { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// アプリの言語設定
+        /// </summary>
+        public string Language { get; set; } = string.Empty;
     }
 
     /// <summary>
