@@ -34,7 +34,7 @@ def translate_text(text, target_language):
         return None
 
 # 各行に対して翻訳を実行（先頭行をスキップ）
-for idx, row in df.iloc[1:].iterrows():
+for idx, row in df.iterrows():
     japanese_text = row.get(source_language_column, '')
     key = row.get('Key', '')
 
