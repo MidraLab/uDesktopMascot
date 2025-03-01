@@ -202,48 +202,25 @@ namespace uDesktopMascot
         }
 
         /// <summary>
-        /// ヘルプページ（README.txt）を環境に応じて開く
+        /// 公式のHPのクリエイター向けページを開く
         /// </summary>
         private void OpenHelp()
         {
-            string path;
-
-#if UNITY_EDITOR
-            // Unity Editorでは、Assetsフォルダ内のパスを使用
-            path = Path.Combine(Application.dataPath, "uDesktopMascot/Document/README.txt");
-#else
-            // ビルド後のアプリケーションでは、ビルドフォルダのルートへのパスを取得
-            string rootPath = Application.platform switch
+            // 開きたいURLを指定
+            string url = "https://midralab.github.io/uDesktopMascot-web/docs/category/%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB";
+    
+            try
             {
-                // macOSの場合、Application.dataPath は AppName.app/Contents なので2つ上の親ディレクトリを取得
-                RuntimePlatform.OSXPlayer => Directory.GetParent(Application.dataPath).Parent.FullName,
-                _ => Directory.GetParent(Application.dataPath).FullName
-            };
-            path = Path.Combine(rootPath, "README.txt");
-#endif
-
-            // パスをログに出力
-            Log.Info($"Attempting to open file at path: {path}");
-
-            if (File.Exists(path))
-            {
-                try
-                {
-                    // ファイルURLを作成
-                    string url = $"file:///{path.Replace("\\", "/")}";
-                    // ファイルを開く
-                    Application.OpenURL(url);
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"README.txtを開くことができませんでした:\n{e}");
-                }
+                Log.Info($"Attempting to open URL: {url}");
+                // URLを開く
+                Application.OpenURL(url);
             }
-            else
+            catch (Exception e)
             {
-                Log.Error($"README.txtが次のパスに見つかりませんでした: {path}");
+                Log.Error($"指定されたURLを開くことができませんでした:\n{e}");
             }
         }
+
 
         /// <summary>
         ///  WebUIを開く
