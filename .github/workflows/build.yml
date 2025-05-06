@@ -254,3 +254,38 @@ jobs:
         with:
           name: uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot_mac_installer_v${{ needs.check-branch.outputs.current_version }}.pkg
+  
+  deploy-itchio:
+    # Windows / mac のビルドが両方終わってから実行する
+    needs: [ build-windows, build-mac ]
+    runs-on: ubuntu-latest
+    
+    # 対象プラットフォームを行ごとに定義
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - artifact_name: Build-StandaloneWindows64-v${{ needs.check-branch.outputs.current_version }}
+            itch_channel: windows-x64
+          - artifact_name: Build-StandaloneOSX-v${{ needs.check-branch.outputs.current_version }}
+            itch_channel: osx-universal
+    
+    steps:
+      # --------- 成果物を取得 ---------
+      - name: Download ${{ matrix.artifact_name }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: build
+      
+      # --------- itch.io へ push ---------
+      - name: Push to itch.io (${{ matrix.itch_channel }})
+        uses: yeslayla/butler-publish-itchio-action@v1.0.3
+        env:
+          # **Secrets に設定必須**
+          BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_API_KEY }}
+          ITCH_USER: ${{ secrets.ITCHIO_USER }} 
+          ITCH_GAME: ${{ secrets.ITCHIO_GAME }}
+          CHANNEL: ${{ matrix.itch_channel }}
+          # build/uDesktopMascot フォルダごと push する
+          PACKAGE: build/uDesktopMascot
