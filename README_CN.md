@@ -136,7 +136,7 @@ xattr -r -c uDesktopMascot.app
 ```
 
 ## requirements
-* Unity 6000.0.31f1（IL2CPP）
+* Unity 6000.1.1f1(IL2CPP)
 
 ## license
 * 代码基于 [Apache License 2.0](LICENSE) 授权。

@@ -140,8 +140,8 @@ Dans ce cas, exécutez la commande suivante depuis le terminal :
 xattr -r -c uDesktopMascot.app
 ```
 
-## exigences
-* Unity 6000.0.31f1 (IL2CPP)
+## requirements
+* Unity 6000.1.1f1(IL2CPP)
 
 ## licence
 * Le code est sous [Apache License 2.0](LICENSE).
