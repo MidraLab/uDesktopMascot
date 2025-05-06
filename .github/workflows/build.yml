@@ -284,8 +284,8 @@ jobs:
         env:
           # **Secrets に設定必須**
           BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_API_KEY }}
-          ITCH_USER: ${{ secrets.ITCHIO_USER }} 
-          ITCH_GAME: ${{ secrets.ITCHIO_GAME }}
+          ITCH_USER: midralab
+          ITCH_GAME: uDesktopMascot
           CHANNEL: ${{ matrix.itch_channel }}
           # build/uDesktopMascot フォルダごと push する
           PACKAGE: build/uDesktopMascot
