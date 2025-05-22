@@ -1,12 +1,13 @@
 # uDesktopMascot
 
-[![Version Unity](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
-[![Versions](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
-[![Test CI Unity](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Version de Unity](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
+[![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
+[![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Demander à DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MidraLab/uDesktopMascot)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
-**Remarque** : Les langues ci-dessus (English, 中文, Español, Français) ont été générées par une traduction automatique via GPT-4o-mini. Veuillez vous référer au texte original (日本語) pour la précision et le nuance de la traduction.
+**Remarque**: Les langues ci-dessus (English, 中文, Español, Français) ont été générées par une traduction automatique de GPT-4o-mini. Pour la précision et les nuances des traductions, veuillez vous référer au texte original (日本語).
 
 <!-- TOC -->
 * [uDesktopMascot](#udesktopmascot)
@@ -16,7 +17,7 @@
   * [exigences](#exigences)
   * [licence](#licence)
   * [À propos des ressources](#à-propos-des-ressources)
-  * [Méthode de création de l'installateur](#méthode-de-création-de-linstallateur)
+  * [Comment créer un installateur](#comment-créer-un-installateur)
     * [Windows](#windows)
     * [macOS](#macos)
   * [Crédits des créateurs](#crédits-des-créateurs)
@@ -26,32 +27,34 @@
 
 ## Résumé
 
-« uDesktopMascot » est un projet open source d'application de mascotte de bureau sur le thème de `la liberté de création`. En tant qu'exemple d'une fonctionnalité, il est possible de charger des modèles au format VRM ou GLB/FBX et de les afficher sur le bureau. Il est également possible de définir librement les couleurs et les images d'arrière-plan de l'interface graphique, telles que l'écran de menu et les fenêtres d'application. Pour une liste détaillée des fonctionnalités, veuillez consulter [Liste des fonctionnalités](#liste-des-fonctionnalités).
+« uDesktopMascot » est un projet open source d'application de mascotte de bureau sur le thème de la `liberté de création`. 
+Parmi ses fonctionnalités, il est possible de charger et d'afficher des modèles aux formats VRM ou GLB/FBX sur le bureau. De plus, vous pouvez personnaliser les couleurs et les images de fond des menus et des fenêtres de l'application. 
+Pour une liste complète des fonctionnalités, veuillez consulter [Liste des fonctionnalités](#liste-des-fonctionnalités).
 
 ![](Docs/Image/AppImage.png)
 
-**Plateformes prises en charge**
+**Plateformes compatibles**
 * Windows 10/11
 * macOS
 
 ## Liste des fonctionnalités
 
-L'application comprend les fonctionnalités suivantes. Pour plus de détails, veuillez consulter la liste ci-dessous.
+L'application comprend les fonctionnalités suivantes. Veuillez consulter la liste ci-dessous pour plus de détails.
 
-L'ajout de ressources externes peut être réalisé en les plaçant dans le dossier StreamingAssets.
+Vous pouvez ajouter des actifs externes en les plaçant dans le dossier StreamingAssets.
 
 <details>
 
 <summary>Modèles et animations</summary>
 
-* Charge et affiche un fichier modèle placé dans StreamingAssets.
-  * Il prend en charge les modèles au format VRM(1.x, 0.x).
-  * Il prend en charge les modèles au format GLB/GLTF (les animations ne sont pas prises en charge).
-  * Il prend en charge les modèles au format FBX (mais certaines textures peuvent ne pas se charger. Les animations ne sont pas prises en charge).
+* Charge et affiche les fichiers modèles placés dans StreamingAssets.
+  * Prend en charge les modèles au format VRM(1.x, 0.x).
+  * Prend en charge les modèles au format GLB/GLTF. (Les animations ne sont pas prises en charge)
+  * Prend en charge les modèles au format FBX. (Cependant, certaines textures peuvent ne pas se charger. Les animations ne sont pas prises en charge.)
     * Les textures peuvent être chargées en les plaçant dans StreamingAssets/textures/.
-* Écran de sélection d'un modèle et ajout de modèles VRM.
+* Ajout de modèles VRM à partir de l'écran de sélection et d'ajout de modèles.
   * Ajout en spécifiant le chemin.
-  * Ajout à partir de la boîte de dialogue de sélection de fichiers.
+  * Ajout via la boîte de dialogue de sélection de fichiers.
 
 </details>
 
@@ -59,19 +62,19 @@ L'ajout de ressources externes peut être réalisé en les plaçant dans le doss
 
 <summary>Voix et BGM</summary>
 
-* Charge et joue des fichiers audio placés dans StreamingAssets/Voice/. Si plusieurs fichiers existent, ils sont joués de manière aléatoire.
-  * Les sons joués au clic sont chargés à partir des fichiers audio placés dans StreamingAssets/Voice/Click/.
-* Charge et joue des fichiers musicaux placés dans StreamingAssets/BGM/. S'il y en a plusieurs, ils sont également joués au hasard.
+* Charge et lit les fichiers audio placés dans SteamingAssets/Voice/. Si plusieurs fichiers sont présents, l'un d'eux sera joué au hasard.
+  * Le son joué lors d'un clic est chargé à partir des fichiers audio placés dans StreamingAssets/Voice/Click/.
+* Charge et lit les fichiers musicaux placés dans SteamingAssets/BGM/. Si plusieurs fichiers sont présents, l'un d'eux sera joué au hasard.
 * Ajout d'une voix par défaut pour le personnage.
-  * La voix par défaut utilise des enregistrements de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan).
-  * Elle est jouée au démarrage de l'application, à la fermeture de l'application et au clic.
+  * La voix par défaut utilise l'audio de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan).
+  * Elle sera jouée au démarrage de l'application, à la fermeture de l'application et lors d'un clic.
 
 </details>
 
 <details>
 
 <summary>Configuration de l'application via un fichier texte</summary>
-Le fichier application_settings.txt permet de modifier les paramètres de l'application.
+Vous pouvez changer les paramètres de l'application via le fichier application_settings.txt.
 
 La structure du fichier de configuration est la suivante :
 
@@ -99,16 +102,16 @@ AlwaysOnTop=True
 [Performance]
 TargetFrameRate=60
 QualityLevel=2
-```
+``` 
 
 </details>
 
 <details>
 
-<summary>Écran de menu</summary>
+<summary>Menu</summary>
 
-* Vous pouvez configurer l'image de fond et la couleur de fond de l'écran de menu.
-  * L'image de fond peut être chargée à partir d'un fichier image placé dans StreamingAssets/Menu/. Les formats d'image pris en charge sont :
+* Vous pouvez configurer l'image de fond et la couleur de fond du menu.
+  * L'image de fond peut être chargée à partir des fichiers d'image placés dans StreamingAssets/Menu/. Les formats d'image pris en charge sont les suivants :
     * PNG
     * JPG(JPEG)
     * BMP
@@ -116,43 +119,44 @@ QualityLevel=2
     * TGA
     * TIFF
   * La couleur de fond peut être spécifiée par un code couleur.
-* À partir de l'écran de menu, vous pouvez accéder aux fonctionnalités suivantes :
+* Accessible via le menu :
   * Écran de sélection et d'ajout de modèles
   * Fonction de chat AI
   * Fonction LocalWeb
   * Paramètres de l'application
-  * Fermeture de l'application
-* En appuyant sur le bouton de réduction de l'écran de menu, vous pouvez réduire l'application dans la zone de notification uniquement sur Windows.
-  * L'application réduite peut être à nouveau affichée en cliquant sur l'icône de la zone de notification.
+  * Quitter l'application
+* En appuyant sur le bouton de réduction du menu, vous pouvez réduire l'application dans la zone de notification sur Windows.
+  * L'application réduite peut être affichée à nouveau en cliquant sur l'icône dans la zone de notification.
 
 </details>
 
 ## Exécution sur macOS
 
-Lorsque vous exécutez l'application sur macOS, il se peut que l'application soit bloquée par GateKeeper. Dans ce cas, exécutez la commande suivante depuis le terminal :
+Lors de l'exécution de l'application sur macOS, l'application peut être bloquée par GateKeeper.
+Dans ce cas, exécutez la commande suivante à partir du terminal :
 
 ```sh
 xattr -r -c uDesktopMascot.app
 ```
 
 ## exigences
-* Unity 6000.1.1f1(IL2CPP)
+* Unity 6000.1.1f1 (IL2CPP)
 
 ## licence
-* Le code est sous [Apache License 2.0](LICENSE).
-* Les ressources suivantes sont sous [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+* Le code est sous licence [Apache License 2.0](LICENSE).
+* Les actifs suivants sont sous licence [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) :
   * BGM
-  * Modèle
+  * Modèles
 
 ## À propos des ressources
-* L'animation par défaut du personnage a été créée à l'aide des [données d'animation pour 'VRM Dolls' disponibles ici](https://fumi2kick.booth.pm/items/1655686). Nous avons vérifié qu'elle peut être distribuée dans le dépôt.
-* La police utilisée est [Noto Sans Japanese](https://fonts.google.com/noto/specimen/Noto+Sans+JP?lang=ja_Jpan). La redistribution de la police Noto Sans JP est conforme à la [SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/noto/specimen/Noto+Sans+JP/license?lang=ja_Jpan) Les droits d'auteur de la police appartiennent à l'auteur original (Google).
-* La voix par défaut est celle de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan). Nous avons préalablement confirmé auprès de COEIROINK son utilisation.
-* Les icônes des boutons proviennent de [MingCute](https://github.com/MidraLab/MingCute).
+* Les animations par défaut du personnage sont créées à l'aide du [pack de données d'animation pour "VRM Puppet Play"](https://fumi2kick.booth.pm/items/1655686). Cela a été confirmé pour diffusion dans le référentiel.
+* La police utilisée est [Noto Sans Japanese](https://fonts.google.com/noto/specimen/Noto+Sans+JP?lang=ja_Jpan). Elle est redistribuée sous la [SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/noto/specimen/Noto+Sans+JP/license?lang=ja_Jpan). Les droits d'auteur de la police appartiennent à l'auteur original (Google).
+* La voix par défaut utilise l'audio de [COEIROINK: Tsukuyomi-chan](https://coeiroink.com/character/audio-character/tsukuyomi-chan). Cela a été préalablement confirmé auprès de COEIROINK.
+* L'icône des boutons utilise [MingCute](https://github.com/MidraLab/MingCute).
 
-## Méthode de création de l'installateur
+## Comment créer un installateur
 ### Windows
-* Construire dans Unity dans un dossier `build` sous le nom `uDesktopMascot`.
+* Construisez dans Unity dans un dossier appelé `uDesktopMascot`.
 ```
 uDesktopMasscot
 └── build
@@ -162,39 +166,39 @@ uDesktopMasscot
         ...
 ```
 
-* Installer [Inno Setup](https://www.jrsoftware.org/isdl.php).
-  
-* Ouvrez-le, cliquez sur `More files` et sélectionnez le fichier `setup.iss` dans le projet.
-  
+* Installez [Inno Setup](https://www.jrsoftware.org/isdl.php).
+
+* Cliquez sur `More files` et sélectionnez le fichier `setup.iss` dans le projet.
+
 ![](Docs/Image/SetupIss-1.png)
-* Après avoir fait votre sélection, cliquez sur le bouton de lecture.
-  
+* Une fois sélectionné, cliquez sur le bouton lecture.
+
 ![](Docs/Image/SetupIss-2.png)
-* Une fois le build terminé, l'installateur sera généré à la racine du projet.
+* Une fois la construction terminée, l'installateur sera généré à la racine du projet.
 
 ### macOS
 L'installateur ne peut être créé que sur un PC macOS.
 
-* Construire dans Unity dans un dossier `build/uDesktopMascot` sous le nom `uDesktopMascot`.
+* Construisez dans Unity dans un dossier `build/uDesktopMascot` sous le nom `uDesktopMascot`.
 ```
 uDesktopMasscot
 └── build
-    └── uDesktopMasscot
+    └── uDesktopMascot
         ├── uDesktopMascot.app
         └── README.txt
 ```
 
-* Exécutez la commande suivante.
+* Exécutez la commande suivante :
 ```sh
 cd build
 productbuild --component uDesktopMascot/uDesktopMascot.app /Applications ./uDesktopMascot_mac_installer.pkg
 ```
-* Une fois la construction terminée, un fichier `uDesktopMascot_mac_installer.pkg` sera généré dans le dossier `build`.
+* Une fois la construction terminée, `uDesktopMascot_mac_installer.pkg` sera généré dans le dossier `build`.
 
 ## Crédits des créateurs
-* Modèle : « Aozora »
+* Modèle : « Aozora » 
 * BGM : MidraLab (eisuke)
-* Icône du logiciel : Yamucha
+* Icône du logiciel : Yamu-cha
 
 ## Avis de tiers
 
