@@ -45,7 +45,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: .
-          unityVersion: '6000.0.31f1'  # プロジェクトのUnityバージョンに合わせてください
+          unityVersion: '6000.1.1f1'  # プロジェクトのUnityバージョンに合わせてください
           testMode: editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           artifactsPath: './artifacts'
