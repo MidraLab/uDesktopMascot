@@ -52,6 +52,10 @@ namespace uDesktopMascot
         /// TTSのAudioSource
         /// </summary>
         [SerializeField] private AudioSource ttsAudioSource;
+        
+        [SerializeField] private Button microphoneButton;
+        
+        [SerializeField] private SwitchMicrophoneIcon microphoneIcon;
 
         /// <summary>
         /// AIの返信を蓄積するビルダー
@@ -82,6 +86,11 @@ namespace uDesktopMascot
         /// 前回の返信の長さを記録する変数
         /// </summary>
         private int _lastReplyLength = 0;
+        
+        /// <summary>
+        /// マイクがオンかどうかのフラグ
+        /// </summary>
+        private bool _isMiscrophoneOn = true;
 
         private void Start()
         {
@@ -275,6 +284,11 @@ namespace uDesktopMascot
         private void SetEvents()
         {
             sendButton.onClick.AddListener(SendMessages);
+            microphoneButton.onClick.AddListener(() =>
+            {
+                _isMiscrophoneOn = !_isMiscrophoneOn;
+                microphoneIcon.SwitchIcon(_isMiscrophoneOn);
+            });
         }
         
         /// <summary>
