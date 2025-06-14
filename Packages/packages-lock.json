@@ -544,15 +544,6 @@
       },
       "hash": "2911cb72a905ab7d8b0f9e03397235d1c0293714"
     },
-    "com.yousan.vosk": {
-      "version": "https://github.com/ayutaz/vosk-unity-asr.git?path=Assets/ThirdParty/Vosk",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.2.1"
-      },
-      "hash": "11a08765a5c4b02810def4a996eca74f6264e6e6"
-    },
     "io.github.gkngkc.unity-standalone-file-browser": {
       "version": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
       "depth": 0,

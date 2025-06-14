@@ -90,11 +90,22 @@ namespace uDesktopMascot
         /// <summary>
         /// マイクがオンかどうかのフラグ
         /// </summary>
-        private bool _isMiscrophoneOn = true;
+        private bool _isMiscrophoneOn = false;
+
+        [SerializeField] private VoskSpeechToText speechToText;
+
+        private string _lastVoiceMessage = string.Empty;
 
         private void Start()
         {
             SetEvents();
+            // マイク音声認識イベント購読
+            if (speechToText != null)
+            {
+                speechToText.OnSpeechRecognized += OnSpeechRecognized;
+            }
+            // アイコン初期化
+            microphoneIcon.SwitchIcon(_isMiscrophoneOn);
         }
 
         private protected override void OnEnable()
@@ -276,6 +287,12 @@ namespace uDesktopMascot
 
             // 入力フィールドにフォーカスをセット
             inputField.ActivateInputField();
+
+            // ユーザがマイク ON であれば録音再開
+            if (_isMiscrophoneOn)
+            {
+                speechToText?.ResumeRecording();
+            }
         }
 
         /// <summary>
@@ -288,6 +305,14 @@ namespace uDesktopMascot
             {
                 _isMiscrophoneOn = !_isMiscrophoneOn;
                 microphoneIcon.SwitchIcon(_isMiscrophoneOn);
+
+                if (speechToText == null) return;
+
+                // 録音状態をトグル
+                speechToText.ToggleRecording();
+
+                // マイクONの間はテキスト入力を無効化する
+                inputField.interactable = !_isMiscrophoneOn;
             });
         }
         
@@ -321,6 +346,63 @@ namespace uDesktopMascot
             {
                 InputController.Instance.UI.Submit.performed -= OnSubmit;
             }
+
+            if (speechToText != null)
+            {
+                speechToText.OnSpeechRecognized -= OnSpeechRecognized;
+            }
+        }
+
+        /// <summary>
+        /// 音声認識でユーザーの発話を受け取った際に呼び出される
+        /// </summary>
+        /// <param name="recognizedText">確定したテキスト</param>
+        private void OnSpeechRecognized(string recognizedText)
+        {
+            if (!_isMiscrophoneOn) return;
+            if (string.IsNullOrWhiteSpace(recognizedText)) return;
+            if (_inputBlocked) return; // AI返信中は無視
+
+            // 同一メッセージが連続で来ないように判定
+            if (recognizedText == _lastVoiceMessage) return;
+            _lastVoiceMessage = recognizedText;
+
+            SendVoiceMessage(recognizedText);
+        }
+
+        /// <summary>
+        /// 音声入力由来のメッセージを送信する
+        /// </summary>
+        private void SendVoiceMessage(string userMessage)
+        {
+            if (_inputBlocked || string.IsNullOrWhiteSpace(userMessage))
+            {
+                return;
+            }
+
+            // 入力をブロック
+            _inputBlocked = true;
+            sendButton.interactable = false;
+            inputField.interactable = false;
+
+            // ユーザーのメッセージをチャット履歴に追加
+            _chatTextBuilder.AppendLine($"あなた: {userMessage}");
+            chatText.text = _chatTextBuilder.ToString();
+
+            // ScrollToBottomを呼び出して最新のメッセージを表示
+            ScrollToBottom();
+
+            // AIの返信用のStringBuilderを初期化
+            _replyTextBuilder = new StringBuilder();
+
+            // 前回の返信の長さをリセット
+            _lastReplyLength = 0;
+
+            // LLMにユーザーのメッセージを送信し、返信を処理
+            _ = ReceiveAIResponse(userMessage);
+
+            // LLM 処理中はマイクを停止
+            speechToText?.PauseRecording();
         }
     }
 }

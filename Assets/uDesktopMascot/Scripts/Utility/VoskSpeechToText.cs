@@ -132,6 +132,23 @@ namespace uDesktopMascot
             }
         }
 
+        public void PauseRecording()
+        {
+            if (!VoiceProcessor || !VoiceProcessor.IsRecording) return;
+            _running = false;
+            VoiceProcessor.StopRecording();
+            _accumulatedText = string.Empty;
+            _silenceTimer = 0f;
+        }
+
+        public void ResumeRecording()
+        {
+            if (!VoiceProcessor || VoiceProcessor.IsRecording) return;
+            _running = true;
+            VoiceProcessor.StartRecording();
+            Task.Run(ProcessAudioLoop);
+        }
+
         private async Task ProcessAudioLoop()
         {
             markerCreate.Begin();
