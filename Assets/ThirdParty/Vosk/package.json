@@ -1,0 +1,22 @@
+{
+  "name": "com.yousan.vosk",
+  "version": "1.0.0",
+  "displayName": "Vosk Speech Recognition (Unity Binding)",
+  "description": "Offline speech recognition powered by Vosk. This package contains the C# bindings and native plugins needed to use Vosk inside Unity.",
+  "unity": "2020.3",
+  "keywords": [
+    "speech",
+    "vosk",
+    "recognition",
+    "offline",
+    "asr"
+  ],
+  "author": {
+    "name": "Vosk Community",
+    "url": "https://github.com/alphacep/vosk-api"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "license": "Apache-2.0"
+} 

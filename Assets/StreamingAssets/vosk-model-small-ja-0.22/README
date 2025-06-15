@@ -1,0 +1,8 @@
+Japanese small model for Vosk
+
+WER / CER
+
+%WER 12.68 [ 8861 / 69878, 744 ins, 1581 del, 6536 sub ] exp/chain_a/tdnn/decode_test_csj_look_fast/wer_10_0.0
+%WER 20.84 [ 23841 / 114379, 1803 ins, 9373 del, 12665 sub ] exp/chain_a/tdnn/decode_test_tedjp_look_fast/wer_9_0.0
+%CER 9.52 [ 11016 / 115745, 1707 ins, 3026 del, 6283 sub ] exp/chain_a/tdnn/decode_test_csj_look_fast/cer_10_0.0
+%CER 17.07 [ 32724 / 191731, 3502 ins, 14728 del, 14494 sub ] exp/chain_a/tdnn/decode_test_tedjp_look_fast/cer_8_0.0
