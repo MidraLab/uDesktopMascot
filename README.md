@@ -73,6 +73,21 @@
 
 <details>
 
+<summary>音声認識・AIチャット</summary>
+
+* オフライン音声認識エンジン [Vosk](https://alphacephei.com/vosk/) を統合し、マイク入力をリアルタイムにテキスト化します。
+  * 中間結果 `[STT][partial]` と確定結果 `[STT][final]` を Unity Console に表示。
+  * 無音が `VadSilenceSeconds`（既定 1.0 秒）続くとテキストが確定し、LLM へ送信されます（`[STT][send]` ログ）。
+* テキストが確定すると AI チャット機能に音声メッセージを渡し、キャラクターが応答を読み上げます。
+  * 応答生成中はマイクを自動で一時停止し、誤認識を防止します。
+* ChatDialog 画面のマイクボタンで録音の開始／停止をトグル操作できます。
+* 必要なネイティブ DLL（`libvosk.dll`, `libstdc++-6.dll`, `libgcc_s_seh-1.dll`, `libwinpthread-1.dll` など）は `Assets/Plugins/x86_64/` に配置され、ビルド時に自動でパッケージされます。
+* 音響モデル（例: `vosk-model-small-ja-0.22`）や量子化 GGUF モデルを `StreamingAssets` 配下に置くことで、ネットワーク接続なしで日本語／英語など複数言語を扱えます。
+
+</details>
+
+<details>
+
 <summary>テキストファイルによるアプリケーション設定</summary>
 application_settings.txtファイルにより、アプリケーションの設定を変更できます。
 
