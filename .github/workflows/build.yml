@@ -16,6 +16,7 @@ on:
   pull_request:
     branches:
       - main
+      - develop
     types: [opened, synchronize, reopened]
   schedule:
     - cron: '0 0 * * *'  # 毎日UTCで午前0時に実行
@@ -115,7 +116,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: StandaloneWindows64
-          unityVersion: '6000.0.31f1'
+          unityVersion: '6000.1.1f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}
@@ -227,7 +228,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: StandaloneOSX
-          unityVersion: '6000.0.31f1'
+          unityVersion: '6000.1.1f1'
           buildName: 'uDesktopMascot'
           versioning: Custom
           version: ${{ needs.check-branch.outputs.current_version }}

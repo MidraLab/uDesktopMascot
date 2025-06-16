@@ -34,12 +34,12 @@ namespace uDesktopMascot
         /// Webサーバーのホストクラス
         /// </summary>
         private WebServiceHost _webServiceHost;
-        
+
         /// <summary>
         /// モデルのダウンローダー
         /// </summary>
         private ModelDownloader _modelDownloader;
-        
+
         /// <summary>
         /// モデルを保存するパス
         /// </summary>
@@ -62,7 +62,7 @@ namespace uDesktopMascot
 
             // PCのスペック応じてQualitySettingsを変更
             SetQualityLevel();
-            
+
             // モデルのダウンロードを開始
             _modelSavePath = Path.Combine(Application.streamingAssetsPath, Constant.ModelFileName);
             StartModelDownloadAsync(_modelSavePath).Forget();
@@ -124,7 +124,8 @@ namespace uDesktopMascot
                 Log.Error($"モデルのダウンロードに失敗しました: {ex.Message}");
             };
 
-            await _modelDownloader.DownloadModelAsync(Constant.ModelDownloadUrl, modelSavePath,_cancellationTokenSource.Token);
+            await _modelDownloader.DownloadModelAsync(Constant.ModelDownloadUrl, modelSavePath,
+                _cancellationTokenSource.Token);
         }
 
         /// <summary>
@@ -242,11 +243,20 @@ namespace uDesktopMascot
         {
             await LocalizationSettings.InitializationOperation;
 
-            // システムの言語設定を取得
-            var systemLanguage = Application.systemLanguage;
+            SystemLanguage applicationLanguage;
+
+            if (ApplicationSettings.Instance.Display.Language == string.Empty)
+            {
+                applicationLanguage = Application.systemLanguage;
+                ApplicationSettings.Instance.Display.Language =
+                    LocalizeUtility.GetLanguageCodeFromSystemLanguage(applicationLanguage);
+            } else
+            {
+                applicationLanguage = LocalizeUtility.GetSystemLanguageFromCode(ApplicationSettings.Instance.Display.Language);
+            }
 
             // 対応するロケールを取得
-            var selectedLocale = LocalizeUtility.GetLocale(systemLanguage);
+            var selectedLocale = LocalizeUtility.GetLocale(applicationLanguage);
 
             if (selectedLocale != null)
             {
@@ -258,7 +268,7 @@ namespace uDesktopMascot
                 // 対応するロケールがない場合はデフォルトロケール（英語）を設定
                 LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale("en");
                 Log.Warning(
-                    $"システム言語 '{systemLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
+                    $"システム言語 '{applicationLanguage}' に対応するロケールが見つかりませんでした。デフォルトのロケールを '{LocalizationSettings.SelectedLocale.LocaleName}' に設定します。");
             }
         }
 
@@ -300,7 +310,6 @@ namespace uDesktopMascot
         /// </summary>
         private void OnDestroy()
         {
-            ApplicationSettings.Instance.SaveSettings();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _webServiceHost?.Dispose();

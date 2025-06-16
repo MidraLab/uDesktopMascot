@@ -3,6 +3,7 @@
 [![Unity Version](https://img.shields.io/badge/Unity-6000.0%2B-blueviolet?logo=unity)](https://unity.com/releases/editor/archive)
 [![Releases](https://img.shields.io/github/release/MidraLab/uDesktopMascot.svg)](https://github.com/MidraLab/uDesktopMascot/releases)
 [![Unity Test CI](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml/badge.svg)](https://github.com/MidraLab/uDesktopMascot/actions/workflows/edit-test.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MidraLab/uDesktopMascot)
 
 日本語 | [English](README_EN.md) | [中文](README_CN.md) | [Español](README_ES.md) | [Français](README_FR.md)
 
@@ -67,6 +68,21 @@
 * キャラクターのデフォルトのボイスの追加
   * デフォルトのボイスは、[COEIROINK:つくよみちゃん](https://coeiroink.com/character/audio-character/tsukuyomi-chan)の音声を使用しています。
   * アプリ起動時、アプリ終了時、クリック時に再生されます。
+
+</details>
+
+<details>
+
+<summary>音声認識・AIチャット</summary>
+
+* オフライン音声認識エンジン [Vosk](https://alphacephei.com/vosk/) を統合し、マイク入力をリアルタイムにテキスト化します。
+  * 中間結果 `[STT][partial]` と確定結果 `[STT][final]` を Unity Console に表示。
+  * 無音が `VadSilenceSeconds`（既定 1.0 秒）続くとテキストが確定し、LLM へ送信されます（`[STT][send]` ログ）。
+* テキストが確定すると AI チャット機能に音声メッセージを渡し、キャラクターが応答を読み上げます。
+  * 応答生成中はマイクを自動で一時停止し、誤認識を防止します。
+* ChatDialog 画面のマイクボタンで録音の開始／停止をトグル操作できます。
+* 必要なネイティブ DLL（`libvosk.dll`, `libstdc++-6.dll`, `libgcc_s_seh-1.dll`, `libwinpthread-1.dll` など）は `Assets/Plugins/x86_64/` に配置され、ビルド時に自動でパッケージされます。
+* 音響モデル（例: `vosk-model-small-ja-0.22`）や量子化 GGUF モデルを `StreamingAssets` 配下に置くことで、ネットワーク接続なしで日本語／英語など複数言語を扱えます。
 
 </details>
 
@@ -141,7 +157,7 @@ xattr -r -c uDesktopMascot.app
 ```
 
 ## requirements
-* Unity 6000.0.31f1(IL2CPP)
+* Unity 6000.1.1f1(IL2CPP)
 
 ## license
 * コードは[Apache License 2.0](LICENSE)に基づいてライセンスされています。
@@ -158,6 +174,14 @@ xattr -r -c uDesktopMascot.app
 ## インストーラー作成方法
 ### Windows
 * Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+```
+uDesktopMasscot
+└── build
+    └── uDesktopMasscot
+        ├── uDesktopMascot.exe
+        └── README.txt
+        ...
+```
 
 * [Inno Setup](https://www.jrsoftware.org/isdl.php) をインストールする。
   
@@ -172,7 +196,14 @@ xattr -r -c uDesktopMascot.app
 ### macOS
 macOSのPCでのみインストーラーを作成できます。
 
-* Unityで`build`フォルダに`uDesktopMascot`という名前でビルドする。
+* Unityで`build/uDesktopMascot`フォルダに`uDesktopMascot`という名前でビルドする。
+```
+uDesktopMasscot
+└── build
+    └── uDesktopMasscot
+        ├── uDesktopMascot.app
+        └── README.txt
+```
 
 * 以下のコマンドを実行する。
 ```sh

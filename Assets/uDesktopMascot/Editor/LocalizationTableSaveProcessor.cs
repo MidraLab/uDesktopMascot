@@ -80,7 +80,8 @@ namespace uDesktopMascot.Editor
             sb.Append("Key,Id");
             // 言語カラムの順序を元のCSVと同じにする
             var localeCodes = new List<string>();
-            foreach (var localeCode in new[] { "en", "fr", "it", "ja", "ko" })
+            // 対応する言語コードのリストを更新
+            foreach (var localeCode in new[] { "zh-CN", "zh-TW", "nl", "en", "fi", "fr", "de", "hi", "it", "ja", "ko", "pl", "pt-BR", "ru", "es", "sv", "tr" })
             {
                 var table = tableCollection.GetTable(localeCode);
                 if (table != null)

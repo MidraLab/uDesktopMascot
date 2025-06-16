@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: e255baf06ce98bf4481c6b4348a1a9fa
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: f5049e36529df5d6372688815e2cdb3a
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -59,13 +59,25 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 1
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: e827c8796940f8f47b26d88c1f28a09b, type: 2}
   - {fileID: 11400000, guid: 68b8d10855ed68d4682a5caa146840fe, type: 2}
+  - {fileID: 11400000, guid: d045a79e956c5754c85c813e97e33739, type: 2}
   - {fileID: 11400000, guid: 1e38d4807989a344482aafb7295ebd8e, type: 2}
+  - {fileID: 11400000, guid: 15f9b4a8e3fdf9542ba632c4c0f34c61, type: 2}
+  - {fileID: 11400000, guid: 2c101b5d6980f554db2b57adcf1528b8, type: 2}
+  - {fileID: 11400000, guid: 7a0818a3cd0203f4dbe28ed7fd61c1ab, type: 2}
   - {fileID: 11400000, guid: caf852c02aa4f0c4eaee21e1329b945a, type: 2}
   - {fileID: 11400000, guid: 56091239be9ccd64aa74edf2e0f6a3b8, type: 2}
+  - {fileID: 11400000, guid: 96feb6ffa1c7c214c867ea99df693332, type: 2}
+  - {fileID: 11400000, guid: f9ea76af53d766f4eac1b15b589d58d4, type: 2}
+  - {fileID: 11400000, guid: d32c93a250f846b44b9c660b789eaf34, type: 2}
+  - {fileID: 11400000, guid: d4b36fe27f9d6b64b9695d288cbfa20c, type: 2}
   - {fileID: 11400000, guid: f237f9fd03a1d9e4f8f83b994ca7a9bd, type: 2}
+  - {fileID: 11400000, guid: d9ec1ad5cd034314dbe95eaa618ddaeb, type: 2}
+  - {fileID: 11400000, guid: ac9fb542e07c91b4eb19ffacc758af46, type: 2}
   - {fileID: 11400000, guid: 87c1d7da63e8a014a98c77a2c490ec41, type: 2}
   - {fileID: 11400000, guid: fcf5b210053884e4fbd4d55b74489379, type: 2}
+  - {fileID: 11400000, guid: 646a5345006a9ea42976f7d05b5a0773, type: 2}
   - {fileID: 11400000, guid: c431bbeac2f10e946b2c6c07b8458d54, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
@@ -112,6 +124,18 @@ MonoBehaviour:
     - Locale-ja
     - Locale-ko
     - Locale
+    - Locale-zh-CN
+    - Locale-zh-TW
+    - Locale-nl
+    - Locale-fi
+    - Locale-de
+    - Locale-hi
+    - Locale-pl
+    - Locale-ru
+    - Locale-pt-BR
+    - Locale-sv
+    - Locale-es
+    - Locale-tr
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 31f82614ca6c5bd43afe61799a66602d, type: 2}

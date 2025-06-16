@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: LocalizationTable_sv
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: sv
+  m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 552562152116224
+    m_Localized: Avsluta appen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283136
+    m_Localized: "Modell till\xE4gg och \xE4ndring"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283134
+    m_Localized: "Hj\xE4lp"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283131
+    m_Localized: "Inst\xE4llningar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "En ny version av v{0} har sl\xE4ppts."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116372423544832
+    m_Localized: "St\xE4nga"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: "Visa inte dialogrutan tills n\xE4sta version."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4547369455259648
+    m_Localized: Skicka
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chatt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: Webb-UI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: "Till\xE4gg"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: "S\xF6kv\xE4g till modellen som ska l\xE4ggas till"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: "Dra och sl\xE4pp VRM-modellen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: "V\xE4lj modell fr\xE5n mappen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Modellen\nladdar ner...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: Nedladdning av modellen\nmisslyckades.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

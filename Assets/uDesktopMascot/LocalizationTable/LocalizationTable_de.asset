@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: LocalizationTable_de
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: de
+  m_SharedData: {fileID: 11400000, guid: e0bc4458d73676a429c1b840d5dbc577, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 552562152116224
+    m_Localized: App beenden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283136
+    m_Localized: "Modell hinzuf\xFCgen oder \xE4ndern"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283134
+    m_Localized: Hilfe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 557971768283131
+    m_Localized: Einstellung
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2499933916303360
+    m_Localized: "Die neue Version v{0} ist ver\xF6ffentlicht worden."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116372423544832
+    m_Localized: "Schlie\xDFen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3116588740579328
+    m_Localized: "Den Dialog bis zur n\xE4chsten Version nicht anzeigen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4547369455259648
+    m_Localized: "\xDCbertragen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4599798494334976
+    m_Localized: Chat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4600571496173568
+    m_Localized: "Web-Benutzeroberfl\xE4che"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5073601682935808
+    m_Localized: "Zus\xE4tzlich"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5074280786890752
+    m_Localized: "Pfad zum Hinzuf\xFCgen des Modells"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5075115772153856
+    m_Localized: "VRM-Modell per Drag & Drop hinzuf\xFCgen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5282738060595200
+    m_Localized: "W\xE4hlen Sie ein Modell aus dem Ordner."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5814746641797120
+    m_Localized: Modell wird heruntergeladen...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5824753848487936
+    m_Localized: Das Herunterladen des Modells ist fehlgeschlagen.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
