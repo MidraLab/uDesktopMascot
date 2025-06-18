@@ -322,10 +322,10 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            echo "pkg_path=$(echo build/uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip)" >> $GITHUB_OUTPUT
+            echo "pkg_path=uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip" >> $GITHUB_OUTPUT
             echo "channel=windows-x64" >> $GITHUB_OUTPUT
           else
-            echo "pkg_path=$(echo build/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip)" >> $GITHUB_OUTPUT
+            echo "pkg_path=uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip" >> $GITHUB_OUTPUT
             echo "channel=osx-universal" >> $GITHUB_OUTPUT
           fi
 
