@@ -277,10 +277,6 @@ jobs:
           name: ${{ matrix.platform == 'windows' && format('Build-StandaloneWindows64-v{0}', needs.check-branch.outputs.current_version) || format('Build-StandaloneOSX-v{0}', needs.check-branch.outputs.current_version) }}
           path: .
 
-      - name: List workspace files (debug)
-        run: |
-          echo "After download, workspace contents:" && ls -R
-
       - name: Set package path
         id: pkg
         run: echo "pkg=." >> $GITHUB_OUTPUT

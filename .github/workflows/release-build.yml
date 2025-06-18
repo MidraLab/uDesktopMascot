@@ -357,10 +357,6 @@ jobs:
           echo "リリースタグ名は '${TAG_NAME}' です"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
-      - name: アーティファクト構造の確認
-        run: |
-          ls -R ./artifacts
-
       - name: ドラフトリリースを作成し、アーティファクトをアップロード
         uses: softprops/action-gh-release@v2
         with:
