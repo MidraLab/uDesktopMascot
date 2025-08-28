@@ -5,7 +5,7 @@
 #define MyAppPublisher "MidraLab"
 #define MyAppURL "https://midralab.github.io/uDesktopMascot/"
 #define MyAppExeName "uDesktopMascot.exe"
-#define MyAppVersion "0.3.0"
+#define MyAppVersion "1.0.0"
 
 [Setup]
 AppVersion={#MyAppVersion}
