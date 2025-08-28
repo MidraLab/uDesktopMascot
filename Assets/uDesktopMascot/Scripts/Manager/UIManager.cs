@@ -24,6 +24,11 @@ namespace uDesktopMascot
         private readonly Dictionary<string, IDialogPool> _dialogPool = new Dictionary<string, IDialogPool>();
 
         /// <summary>
+        /// ダイアログが開いているかどうか
+        /// </summary>
+        public bool HasOpenedDialogs => _dialogStack.Count > 0;
+
+        /// <summary>
         /// ダイアログのプレハブパスを取得する
         /// </summary>
         /// <param name="dialogueName"></param>

@@ -335,7 +335,18 @@ namespace uDesktopMascot
         /// <param name="context"></param>
         private void OnClickStarted(InputAction.CallbackContext context)
         {
-            VoiceController.Instance.PlayClickVoice();
+            // ダイアログやメニューが開いていない場合のみクリック音声を再生
+            bool isMenuOpened = _menuPresenter != null && _menuPresenter.IsOpened;
+            bool hasDialogs = UIManager.Instance.HasOpenedDialogs;
+            
+            if (!isMenuOpened && !hasDialogs)
+            {
+                VoiceController.Instance.PlayClickVoice();
+            }
+            else
+            {
+                Log.Debug($"クリック音声をスキップしました: Menu={isMenuOpened}, Dialog={hasDialogs}");
+            }
         }
 
         /// <summary>
