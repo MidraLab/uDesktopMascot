@@ -94,7 +94,7 @@ jobs:
           done
 
           if [ ${#versions[@]} -eq 0 ]; then
-            highest_version="0.0.0"
+            highest_version="1.0.0"
           else
             highest_version=$(printf '%s\n' "${versions[@]}" | sort -V | tail -n1)
           fi
