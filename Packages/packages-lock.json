@@ -40,7 +40,7 @@
         "com.unity.ai.inference": "2.2.1",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
-      "hash": "57ffe87d8b2f7939ff19d1f9c40c6088da042501"
+      "hash": "6c8aaef3ab18683c82d55e5218fca3217660540b"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
