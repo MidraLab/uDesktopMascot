@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f51cd0080116364438ffbd0d2613306e
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: f22407ba6b4157b4a93d0a670bd3dd57, type: 3}
+  dynamicDimConfigs:
+  - name: batch_size
+    size: -1
+  - name: phonemes
+    size: -1
