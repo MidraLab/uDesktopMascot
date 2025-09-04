@@ -29,6 +29,11 @@ namespace uDesktopMascot
                         Log.Warning(typeof(T) + "SingletonMonoBehaviour is nothing");
                     } else
                     {
+                        // ルートGameObjectでない場合は、親をルートに移動してからDontDestroyOnLoadを適用
+                        if (_instance.transform.parent != null)
+                        {
+                            _instance.transform.SetParent(null);
+                        }
                         DontDestroyOnLoad(_instance.gameObject);
                     }
                 }
@@ -42,6 +47,11 @@ namespace uDesktopMascot
             if (_instance == null)
             {
                 _instance = this as T;
+                // ルートGameObjectでない場合は、親をルートに移動してからDontDestroyOnLoadを適用
+                if (transform.parent != null)
+                {
+                    transform.SetParent(null);
+                }
                 DontDestroyOnLoad(gameObject);
             } else if (_instance != this)
             {

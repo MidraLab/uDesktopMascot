@@ -10,6 +10,14 @@ using Unity.Logging;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
+using uPiper.Core;
+using uPiper.Core.AudioGeneration;
+using uPiper.Core.Logging;
+using uPiper.Core.Phonemizers;
+using Unity.InferenceEngine;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using uPiper.Core.Phonemizers.Implementations;
 
 namespace uDesktopMascot
 {
@@ -95,6 +103,14 @@ namespace uDesktopMascot
         [SerializeField] private VoskSpeechToText speechToText;
 
         private string _lastVoiceMessage = string.Empty;
+        
+        // 音声合成用のフィールド
+        private InferenceAudioGenerator _ttsGenerator;
+        private PhonemeEncoder _phonemeEncoder;
+        private AudioClipBuilder _audioClipBuilder;
+        private OpenJTalkPhonemizer _japanesePhonemizer;
+        private PiperVoiceConfig _ttsVoiceConfig;
+        private bool _isTTSInitialized = false;
 
         private void Start()
         {
@@ -106,6 +122,19 @@ namespace uDesktopMascot
             }
             // アイコン初期化
             microphoneIcon.SwitchIcon(_isMiscrophoneOn);
+            
+            // AudioSourceが設定されていない場合、自動作成
+            if (ttsAudioSource == null)
+            {
+                PiperLogger.LogWarning("[ChatDialog] TTS AudioSource not assigned. Creating one automatically.");
+                ttsAudioSource = gameObject.AddComponent<AudioSource>();
+                ttsAudioSource.playOnAwake = false;
+                ttsAudioSource.volume = 1.0f;
+                PiperLogger.LogInfo("[ChatDialog] Created AudioSource for TTS");
+            }
+            
+            // 音声合成の初期化
+            InitializeTTS();
         }
 
         private protected override void OnEnable()
@@ -271,11 +300,23 @@ namespace uDesktopMascot
         private void ReplyCompleted()
         {
             // 最終的なAIの返信をチャット履歴に追加
-            _chatTextBuilder.AppendLine($"AI: {_replyTextBuilder}");
+            var aiReplyText = _replyTextBuilder?.ToString() ?? "";
+            _chatTextBuilder.AppendLine($"AI: {aiReplyText}");
             chatText.text = _chatTextBuilder.ToString();
 
             // ScrollToBottomを呼び出して最新のメッセージを表示
             ScrollToBottom();
+            
+            // 音声合成を実行
+            if (_isTTSInitialized && !string.IsNullOrWhiteSpace(aiReplyText))
+            {
+                PiperLogger.LogInfo($"[ChatDialog] Starting TTS for reply: {aiReplyText.Substring(0, Math.Min(50, aiReplyText.Length))}...");
+                _ = SynthesizeAndPlayTTS(aiReplyText);
+            }
+            else
+            {
+                PiperLogger.LogWarning($"[ChatDialog] TTS not executed. Initialized: {_isTTSInitialized}, Text empty: {string.IsNullOrWhiteSpace(aiReplyText)}");
+            }
 
             // AIの返信用ビルダーをクリア
             _replyTextBuilder = null;
@@ -337,6 +378,230 @@ namespace uDesktopMascot
             overNoticeImage.enabled = false;
         }
 
+        /// <summary>
+        /// 音声合成を初期化する
+        /// </summary>
+        private async void InitializeTTS()
+        {
+            try
+            {
+                PiperLogger.LogInfo("[ChatDialog] Starting TTS initialization...");
+                
+                // 初期化用インスタンスを作成
+                _ttsGenerator = new InferenceAudioGenerator();
+                _audioClipBuilder = new AudioClipBuilder();
+                
+                // OpenJTalk phonemizerを初期化
+                try
+                {
+                    _japanesePhonemizer = new OpenJTalkPhonemizer();
+                    PiperLogger.LogInfo("[ChatDialog] OpenJTalk phonemizer initialized successfully");
+                }
+                catch (Exception ex)
+                {
+                    PiperLogger.LogError($"[ChatDialog] Failed to initialize OpenJTalk: {ex.Message}");
+                    _japanesePhonemizer = null;
+                    return;
+                }
+                
+                // 日本語モデルをロード
+                var modelName = "ja_JP-test-medium";
+                PiperLogger.LogDebug($"[ChatDialog] Loading model: {modelName}");
+                
+                // モデルアセットをロード
+                var modelAsset = Resources.Load<ModelAsset>($"uPiper/Models/{modelName}");
+                if (modelAsset == null)
+                {
+                    PiperLogger.LogError($"[ChatDialog] Model not found: {modelName}");
+                    return;
+                }
+                
+                // JSONコンフィグをロード（Resources.Loadでは拡張子を含めない）
+                var jsonAsset = Resources.Load<TextAsset>($"uPiper/Models/{modelName}.onnx");
+                if (jsonAsset == null)
+                {
+                    PiperLogger.LogError($"[ChatDialog] Config not found: {modelName}.onnx.json");
+                    return;
+                }
+                
+                // コンフィグをパース
+                _ttsVoiceConfig = ParseTTSConfig(jsonAsset.text, modelName);
+                _phonemeEncoder = new PhonemeEncoder(_ttsVoiceConfig);
+                
+                // ジェネレーターを初期化（CPUバックエンドを使用）
+                var piperConfig = new PiperConfig
+                {
+                    Backend = InferenceBackend.CPU,
+                    AllowFallbackToCPU = true
+                };
+                
+                await _ttsGenerator.InitializeAsync(modelAsset, _ttsVoiceConfig, piperConfig);
+                _isTTSInitialized = true;
+                
+                PiperLogger.LogInfo("[ChatDialog] TTS initialization completed successfully");
+                PiperLogger.LogInfo($"[ChatDialog] AudioSource assigned: {ttsAudioSource != null}");
+                
+                // AudioSourceの設定を確認
+                if (ttsAudioSource != null)
+                {
+                    PiperLogger.LogInfo($"[ChatDialog] AudioSource settings - Volume: {ttsAudioSource.volume}, Mute: {ttsAudioSource.mute}, Enabled: {ttsAudioSource.enabled}");
+                }
+            }
+            catch (Exception ex)
+            {
+                PiperLogger.LogError($"[ChatDialog] TTS initialization failed: {ex.Message}");
+                _isTTSInitialized = false;
+            }
+        }
+        
+        /// <summary>
+        /// TTS用のコンフィグをパースする
+        /// </summary>
+        private PiperVoiceConfig ParseTTSConfig(string json, string modelName)
+        {
+            var config = new PiperVoiceConfig
+            {
+                VoiceId = modelName,
+                DisplayName = modelName,
+                Language = "ja",
+                SampleRate = 22050,
+                PhonemeIdMap = new System.Collections.Generic.Dictionary<string, int>()
+            };
+            
+            try
+            {
+                var jsonObj = JObject.Parse(json);
+                
+                // 言語コードを抽出
+                if (jsonObj["language"]?["code"] != null)
+                {
+                    config.Language = jsonObj["language"]["code"].ToString();
+                }
+                
+                // サンプルレートを抽出
+                if (jsonObj["audio"]?["sample_rate"] != null)
+                {
+                    config.SampleRate = jsonObj["audio"]["sample_rate"].ToObject<int>();
+                }
+                
+                // 推論パラメータを抽出
+                if (jsonObj["inference"]?["noise_scale"] != null)
+                {
+                    config.NoiseScale = jsonObj["inference"]["noise_scale"].ToObject<float>();
+                }
+                if (jsonObj["inference"]?["length_scale"] != null)
+                {
+                    config.LengthScale = jsonObj["inference"]["length_scale"].ToObject<float>();
+                }
+                if (jsonObj["inference"]?["noise_w"] != null)
+                {
+                    config.NoiseW = jsonObj["inference"]["noise_w"].ToObject<float>();
+                }
+                
+                // phoneme_id_mapを抽出
+                if (jsonObj["phoneme_id_map"] is JObject phonemeIdMap)
+                {
+                    foreach (var kvp in phonemeIdMap)
+                    {
+                        if (kvp.Value is JArray idArray && idArray.Count > 0)
+                        {
+                            config.PhonemeIdMap[kvp.Key] = idArray[0].ToObject<int>();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                PiperLogger.LogError($"[ChatDialog] Error parsing TTS config: {ex.Message}");
+            }
+            
+            return config;
+        }
+        
+        /// <summary>
+        /// テキストを音声合成して再生する
+        /// </summary>
+        private async UniTask SynthesizeAndPlayTTS(string text)
+        {
+            try
+            {
+                PiperLogger.LogInfo($"[ChatDialog] Starting TTS synthesis for text: {text}");
+                
+                // OpenJTalkで音素に変換
+                var phonemizer = new TextPhonemizerAdapter(_japanesePhonemizer);
+                var phonemeResult = await phonemizer.PhonemizeAsync(text, "ja");
+                var openJTalkPhonemes = phonemeResult.Phonemes;
+                
+                PiperLogger.LogInfo($"[ChatDialog] OpenJTalk phonemes: {string.Join(" ", openJTalkPhonemes)}");
+                
+                // Piper形式の音素に変換
+                var piperPhonemes = OpenJTalkToPiperMapping.ConvertToPiperPhonemes(openJTalkPhonemes);
+                PiperLogger.LogInfo($"[ChatDialog] Piper phonemes: {string.Join(" ", piperPhonemes)}");
+                
+                // 音素をIDに変換
+                var phonemeIds = _phonemeEncoder.Encode(piperPhonemes);
+                PiperLogger.LogInfo($"[ChatDialog] Phoneme IDs: {string.Join(", ", phonemeIds)}");
+                
+                // 音声生成
+                var audioData = await _ttsGenerator.GenerateAudioAsync(phonemeIds);
+                PiperLogger.LogInfo($"[ChatDialog] Generated audio: {audioData.Length} samples");
+                
+                // 音声データの正規化
+                var maxVal = audioData.Max(x => Math.Abs(x));
+                float[] processedAudio;
+                
+                if (maxVal < 0.01f)
+                {
+                    // 音声が小さすぎる場合は増幅
+                    var amplificationFactor = 0.3f / maxVal;
+                    processedAudio = audioData.Select(x => x * amplificationFactor).ToArray();
+                    PiperLogger.LogInfo($"[ChatDialog] Amplified audio by factor {amplificationFactor:F2}");
+                }
+                else if (maxVal > 1.0f)
+                {
+                    // 音声データを正規化
+                    processedAudio = _audioClipBuilder.NormalizeAudio(audioData, 0.95f);
+                    PiperLogger.LogInfo("[ChatDialog] Normalized audio data");
+                }
+                else
+                {
+                    processedAudio = audioData;
+                }
+                
+                // AudioClipを作成
+                var audioClip = _audioClipBuilder.BuildAudioClip(
+                    processedAudio,
+                    _ttsVoiceConfig.SampleRate,
+                    $"TTS_{DateTime.Now:HHmmss}"
+                );
+                
+                // 再生
+                if (ttsAudioSource != null && audioClip != null)
+                {
+                    PiperLogger.LogInfo($"[ChatDialog] AudioClip ready - Length: {audioClip.length}s, Frequency: {audioClip.frequency}Hz, Channels: {audioClip.channels}");
+                    PiperLogger.LogInfo($"[ChatDialog] AudioSource state before play - Volume: {ttsAudioSource.volume}, Mute: {ttsAudioSource.mute}, isPlaying: {ttsAudioSource.isPlaying}");
+                    
+                    ttsAudioSource.clip = audioClip;
+                    ttsAudioSource.volume = 1.0f;  // ボリュームを明示的に設定
+                    ttsAudioSource.Play();
+                    
+                    PiperLogger.LogInfo($"[ChatDialog] TTS playback started - isPlaying: {ttsAudioSource.isPlaying}");
+                    
+                    // 再生状態を確認
+                    await UniTask.Delay(100);
+                    PiperLogger.LogInfo($"[ChatDialog] After 100ms - isPlaying: {ttsAudioSource.isPlaying}, time: {ttsAudioSource.time}");
+                }
+                else
+                {
+                    PiperLogger.LogError($"[ChatDialog] Cannot play TTS - AudioSource: {ttsAudioSource != null}, AudioClip: {audioClip != null}");
+                }
+            }
+            catch (Exception ex)
+            {
+                PiperLogger.LogError($"[ChatDialog] TTS synthesis failed: {ex.Message}");
+            }
+        }
+        
         private void OnDestroy()
         {
             sendButton.onClick.RemoveAllListeners();
@@ -351,6 +616,10 @@ namespace uDesktopMascot
             {
                 speechToText.OnSpeechRecognized -= OnSpeechRecognized;
             }
+            
+            // 音声合成関連のリソースを解放
+            _ttsGenerator?.Dispose();
+            _japanesePhonemizer?.Dispose();
         }
 
         /// <summary>

@@ -94,7 +94,7 @@ jobs:
           done
 
           if [ ${#versions[@]} -eq 0 ]; then
-            highest_version="0.0.0"
+            highest_version="1.0.0"
           else
             highest_version=$(printf '%s\n' "${versions[@]}" | sort -V | tail -n1)
           fi
@@ -296,6 +296,48 @@ jobs:
           name: uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}
           path: build/uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip
 
+  deploy-itchio:
+    needs: [build-windows, build-mac, check-branch]
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && (github.event_name == 'schedule' || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/'))) }}
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: deploy-itchio-${{ github.ref }}-${{ matrix.platform }}
+      cancel-in-progress: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ windows, mac ]
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.platform == 'windows' && format('uDesktopMascot_win_v{0}', needs.check-branch.outputs.current_version) || format('uDesktopMascot_mac_v{0}', needs.check-branch.outputs.current_version) }}
+          path: .
+
+      - name: Determine package path
+        id: pkg
+        shell: bash
+        run: |
+          if [ "${{ matrix.platform }}" == "windows" ]; then
+            echo "pkg_path=uDesktopMascot_win_v${{ needs.check-branch.outputs.current_version }}.zip" >> $GITHUB_OUTPUT
+            echo "channel=windows-x64" >> $GITHUB_OUTPUT
+          else
+            echo "pkg_path=uDesktopMascot_mac_v${{ needs.check-branch.outputs.current_version }}.zip" >> $GITHUB_OUTPUT
+            echo "channel=osx-universal" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push to itch.io
+        uses: yeslayla/butler-publish-itchio-action@v1.0.3
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_API_KEY }}
+          ITCH_USER: midralab
+          ITCH_GAME: uDesktopMascot
+          CHANNEL: ${{ steps.pkg.outputs.channel }}
+          PACKAGE: ${{ steps.pkg.outputs.pkg_path }}
+
   release:
     needs: [create-tag, check-branch, build-windows, build-mac]
     runs-on: ubuntu-latest
@@ -314,10 +356,6 @@ jobs:
           TAG_NAME="${{ needs.create-tag.outputs.tag_name }}"
           echo "リリースタグ名は '${TAG_NAME}' です"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
-
-      - name: アーティファクト構造の確認
-        run: |
-          ls -R ./artifacts
 
       - name: ドラフトリリースを作成し、アーティファクトをアップロード
         uses: softprops/action-gh-release@v2
