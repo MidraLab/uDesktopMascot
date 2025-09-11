@@ -1,30 +1,38 @@
-﻿---
-name: Bug Report
+---
+name: Bug report
 about: Create a report to help us improve
-title: "[BUG] "
-labels: bug
+title: ''
+labels: ''
 assignees: ''
+
 ---
 
-## バグの説明
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-バグの詳細を説明してください。何が期待され、実際には何が起こったのかを記述してください。
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-## 再現手順
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-1. どのようにバグを再現しましたか？(例: "設定 -> オプション -> 使用する")
-2. 同じ手順を行ったときに、何を見ましたか？
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-## 期待する結果
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
 
-何を期待していたかを記述してください。
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
 
-## スクリーンショット
-
-可能であれば、問題のスクリーンショットを添付してください。
-
-## 環境
-
-- OS: [例: Windows, macOS]
-- Unityのバージョン: [例: 6000.0.31f1]
-- その他の依存関係:
+**Additional context**
+Add any other context about the problem here.
