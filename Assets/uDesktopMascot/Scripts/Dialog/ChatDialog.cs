@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +12,8 @@ using Unity.Logging;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
+using DotNetG2P;
+using DotNetG2P.MeCab;
 using uPiper.Core;
 using uPiper.Core.AudioGeneration;
 using uPiper.Core.Logging;
@@ -17,7 +21,6 @@ using uPiper.Core.Phonemizers;
 using Unity.InferenceEngine;
 using Newtonsoft.Json.Linq;
 using System.Linq;
-using uPiper.Core.Phonemizers.Implementations;
 
 namespace uDesktopMascot
 {
@@ -108,7 +111,8 @@ namespace uDesktopMascot
         private InferenceAudioGenerator _ttsGenerator;
         private PhonemeEncoder _phonemeEncoder;
         private AudioClipBuilder _audioClipBuilder;
-        private OpenJTalkPhonemizer _japanesePhonemizer;
+        private G2PEngine _g2pEngine;
+        private MeCabTokenizer _mecabTokenizer;
         private PiperVoiceConfig _ttsVoiceConfig;
         private bool _isTTSInitialized = false;
 
@@ -391,16 +395,19 @@ namespace uDesktopMascot
                 _ttsGenerator = new InferenceAudioGenerator();
                 _audioClipBuilder = new AudioClipBuilder();
                 
-                // OpenJTalk phonemizerを初期化
+                // DotNetG2P (MeCab + G2PEngine) を初期化
                 try
                 {
-                    _japanesePhonemizer = new OpenJTalkPhonemizer();
-                    PiperLogger.LogInfo("[ChatDialog] OpenJTalk phonemizer initialized successfully");
+                    var dicPath = Path.Combine(Application.streamingAssetsPath, "uPiper", "OpenJTalk", "naist_jdic", "open_jtalk_dic_utf_8-1.11");
+                    _mecabTokenizer = new MeCabTokenizer(dicPath);
+                    _g2pEngine = new G2PEngine(_mecabTokenizer);
+                    PiperLogger.LogInfo("[ChatDialog] DotNetG2P engine initialized successfully");
                 }
                 catch (Exception ex)
                 {
-                    PiperLogger.LogError($"[ChatDialog] Failed to initialize OpenJTalk: {ex.Message}");
-                    _japanesePhonemizer = null;
+                    PiperLogger.LogError($"[ChatDialog] Failed to initialize DotNetG2P: {ex.Message}");
+                    _g2pEngine = null;
+                    _mecabTokenizer = null;
                     return;
                 }
                 
@@ -527,17 +534,16 @@ namespace uDesktopMascot
             {
                 PiperLogger.LogInfo($"[ChatDialog] Starting TTS synthesis for text: {text}");
                 
-                // OpenJTalkで音素に変換
-                var phonemizer = new TextPhonemizerAdapter(_japanesePhonemizer);
-                var phonemeResult = await phonemizer.PhonemizeAsync(text, "ja");
-                var openJTalkPhonemes = phonemeResult.Phonemes;
-                
+                // DotNetG2Pで音素に変換
+                var phonemeString = await Task.Run(() => _g2pEngine.ToPhonemes(text));
+                var openJTalkPhonemes = phonemeString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
                 PiperLogger.LogInfo($"[ChatDialog] OpenJTalk phonemes: {string.Join(" ", openJTalkPhonemes)}");
-                
+
                 // Piper形式の音素に変換
                 var piperPhonemes = OpenJTalkToPiperMapping.ConvertToPiperPhonemes(openJTalkPhonemes);
                 PiperLogger.LogInfo($"[ChatDialog] Piper phonemes: {string.Join(" ", piperPhonemes)}");
-                
+
                 // 音素をIDに変換
                 var phonemeIds = _phonemeEncoder.Encode(piperPhonemes);
                 PiperLogger.LogInfo($"[ChatDialog] Phoneme IDs: {string.Join(", ", phonemeIds)}");
@@ -619,7 +625,8 @@ namespace uDesktopMascot
             
             // 音声合成関連のリソースを解放
             _ttsGenerator?.Dispose();
-            _japanesePhonemizer?.Dispose();
+            _g2pEngine?.Dispose();
+            _mecabTokenizer?.Dispose();
         }
 
         /// <summary>
